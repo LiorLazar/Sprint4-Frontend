@@ -1,5 +1,7 @@
 :root {
-  --clr1: #ce2e6c;
+  --header-txt-clr1: #292a2e;
+  --header-bckgrd-clr1: #474d50
+    /* --clr1: #ce2e6c;
   --clr2: #4f3a65;
   --clr3: #574f7d;
   --clr4: #95adbe;
@@ -13,5 +15,5 @@
   --gray4: #333;
 
   --success: rgb(41, 189, 73);
-  --error: rgb(216, 59, 59);
+  --error: rgb(216, 59, 59); */
 }
