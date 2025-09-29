@@ -1,0 +1,6 @@
+.board-index {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 288px 1182px;
+    grid-template-rows: 1fr;
+}
