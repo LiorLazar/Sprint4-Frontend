@@ -1,44 +1,49 @@
+import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { BoardList } from '../cmps/BoardList.jsx'
 import { BoardSidebar } from '../cmps/BoardSidebar.jsx'
+import { loadBoards } from '../store/actions/board.actions.js'
 
 export function BoardIndex() {
-    // Sample data to match the image
-    const starredBoards = [
-        { id: 1, title: 'Work-Management', style: { backgroundColor: '#6b778c' } }
-    ]
-    
-    const recentlyViewed = [
-        { id: 2, title: 'Work-Management', style: { backgroundColor: '#6b778c' } }
-    ]
-    
-    const workspaceBoards = [
-        { id: 3, title: 'Work-Management', style: { backgroundColor: '#6b778c' } }
-    ]
+    const boards = useSelector(storeState => storeState.boardModule.boards)
+
+    useEffect(() => {
+        loadBoards()
+    }, [])
+
+    // Filter boards by type for different sections
+    const starredBoards = boards.filter(board => board.isStarred)
+    const recentlyViewed = boards.filter(board => board.isRecentlyViewed)
+    const workspaceBoards = boards.filter(board => !board.isStarred && !board.isRecentlyViewed)
 
     return (
         <section className="board-index full">
             <BoardSidebar />
 
             <section className="board-main">
-                <section className="board-section">
-                    <h1>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                        </svg>
-                        Starred boards
-                    </h1>
-                    <BoardList boards={starredBoards} isStarred={true} />
-                </section>
+                {starredBoards.length > 0 && (
+                    <section className="board-section">
+                        <h1>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                            </svg>
+                            Starred boards
+                        </h1>
+                        <BoardList boards={starredBoards} isStarred={true} />
+                    </section>
+                )}
 
-                <section className="board-section">
-                    <h1>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                        Recently viewed
-                    </h1>
-                    <BoardList boards={recentlyViewed} isStarred={false} />
-                </section>
+                {recentlyViewed.length > 0 && (
+                    <section className="board-section">
+                        <h1>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            Recently viewed
+                        </h1>
+                        <BoardList boards={recentlyViewed} isStarred={false} />
+                    </section>
+                )}
 
                 <section className="board-section">
                     <h1>YOUR WORKSPACES</h1>
