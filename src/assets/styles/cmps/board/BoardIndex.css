@@ -5,46 +5,10 @@
     background-color: #f7f8f9;
 }
 
-.board-sidebar {
-    background-color: #ffffff;
-    border-right: 1px solid #dfe1e6;
-    padding: 16px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
 .board-main {
-    padding: 32px 40px;
+    padding: 40px 134px;
     background-color: #f7f8f9;
     overflow-y: auto;
-}
-
-.btn-sidebar {
-    background-color: transparent;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    color: #172b4d;
-    width: 100%;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    position: relative;
-}
-
-.btn-sidebar:hover {
-    background-color: #e4e6ea;
-}
-
-.btn-sidebar:first-child {
-    background-color: #e3f2fd;
-    color: #0079bf;
 }
 
 .board-main h1 {
@@ -64,63 +28,6 @@
 /* Add some spacing between sections */
 .board-main h1:not(:first-child) {
     margin-top: 40px;
-}
-
-/* Workspace section in sidebar */
-.workspace-section {
-    margin-top: 24px;
-    padding-top: 12px;
-    border-top: 1px solid #dfe1e6;
-}
-
-.workspace-section h3 {
-    font-size: 12px;
-    font-weight: 600;
-    color: #5e6c84;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin: 0 0 8px 12px;
-}
-
-.workspace-item {
-    display: flex;
-    align-items: center;
-    padding: 6px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.workspace-item:hover {
-    background-color: #e4e6ea;
-}
-
-.workspace-avatar {
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
-    background: linear-gradient(135deg, #0079bf, #026aa7);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 600;
-    margin-right: 8px;
-}
-
-.workspace-toggle {
-    margin-left: auto;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #5e6c84;
-    padding: 2px;
-    border-radius: 3px;
-}
-
-.workspace-toggle:hover {
-    background-color: #dfe1e6;
 }
 
 /* Board sections */
