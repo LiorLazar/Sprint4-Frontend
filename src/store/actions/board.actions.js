@@ -1,7 +1,6 @@
-import { boardService } from '../../services/board'
 import { store } from '../store'
 import { ADD_BOARD, REMOVE_BOARD, SET_BOARDS, SET_BOARD, UPDATE_BOARD, ADD_BOARD_MSG } from '../reducers/board.reducer'
-
+import { boardService } from '../../services/board/board.service'
 export async function loadBoards(filterBy) {
     try {
         const boards = await boardService.query(filterBy)
@@ -110,7 +109,7 @@ async function unitTestActions() {
     await addBoard(boardService.getEmptyBoard())
     await updateBoard({
         _id: 'm1oC7',
-        // vendor: 'Board-Good',
+        vendor: 'Board-Good',
     })
     await removeBoard('m1oC7')
     // TODO unit test addBoardMsg

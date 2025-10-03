@@ -2,6 +2,10 @@
     font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
     src: url(../../fonts/AtlassianSans/AtlassianSans.ttf);
 }
+body {
+  font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui",
+    "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
+}
 
 @font-face {
     /* font-family: montserrat; */
