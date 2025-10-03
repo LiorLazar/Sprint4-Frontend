@@ -1,0 +1,25 @@
+/* Board list */
+.board-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(214px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+    width: max-content;
+    padding: 0;
+}
+
+/* View closed boards button */
+.view-closed-boards {
+    background: none;
+    border: none;
+    color: #5e6c84;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 0;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.view-closed-boards:hover {
+    color: #172b4d;
+}

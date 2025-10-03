@@ -19,6 +19,8 @@
 @import "cmps/UserMsg";
 
 @import "cmps/board/BoardIndex.css";
+@import "cmps/board/BoardList.css";
+@import "cmps/board/BoardPreview.css";
 @import "cmps/board/BoardSidebar.css";
 
 @import "cmps/car/CarList";

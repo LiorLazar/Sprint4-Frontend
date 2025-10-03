@@ -1,0 +1,105 @@
+/* Board preview */
+.board-preview {
+    cursor: pointer;
+    width: 214px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none;
+    outline: none;
+}
+
+.board-preview-content {
+    width: 214px;
+    height: 108px;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.board-preview:hover .board-preview-content {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.board-preview-content * {
+    box-sizing: border-box;
+}
+
+.board-title {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 14px;
+    font-weight: 600;
+    color: #172b4d;
+    line-height: 1.4;
+}
+
+.star-btn {
+    background: none;
+    border: none;
+    color: #fbbf24;
+    cursor: pointer;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+/* Create new board */
+.board-preview.create-new {
+    cursor: pointer;
+    width: 214px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none;
+    outline: none;
+}
+
+.board-preview.create-new .board-preview-content {
+    background-color: #dfe1e6 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5e6c84;
+    font-size: 14px;
+    font-weight: 400;
+    width: 214px;
+    height: 108px;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.create-new-content {
+    transition: background-color 0.2s ease, color 0.2s ease;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-new-content span {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.board-preview.create-new:hover .create-new-content {
+    background-color: #c1c7d0 !important;
+    color: #172b4d;
+}

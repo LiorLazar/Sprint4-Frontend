@@ -23,6 +23,7 @@
     align-items: center;
     gap: 8px;
     position: relative;
+    margin: 0;
 }
 
 .btn-sidebar:hover {
@@ -36,7 +37,6 @@
 
 /* Workspace section in sidebar */
 .workspace-section {
-    margin-top: 24px;
     padding-top: 12px;
     border-top: 1px solid #dfe1e6;
 }
@@ -47,7 +47,7 @@
     color: #5e6c84;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    margin: 0 0 8px 12px;
+    margin: 16px 0 8px 12px;
 }
 
 .workspace-item {
