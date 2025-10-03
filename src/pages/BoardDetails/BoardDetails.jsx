@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import './BoardDetails.css'
 import { icons } from '../../cmps/SvgIcons.jsx'
 import { BoardList } from '../../cmps/BoardDetails/BoardList.jsx'
 import { boardService } from '../../services/board/board.service.js'
-export function BoardDetails() {
+import './BoardDetails.css'
 
+export function BoardDetails() {
   const [board, setBoard] = useState(null)
 
   useEffect(() => {
@@ -19,77 +18,54 @@ export function BoardDetails() {
     }
 
     loadBoard()
-  }, []) 
+  }, [])
+
   if (!board) return <div>Loading...</div>
+
   function onAddList() {
     const newList = {
       id: 'l' + Date.now(),
       title: 'New List',
-      cards: []
+      tasks: []
     }
-    setBoard(prev => ({ ...prev, lists: [...prev.lists, newList] }))
+
+    setBoard(prev => ({
+      ...prev,
+      lists: [...prev.lists, newList]
+    }))
   }
 
-function onAddCard(listId) {
-  const newTask = {
-    id: 't' + Date.now(),
-    title: 'Enter a title or paste a link'   
+  function onAddCard(listId, title) {
+    const newTask = {
+      id: 't' + Date.now(),
+      title
+    }
+
+    setBoard(prev => ({
+      ...prev,
+      lists: prev.lists.map(list =>
+        list.id === listId
+          ? { ...list, tasks: [...list.tasks, newTask] }
+          : list
+      )
+    }))
   }
-  setBoard(prev => ({
-    ...prev,
-    lists: prev.lists.map(list =>
-      list.id === listId
-        ? { ...list, tasks: [...list.tasks, newTask] }
-        : list
-    )
-  }))
-}
-
-function onAddList() {
-  const newList = {
-    id: 'l' + Date.now(),
-    title: 'New List',
-    tasks: []  
-  }
-
-  setBoard(prev => ({
-    ...prev,
-    lists: [...prev.lists, newList]
-  }))
-}
-
 
   return (
     <section className="board-details">
-      <div className="board-header">
-        <div className="board-title">
-          <h1>{board.title}</h1>
-          <span className="board-icon">▦</span>
-          <span className="arrowdown">{icons.arrowDown}</span>
-        </div>
-
-        <div className="board-actions">
-          <div className="members">
-            {/* {board.members.map(m => (
-              <div key={m.id} className="member-avatar">{m}</div>
-            ))} */}
-          </div>
-          <button className="share-btn">+ Share</button>
-          <button className="more-btn">⋯</button>
-        </div>
-      </div>
-
       <div className="lists-container">
         {board.lists.map(list => (
           <BoardList
-           key={list.id}
+            key={list.id}
             list={list}
-            onAddCard={onAddCard} />
-            
+            onAddCard={onAddCard}
+            onListAction={(id) => console.log("List actions for:", id)}
+          />
         ))}
-         <button className="add-list-btn" onClick={onAddList}>
-    {icons.addCard} Add another list
-  </button>
+
+        <button className="add-list-btn" onClick={onAddList}>
+          {icons.addCard} Add another list
+        </button>
       </div>
     </section>
   )
