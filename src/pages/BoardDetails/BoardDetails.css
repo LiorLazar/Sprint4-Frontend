@@ -1,0 +1,149 @@
+.board-details {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #838c91; 
+  box-sizing: border-box;
+}
+
+/* --- HEADER --- */
+.board-header {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #5d6c75;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  width: 100%;
+}
+
+.board-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.board-title h1 {
+  font-size: 1.2rem;
+  margin: 0;
+  font-weight: 600;
+  color: #fff;
+}
+
+.board-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.share-btn {
+  background: #fff;
+  color: #172b4d;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.more-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* --- LISTS --- */
+.lists-container {
+  flex-grow: 1;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  overflow-x: auto;
+  padding: 1rem;
+}
+
+/* כל רשימה */
+.board-list {
+  background: #f1f2f4;   /* אפור בהיר */
+  border-radius: 8px;
+  padding: 8px;
+  width: 272px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 150px);
+}
+
+/* כותרת של רשימה */
+.board-list h3 {
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #172b4d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* .list-button{
+  color: #747679;
+} */
+
+/* --- TASKS --- */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.task-preview {
+  background: #fff;
+  padding: 8px 10px;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+  font-size: 14px;
+  color: #172b4d;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.task-preview:hover {
+  background: #f9fafc;
+}
+
+/* --- BUTTONS --- */
+.board-list > button {
+  color:#505258;
+  font-size: 14px;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.board-list > button:hover {
+  background: rgba(9, 30, 66, 0.08);
+  color: #172b4d;
+}
+
+.add-list-btn {
+  background:#a0a8ab;
+  color: #fffefd;
+  padding: 10px;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 14px;
+  min-width: 250px;
+  align-self: flex-start;
+  cursor: pointer;
+}
+
+.add-list-btn:hover {
+  background: rgba(255, 255, 255, 0.176);
+}
