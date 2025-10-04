@@ -1,7 +1,7 @@
 import { BoardList } from './BoardList.jsx'
 
 export function RecentlyViewed({ boards }) {
-    const recentlyViewed = boards.filter(board => board.isRecentlyViewed)
+    const recentlyViewed = boards.filter(board => board.isLastViewed === true)
 
     if (recentlyViewed.length === 0) {
         return null

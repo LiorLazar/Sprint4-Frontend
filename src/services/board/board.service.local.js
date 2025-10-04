@@ -30,13 +30,15 @@ async function save(board) {
         const boardToSave = {
             _id: board._id,
             title: board.title,
-            isStarred: board.isStarred
+            isStarred: board.isStarred,
+            isLastViewed: board.isLastViewed || null,
         }
         savedBoard = await storageService.put(STORAGE_KEY, boardToSave)
     } else {
         const boardToSave = {
             title: board.title,
             isStarred: board.isStarred || false,
+            isLastViewed: false,
             // Later, owner is set by the backend
             // owner: userService.getLoggedinUser(),
             // msgs: []
@@ -52,6 +54,7 @@ async function _createRandomBoard() {
     const board = {
         title: randomTitle,
         isStarred: false,
+        isLastViewed: false,
     }
     
     // Save the board and return the saved result
