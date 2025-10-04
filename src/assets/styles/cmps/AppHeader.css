@@ -1,6 +1,6 @@
 .app-header {
     font-family: "Atlassian Sans";
-    background-color: var(--header-bckgrd-clr1);
+    background-color: var(--app-header-backgrd-clr1);
     padding: 4px 12px;
 }
 
@@ -31,7 +31,7 @@
         margin-top: 4px;
         margin-left: 4px;
         display: inline-block;
-        color: var(--header-txt-clr1);
+        color: var(--app-header-txt-clr1);
     }
 }
 

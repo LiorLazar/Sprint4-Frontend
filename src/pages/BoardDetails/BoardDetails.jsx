@@ -3,6 +3,7 @@ import { icons } from '../../cmps/SvgIcons.jsx'
 import { BoardList } from '../../cmps/BoardDetails/BoardList.jsx'
 import { boardService } from '../../services/board/board.service.js'
 import './BoardDetails.css'
+import { BoardHeader } from '../../cmps/BoardDetails/BoardHeader.jsx'
 
 export function BoardDetails() {
   const [board, setBoard] = useState(null)
@@ -53,6 +54,7 @@ export function BoardDetails() {
 
   return (
     <section className="board-details">
+      <BoardHeader />
       <div className="lists-container">
         {board.lists.map(list => (
           <BoardList
