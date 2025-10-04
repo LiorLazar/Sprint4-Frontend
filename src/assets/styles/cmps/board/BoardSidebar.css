@@ -1,6 +1,5 @@
 .board-sidebar {
     background-color: #ffffff;
-    border-right: 1px solid #dfe1e6;
     padding: 40px 0px 0px 32px;
     display: flex;
     flex-direction: column;
@@ -17,7 +16,7 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
     color: #172b4d;
-    width: 97%;
+    width: 100%;
     text-align: left;
     display: flex;
     align-items: center;

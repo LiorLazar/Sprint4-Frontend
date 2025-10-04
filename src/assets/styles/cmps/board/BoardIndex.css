@@ -2,12 +2,12 @@
     height: 100vh;
     display: grid;
     grid-template-columns: 288px 1fr;
-    background-color: #f7f8f9;
+    background-color: #ffffff;
 }
 
 .board-main {
     padding: 40px 134px;
-    background-color: #f7f8f9;
+    background-color: #ffffff;
     overflow-y: auto;
 }
 
