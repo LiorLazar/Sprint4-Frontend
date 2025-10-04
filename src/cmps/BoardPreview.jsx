@@ -9,8 +9,8 @@ export function BoardPreview({ board }) {
                         </svg>
                     </button>
                 )}
+                <p className="board-title">{board.title}</p>
             </div>
-            <p className="board-title">{board.title}</p>
         </div>
     )
 }

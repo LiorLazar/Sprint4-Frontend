@@ -13,6 +13,9 @@ export function BoardIndex() {
         loadBoards()
     }, [])
 
+    console.log('Boards:', boards);
+    
+
     return (
         <section className="board-index full">
             <BoardSidebar />

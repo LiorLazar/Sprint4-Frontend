@@ -2,8 +2,6 @@ export const boardService = {
     getById,
 }
 
-
-
 const demoBoard = {
     id: "b101",
     title: "Project Alpha",

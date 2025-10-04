@@ -1,11 +1,12 @@
 /* Board list */
 .board-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(214px, 1fr));
+    display: flex;
+    flex-direction: row;
     gap: 16px;
     margin-bottom: 24px;
-    width: max-content;
+    overflow-x: auto;
     padding: 0;
+    width: 100%;
 }
 
 /* View closed boards button */

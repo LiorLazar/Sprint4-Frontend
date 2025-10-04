@@ -14,14 +14,32 @@
     border-radius: 8px;
     position: relative;
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
+    align-items: flex-end;
+    justify-content: flex-start;
     padding: 0 !important;
-    margin: 0 !important;
+    margin-bottom: 4px;
     border: none;
     outline: none;
     box-sizing: border-box;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.board-preview-content::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: #ffffff;
+    border-radius: 0 0 8px 8px;
+    z-index: 1;
+}
+
+/* Remove the white strip for create new board */
+.board-preview.create-new .board-preview-content::after {
+    display: none;
 }
 
 .board-preview:hover .board-preview-content {
@@ -34,11 +52,14 @@
 
 .board-title {
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 8px 12px !important;
     font-size: 14px;
     font-weight: 600;
     color: #172b4d;
     line-height: 1.4;
+    width: 100%;
+    position: relative;
+    z-index: 2;
 }
 
 .star-btn {
@@ -46,13 +67,18 @@
     border: none;
     color: #fbbf24;
     cursor: pointer;
-    padding: 0 !important;
-    margin: 0 !important;
+    padding: 4px !important;
+    margin: 4px !important;
     border-radius: 3px;
     transition: background-color 0.2s ease;
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Create new board */
