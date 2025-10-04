@@ -63,14 +63,14 @@
 }
 
 .star-btn {
-    background: none;
+    background: rgba(0, 0, 0, 0.3);
     border: none;
-    color: #fbbf24;
+    color: #ffffff;
     cursor: pointer;
     padding: 4px !important;
     margin: 4px !important;
-    border-radius: 3px;
-    transition: background-color 0.2s ease;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
     position: absolute;
     top: 4px;
     right: 4px;
@@ -79,6 +79,32 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    transform: translateX(10px);
+    z-index: 3;
+}
+
+.star-btn:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Show star on board hover */
+.board-preview:hover .star-btn {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Keep star visible when board is starred */
+.board-preview .star-btn.starred {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Star SVG styling */
+.star-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
 }
 
 /* Create new board */

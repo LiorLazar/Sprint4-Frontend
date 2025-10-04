@@ -1,26 +1,37 @@
 import { useNavigate } from "react-router-dom";
-import { boardService } from "../services/board/board.service.local";
+import { icons } from "./SvgIcons.jsx";
+import { updateBoard } from "../store/actions/board.actions.js";
 
 export function BoardPreview({ board }) {
     const navigate = useNavigate();
 
-    function onBoardClick() {
-        board.isLastViewed = true;
-        boardService.save(board);
+    async function onBoardClick() {
+        try {
+            const updatedBoard = { ...board, isLastViewed: true };
+            await updateBoard(updatedBoard);
+            navigate(`/board/${board._id}`);
+        } catch (err) {
+            console.log('Failed to update board:', err);
+            navigate(`/board/${board._id}`);
+        }
+    }
 
-        navigate(`/board/${board._id}`);
+    async function onStarClick(ev) {
+        ev.stopPropagation();
+        try {
+            const updatedBoard = { ...board, isStarred: !board.isStarred };
+            await updateBoard(updatedBoard);
+        } catch (err) {
+            console.log('Failed to toggle star:', err);
+        }
     }
 
     return (
         <div className="board-preview" onClick={onBoardClick}>
             <div className="board-preview-content" style={{ backgroundColor: board.style?.backgroundColor || '#6b778c' }}>
-                {board.isStarred && (
-                    <button className="star-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                        </svg>
-                    </button>
-                )}
+                <button className={`star-btn ${board.isStarred ? 'starred' : ''}`} onClick={onStarClick}>
+                    {board.isStarred ? icons.starFilled : icons.star}
+                </button>
                 <p className="board-title">{board.title}</p>
             </div>
         </div>
