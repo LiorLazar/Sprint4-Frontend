@@ -7,7 +7,7 @@ import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
 import { boardService } from '../services/board/board.service'
 import { userService } from '../services/user'
 
-import { BoardList } from '../cmps/BoardDetails/BoardList'
+import { TaskList } from '../cmps/BoardDetails/TaskList'
 import { BoardFilter } from '../cmps/BoardFilter'
 
 export function BoardIndex() {
