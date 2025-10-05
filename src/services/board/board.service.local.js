@@ -8,6 +8,7 @@ export const boardService = {
     save,
     remove,
     _createRandomBoard,
+    updateRecentlyViewed,
 }
 window.cs = boardService
 
@@ -31,14 +32,14 @@ async function save(board) {
             _id: board._id,
             title: board.title,
             isStarred: board.isStarred,
-            isLastViewed: board.isLastViewed || null,
+            recentlyViewed: board.recentlyViewed || null,
         }
         savedBoard = await storageService.put(STORAGE_KEY, boardToSave)
     } else {
         const boardToSave = {
             title: board.title,
             isStarred: board.isStarred || false,
-            isLastViewed: false,
+            recentlyViewed: null,
             // Later, owner is set by the backend
             // owner: userService.getLoggedinUser(),
             // msgs: []
@@ -48,13 +49,29 @@ async function save(board) {
     return savedBoard
 }
 
+async function updateRecentlyViewed(boardId) {
+    // Get the specific board
+    const board = await getById(boardId)
+    
+    if (board) {
+        // Set the current date/time for this board
+        board.recentlyViewed = new Date().toISOString()
+        
+        // Save the updated board
+        await storageService.put(STORAGE_KEY, board)
+        return board
+    }
+    
+    return null
+}
+
 async function _createRandomBoard() {
     const titles = ['Project Apollo', 'Marketing Plan', 'Sprint Tasks', 'Product Launch', 'Event Planning']
     const randomTitle = titles[Math.floor(Math.random() * titles.length)]
     const board = {
         title: randomTitle,
         isStarred: false,
-        isLastViewed: false,
+        recentlyViewed: null,
     }
     
     // Save the board and return the saved result

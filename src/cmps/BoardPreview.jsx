@@ -1,17 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import { icons } from "./SvgIcons.jsx";
-import { updateBoard } from "../store/actions/board.actions.js";
+import { updateBoard, updateRecentlyViewed } from "../store/actions/board.actions.js";
 
 export function BoardPreview({ board }) {
     const navigate = useNavigate();
 
     async function onBoardClick() {
         try {
-            const updatedBoard = { ...board, isLastViewed: true };
-            await updateBoard(updatedBoard);
+            await updateRecentlyViewed(board._id);
             navigate(`/board/${board._id}`);
         } catch (err) {
-            console.log('Failed to update board:', err);
+            console.log('Failed to update recently viewed:', err);
             navigate(`/board/${board._id}`);
         }
     }

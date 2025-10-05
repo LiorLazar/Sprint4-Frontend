@@ -81,6 +81,17 @@ export async function createRandomBoard() {
     }
 }
 
+export async function updateRecentlyViewed(boardId) {
+    try {
+        const updatedBoard = await boardService.updateRecentlyViewed(boardId)
+        store.dispatch(getCmdUpdateBoard(updatedBoard))
+        return updatedBoard
+    } catch (err) {
+        console.log('Cannot update recently viewed', err)
+        throw err
+    }
+}
+
 // Command Creators:
 function getCmdSetBoards(boards) {
     return {
