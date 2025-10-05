@@ -1,0 +1,40 @@
+.board-header-container {
+    display: inline-flex;
+    position: relative;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    padding: 0.75rem, 12px;
+    gap: 0.25rem, 4px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--app-header-text-clr1);
+    background-color: var(--header-bckgrd-clr1);
+
+    >svg {
+        font-style: 14px;
+        line-height: 14px;
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+    }
+
+    >.collaborators {
+        margin-inline-start: 100rem;
+    }
+}
+
+.board-name {
+    font-size: 16px;
+    line-height: 32px;
+    font-weight: 653;
+    width: 147.188px;
+    height: 32px;
+    margin: 2px 12px;
+    height: 100%;
+    margin-bottom: 0.75rem 12px;
+    padding: 0rem,
+        0.75rem;
+    color: white;
+}

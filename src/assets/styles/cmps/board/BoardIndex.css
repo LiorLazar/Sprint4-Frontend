@@ -1,0 +1,91 @@
+.board-index {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 288px 1fr;
+    background-color: #ffffff;
+}
+
+.board-main {
+    padding: 40px 134px;
+    background-color: #ffffff;
+    overflow-y: auto;
+}
+
+.board-main h1 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #5e6c84;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.board-main h1:first-child {
+    margin-top: 0;
+}
+
+/* Add some spacing between sections */
+.board-main h1:not(:first-child) {
+    margin-top: 40px;
+}
+
+/* Board sections */
+.board-section {
+    margin-bottom: 48px;
+}
+
+.board-section:last-child {
+    margin-bottom: 0;
+}
+
+/* Workspace header */
+.workspace-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.workspace-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.workspace-info .workspace-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+}
+
+.workspace-info span {
+    font-size: 20px;
+    font-weight: 600;
+    color: #172b4d;
+}
+
+.workspace-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.workspace-btn {
+    background-color: #f4f5f7;
+    border: none;
+    border-radius: 3px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: #172b4d;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+}
+
+.workspace-btn:hover {
+    background-color: #e4e6ea;
+}

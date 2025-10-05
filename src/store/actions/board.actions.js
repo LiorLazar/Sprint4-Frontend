@@ -1,10 +1,15 @@
 import { store } from '../store'
 import { ADD_BOARD, REMOVE_BOARD, SET_BOARDS, SET_BOARD, UPDATE_BOARD, ADD_BOARD_MSG } from '../reducers/board.reducer'
-import { boardService } from '../../services/board/board.service'
+import { boardService } from '../../services/board/board.service.local.js'
+
 export async function loadBoards(filterBy) {
     try {
-        const boards = await boardService.query(filterBy)
+        // const boards = await boardService.query(filterBy)
+        const boards = await boardService.query()
+
         store.dispatch(getCmdSetBoards(boards))
+
+        return boards
     } catch (err) {
         console.log('Cannot load boards', err)
         throw err
@@ -65,6 +70,28 @@ export async function addBoardMsg(boardId, txt) {
     }
 }
 
+export async function createRandomBoard() {
+    try {
+        const savedBoard = await boardService._createRandomBoard()
+        store.dispatch(getCmdAddBoard(savedBoard))
+        return savedBoard
+    } catch (err) {
+        console.log('Cannot create random board', err)
+        throw err
+    }
+}
+
+export async function updateRecentlyViewed(boardId) {
+    try {
+        const updatedBoard = await boardService.updateRecentlyViewed(boardId)
+        store.dispatch(getCmdUpdateBoard(updatedBoard))
+        return updatedBoard
+    } catch (err) {
+        console.log('Cannot update recently viewed', err)
+        throw err
+    }
+}
+
 // Command Creators:
 function getCmdSetBoards(boards) {
     return {
@@ -106,10 +133,11 @@ function getCmdAddBoardMsg(msg) {
 // unitTestActions()
 async function unitTestActions() {
     await loadBoards()
-    await addBoard(boardService.getEmptyBoard())
+    await addBoard({ title: 'New Board', isStarred: false })
     await updateBoard({
         _id: 'm1oC7',
-        vendor: 'Board-Good',
+        title: 'Updated Board Title',
+        isStarred: true
     })
     await removeBoard('m1oC7')
     // TODO unit test addBoardMsg
