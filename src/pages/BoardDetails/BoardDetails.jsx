@@ -3,7 +3,6 @@ import { TaskList } from '../../cmps/BoardDetails/TaskList.jsx'
 import { boardService } from '../../services/board/board.service.js'
 import { utilService } from '../../services/util.service.js'
 import { icons } from '../../cmps/SvgIcons.jsx'
-import './BoardDetails.css'
 import { BoardHeader } from '../../cmps/BoardDetails/BoardHeader.jsx'
 
 export function BoardDetails() {

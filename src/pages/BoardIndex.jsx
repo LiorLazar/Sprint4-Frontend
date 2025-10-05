@@ -6,14 +6,13 @@ import { RecentlyViewed } from '../cmps/RecentlyViewed.jsx'
 import { Workspace } from '../cmps/Workspace.jsx'
 import { loadBoards } from '../store/actions/board.actions.js'
 
-import { loadBoards, addBoard, updateBoard, removeBoard, addBoardMsg } from '../store/actions/board.actions'
 
-import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
-import { boardService } from '../services/board/board.service'
-import { userService } from '../services/user'
+// import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
+// import { boardService } from '../services/board/board.service'
+// import { userService } from '../services/user'
 
-import { TaskList } from '../cmps/BoardDetails/TaskList'
-import { BoardFilter } from '../cmps/BoardFilter'
+// import { TaskList } from '../cmps/BoardDetails/TaskList'
+// import { BoardFilter } from '../cmps/BoardFilter'
 
 export function BoardIndex() {
     const boards = useSelector(storeState => storeState.boardModule.boards)
