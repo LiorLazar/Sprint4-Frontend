@@ -29,7 +29,6 @@ async function getById(boardId) {
 }
 
 async function save(board) {
-    // אם יש _id נעדכן, אם אין ניצור חדש
     if (board._id) return storageService.put(STORAGE_KEY, board)
     else return storageService.post(STORAGE_KEY, board)
 }
@@ -38,7 +37,6 @@ async function remove(boardId) {
     return storageService.remove(STORAGE_KEY, boardId)
 }
 
-// עוזרים ליצירת לוחות חדשים
 function getEmptyBoard() {
     return {
         title: 'New Board',
@@ -62,7 +60,6 @@ function getEmptyTask() {
     }
 }
 
-// דמו ברירת מחדל
 function createDemoBoard() {
     return {
         title: 'Demo Board',
