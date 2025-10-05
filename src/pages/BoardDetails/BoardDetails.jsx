@@ -1,71 +1,127 @@
-import { useEffect, useState } from 'react'
-import { icons } from '../../cmps/SvgIcons.jsx'
-import { BoardList } from '../../cmps/BoardDetails/BoardList.jsx'
+import { useEffect, useRef, useState } from 'react'
+import { TaskList } from '../../cmps/BoardDetails/TaskList.jsx'
 import { boardService } from '../../services/board/board.service.js'
+import { utilService } from '../../services/util.service.js'
+import { icons } from '../../cmps/SvgIcons.jsx'
 import './BoardDetails.css'
 
 export function BoardDetails() {
   const [board, setBoard] = useState(null)
+  const [isAddingList, setIsAddingList] = useState(false)
+  const [newListTitle, setNewListTitle] = useState('')
+  const addListRef = useRef(null)
 
   useEffect(() => {
-    async function loadBoard() {
-      try {
-        const board = await boardService.getById('b101')
-        setBoard(board)
-      } catch (err) {
-        console.error("Failed to load board", err)
-      }
-    }
-
     loadBoard()
   }, [])
 
-  if (!board) return <div>Loading...</div>
+  async function loadBoard() {
+    const boards = await boardService.query()
+    setBoard(boards[0])
+  }
 
-  function onAddList() {
-    const newList = {
-      id: 'l' + Date.now(),
-      title: 'New List',
-      tasks: []
+  useEffect(() => {
+    function handleClickOutside(ev) {
+      if (!isAddingList) return
+      if (addListRef.current && !addListRef.current.contains(ev.target)) {
+        setIsAddingList(false)
+        setNewListTitle('')
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isAddingList])
+
+  async function onAddListConfirm() {
+    const title = newListTitle.trim()
+    if (!title) {
+      setIsAddingList(false)
+      setNewListTitle('')
+      return
     }
 
-    setBoard(prev => ({
-      ...prev,
-      lists: [...prev.lists, newList]
-    }))
+    const newList = { id: utilService.makeId(), title, tasks: [] }
+    const updatedBoard = { ...board, lists: [...board.lists, newList] }
+
+    setBoard(updatedBoard)
+    setNewListTitle('')
+    boardService.save(updatedBoard)
+
+
+  }
+
+  function onRenameList(listId, newTitle) {
+    const trimmed = newTitle.trim()
+    if (!trimmed) return onCancelEmptyList(listId)
+    const updatedLists = board.lists.map(list =>
+      list.id === listId ? { ...list, title: trimmed } : list
+    )
+    const updatedBoard = { ...board, lists: updatedLists }
+    setBoard(updatedBoard)
+    boardService.save(updatedBoard)
   }
 
   function onAddCard(listId, title) {
-    const newTask = {
-      id: 't' + Date.now(),
-      title
-    }
-
-    setBoard(prev => ({
-      ...prev,
-      lists: prev.lists.map(list =>
-        list.id === listId
-          ? { ...list, tasks: [...list.tasks, newTask] }
-          : list
-      )
-    }))
+    const t = title.trim()
+    if (!t) return
+    const newTask = { id: utilService.makeId(), title: t, createdAt: Date.now() }
+    const updatedLists = board.lists.map(list =>
+      list.id === listId ? { ...list, tasks: [...list.tasks, newTask] } : list
+    )
+    const updatedBoard = { ...board, lists: updatedLists }
+    setBoard(updatedBoard)
+    boardService.save(updatedBoard)
   }
+
+  function onCancelEmptyList(listId) {
+    const list = board.lists.find(l => l.id === listId)
+    if (!list || list.tasks.length > 0) return
+    const updatedLists = board.lists.filter(l => l.id !== listId)
+    const updatedBoard = { ...board, lists: updatedLists }
+    setBoard(updatedBoard)
+    boardService.save(updatedBoard)
+  }
+
+  if (!board) return <div>Loading board...</div>
 
   return (
     <section className="board-details">
       <div className="lists-container">
         {board.lists.map(list => (
-          <BoardList
+          <TaskList
             key={list.id}
             list={list}
             onAddCard={onAddCard}
-            onListAction={(id) => console.log("List actions for:", id)}
+            onCancelEmptyList={onCancelEmptyList}
+            onRenameList={onRenameList}
           />
         ))}
 
-        <button className="add-list-btn" onClick={onAddList}>
-          {icons.addCard} Add another list
-        </button>
+        {!isAddingList ? (
+          <button className="add-list-btn" onClick={() => setIsAddingList(true)}>
+            {icons.addCard} Add another list
+          </button>
+        ) : (
+          <div className="tasks-list" ref={addListRef}>
+            <input
+              type="text"
+              className="list-title-input"
+              placeholder="Enter list name..."
+              value={newListTitle}
+              onChange={ev => setNewListTitle(ev.target.value)}
+              onKeyDown={ev => ev.key === 'Enter' && onAddListConfirm()}
+              autoFocus
+            />
+            <div className="add-card-actions">
+              <button className="add-card-btn" onClick={onAddListConfirm}>
+                Add list
+              </button>
+              <button className="cancel-btn" onClick={() => setIsAddingList(false)}>
+                {icons.xButton}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )
