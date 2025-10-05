@@ -2,7 +2,6 @@
 button {
 	padding: .5em .8em;
 	border: 0;
-	margin: .5em;
 	cursor: pointer;
 	background-color: var(--clr1);
 	color: whitesmoke;

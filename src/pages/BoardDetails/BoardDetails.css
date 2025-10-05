@@ -17,27 +17,28 @@
   padding: 1rem;
 }
 
-.board-list {
+.tasks-list {
   background: #f1f2f4;
   border-radius: 14px;
   padding: 8px;
-  width: 270px;
+  width: 256px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   max-height: calc(100vh - 150px);
+    gap: 12px;   
 }
 
-.board-list h3 {
+.tasks-list h3 {
   font-size: 14px;
   font-weight: 600;
   color: #172b4d;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-left: 14px;
+  padding-left: 16px;
   margin: 0;
-  padding-bottom: 4px;
+  height: 31px;
 }
 
 .list-actions-btn {
@@ -45,13 +46,22 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 6px;
-  border-radius: 8px;
-  transition: background 0.2s;
+  font-size: 14px;
+  border-radius: 6px;
 }
 
 .list-actions-btn:hover {
   background: rgba(0, 0, 0, 0.15);
+}
+
+.list-title-input {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 2.5px solid #2c81d6e7;
+  border-radius: 6px;
+  box-sizing: border-box;
+  outline: none;
 }
 
 /* ========== TASKS ========== */
@@ -92,9 +102,9 @@
 
 .edit-task-btn {
   position: absolute;
-  bottom: 0px;
-  right: -4px;
-  width: 24px;
+  bottom: 8px;
+  right: 4px;
+  width: 24px;              
   height: 24px;
   display: flex;
   align-items: center;
@@ -102,10 +112,10 @@
   background: transparent;
   border: none;
   border-radius: 50%;
-  color: #000000;
-  font-size: 16px;
+  color: #000;
   padding: 0;
   opacity: 0;
+  z-index: 1;
 }
 
 .task-preview:hover .edit-task-btn {
@@ -113,46 +123,52 @@
 }
 
 .edit-task-btn:hover {
-  background: rgba(0, 0, 0, 0.056);
+  background: rgba(0, 0, 0, 0.053);
 }
 
 .edit-task-btn svg {
-  width: 14px;
+  width: 14px;             
   height: 14px;
   fill: currentColor;
   display: block;
+  pointer-events: none;
 }
 
+
 /* ========== BUTTONS ========== */
-.board-list > button {
+.tasks-list > button {
   color: #505258;
   font-size: 14px;
+  font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
   border-radius: 8px;
   background: transparent;
   text-align: left;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.board-list > button:hover {
-  background: rgba(9, 30, 66, 0.08);
+.tasks-list > button:hover {
+  background: rgba(0, 0, 0, 0.12);
   color: #172b4d;
 }
-
 .add-list-btn {
   background: #a0a8ab;
   color: #fffefd;
-  padding: 10px;
-  font-weight: 400;
+  padding: 10px 14px;
+  font-weight: 600;
   font-size: 14px;
+  font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
   border-radius: 14px;
   min-width: 250px;
-  align-self: flex-start;
   cursor: pointer;
+  display: flex;             
+  align-items: center;     
+  gap: 6px;                  
 }
+
 
 .add-list-btn:hover {
   background: rgba(255, 255, 255, 0.176);
@@ -162,8 +178,6 @@
 .add-card-form {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 4px;
 }
 
 .add-card-form .task-preview {
@@ -175,8 +189,8 @@
 
 .add-card-actions {
   display: flex;
-  gap: 6px;
   align-items: center;
+  margin-top: 2px;
 }
 
 .add-card-btn {
@@ -187,9 +201,9 @@
   font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif; 
   border: none;
   border-radius: 4px;
-  padding: 6px 12px;
+ width: 81px;
+ height: 32px;
   cursor: pointer;
-  transition: background 0.2s;
 }
 
 .add-card-btn:hover {
@@ -200,11 +214,13 @@
   background: transparent;
   border: none;
   color: #123064;
-  font-size: 18px;
   cursor: pointer;
-  padding: 4px;
+  padding: 4px 6px;
+ margin-left: 4px;
 }
 
 .cancel-btn:hover {
-  color: #172b4d;
+ background-color: #0000001d;
+ border-radius: 4px;
 }
+

@@ -1,18 +1,18 @@
+html, body, #root { height: 100%; }
+body { margin: 0; background: #838c91; }
+
 * {
     box-sizing: border-box;
 }
    
 body {
     margin: 0 auto;
-    
   font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui",
     "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;  
       color:#838c91;
 }
 
-/* h1, h2, h3, h4, h5, h6 {
-    margin: 0 0 0.6em;
-} */
+
 
 p {
     margin: 0 0 1em;
@@ -43,3 +43,6 @@ object {
   max-width: 100%;
   display: block;
 }
+
+
+
