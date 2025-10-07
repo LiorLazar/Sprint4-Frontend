@@ -33,6 +33,7 @@ async function save(board) {
             title: board.title,
             isStarred: board.isStarred,
             recentlyViewed: board.recentlyViewed || null,
+            style: board.style || { backgroundColor: '#0079bf' },
         }
         savedBoard = await storageService.put(STORAGE_KEY, boardToSave)
     } else {
@@ -40,6 +41,7 @@ async function save(board) {
             title: board.title,
             isStarred: board.isStarred || false,
             recentlyViewed: null,
+            style: board.style || { backgroundColor: '#0079bf' },
             // Later, owner is set by the backend
             // owner: userService.getLoggedinUser(),
             // msgs: []
@@ -67,11 +69,16 @@ async function updateRecentlyViewed(boardId) {
 
 async function _createRandomBoard() {
     const titles = ['Project Apollo', 'Marketing Plan', 'Sprint Tasks', 'Product Launch', 'Event Planning']
+    const backgroundColors = ['#0079bf', '#d29034', '#519839', '#b04632', '#89609e', '#cd5a91', '#4bbf6b', '#00aecc']
+    
     const randomTitle = titles[Math.floor(Math.random() * titles.length)]
+    const randomColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)]
+    
     const board = {
         title: randomTitle,
         isStarred: false,
         recentlyViewed: null,
+        style: { backgroundColor: randomColor },
     }
     
     // Save the board and return the saved result
