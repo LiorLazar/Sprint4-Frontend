@@ -1,4 +1,5 @@
 import { BoardList } from './BoardList.jsx'
+import { icons } from './SvgIcons.jsx'
 
 export function StarredBoards({ boards }) {
     const starredBoards = boards.filter(board => board.isStarred)
@@ -10,9 +11,8 @@ export function StarredBoards({ boards }) {
     return (
         <section className="board-section">
             <h1>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                </svg>
+                <span className='star-svg'>{icons.star2}</span>
+                
                 Starred boards
             </h1>
             <BoardList boards={starredBoards} />

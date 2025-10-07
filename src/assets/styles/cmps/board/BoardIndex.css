@@ -14,7 +14,7 @@
 .board-main h1 {
     font-size: 16px;
     font-weight: 600;
-    color: #5e6c84;
+    color: #000000;
     margin-bottom: 16px;
     display: flex;
     align-items: center;
@@ -89,4 +89,11 @@
 
 .workspace-btn:hover {
     background-color: #e4e6ea;
+}
+
+.star-svg, .clock-svg {
+    width: 22px;
+    height: 22px;
+    align-items: center;
+    color: black;
 }
