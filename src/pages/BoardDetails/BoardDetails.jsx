@@ -92,11 +92,11 @@ export function BoardDetails() {
           <TaskList
             key={list.id}
             list={list}
-            onAddCard={onAddCard}
             onCancelEmptyList={onCancelEmptyList}
             onRenameList={onRenameList}
-          />
-        ))}
+            onAddCard={onAddCard}
+            />
+          ))}
 
         {!isAddingList ? (
           <button className="add-list-btn" onClick={() => setIsAddingList(true)}>

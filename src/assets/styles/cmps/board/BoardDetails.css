@@ -17,8 +17,17 @@
   padding: 1rem;
 }
 
-.board-list {
-  /* background: #f1f2f4; */
+.task-preview-add-input{
+  width: 100%;
+  padding: 10px ;
+  padding-bottom: 28px;
+  font-size: 14px;
+  border: 2.5px solid #2c81d6e7;
+  border-radius: 10px;
+  box-sizing: border-box;
+  outline: none;
+  height: 56px;
+  font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
 }
 .tasks-list {
   background: #f1f2f4;
@@ -28,8 +37,8 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 150px);
-    gap: 12px;   
+  max-height: 424px;
+  gap: 2px;   
 }
 
 .tasks-list h3 {
@@ -42,6 +51,7 @@
   padding-left: 16px;
   margin: 0;
   height: 31px;
+  margin-bottom: 12px;
 }
 
 .list-actions-btn {
@@ -71,8 +81,11 @@
 .task-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 3px;
   flex-grow: 1;
+    overflow-y: auto;       
+  max-height: 424px;       
+  padding-right: 4px; 
 }
 
 .task-preview {
@@ -87,12 +100,13 @@
   font-size: 14px;
   color: #172b4d;
   cursor: pointer;
-  transition: 0.2s, border-color 0.2s, box-shadow 0.2s;
   margin-bottom: 4px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  overflow-wrap: anywhere;
 }
+
 
 .task-preview:hover {
   border-color: #2c81d6e7;
@@ -213,6 +227,9 @@
   background-color: #1e6bb8;
 }
 
+.add-card-actions{
+  margin-top: 8px;
+}
 .cancel-btn {
   background: transparent;
   border: none;
@@ -227,3 +244,40 @@
  border-radius: 4px;
 }
 
+.add-task-btn{
+margin-top: 4px;
+max-width: 244px;
+}
+
+/* scrollbar styles  */
+
+.task-list {
+  overflow-y: auto;
+  max-height: 300px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.08);
+}
+
+.task-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.task-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  border: 3px solid rgba(0, 0, 0, 0.08);
+  background-clip: content-box;
+}
+
+.task-list::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.task-list::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0.08);
+}

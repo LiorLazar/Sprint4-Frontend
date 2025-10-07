@@ -72,8 +72,6 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList }) {
             autoFocus
           />
           <div className="add-card-actions">
-            <button className="add-card-btn" onClick={handleSaveTitle}>Save</button>
-            <button className="cancel-btn" onClick={handleCancelTitle}>{icons.xButton}</button>
           </div>
         </div>
       ) : (
@@ -94,7 +92,7 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList }) {
           <div className="add-card-form">
             <input
               type="text"
-              className="task-preview"
+              className="task-preview-add-input"
               placeholder="Enter a title or paste a link"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
