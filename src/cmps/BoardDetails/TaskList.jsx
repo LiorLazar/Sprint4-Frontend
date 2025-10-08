@@ -26,8 +26,8 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList }) {
         setTitleEdit(list.title || "")
       }
     }
-    document.addEventListener('mousedown', onDocMouseDown, true)
-    return () => document.removeEventListener('mousedown', onDocMouseDown, true)
+    document.addEventListener("mousedown", onDocMouseDown, true)
+    return () => document.removeEventListener("mousedown", onDocMouseDown, true)
   }, [isAdding, isEditingTitle, list.id, (list.tasks || []).length, titleEdit, onCancelEmptyList, list.title])
 
   function handleAddCard() {
@@ -58,8 +58,15 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList }) {
     setTitleEdit(list.title || "")
   }
 
+  // צבע רקע של הרשימה מוגדר לפי ה־style שבדאטה
+  const listBg = list.style?.backgroundColor || "#f1f2f4"
+
   return (
-    <div className="tasks-list" ref={listRef}>
+    <div
+      className="tasks-list"
+      ref={listRef}
+      style={{ backgroundColor: listBg }}
+    >
       {isEditingTitle ? (
         <div className="list-title-editor">
           <input
@@ -71,8 +78,6 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList }) {
             onKeyDown={(e) => e.key === "Enter" && handleSaveTitle()}
             autoFocus
           />
-          <div className="add-card-actions">
-          </div>
         </div>
       ) : (
         <h3 onClick={() => setIsEditingTitle(true)} title="Click to edit">
