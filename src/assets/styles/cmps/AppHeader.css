@@ -4,14 +4,13 @@
     padding: 4px 12px;
 }
 
-.icons{
+.icons {
     display: flex;
     align-items: center;
 }
- 
+
 
 .application-switcher-icon {
-
     >svg {
         display: inline-block;
         box-sizing: content-box;
@@ -25,19 +24,19 @@
 
 .logo {
     >svg {
+        border-radius: 0.25rem;
         font-size: 14px;
         line-height: 20px;
-        display: inline-block;
-        color: var(--header-txt-clr1);
-        box-sizing: border-box;
-        width: auto;
+        width: 75px;
+        overflow: visible;
         height: 32px;
         box-sizing: border-box;
         padding: 4px 8px;
         margin-top: 4px;
         margin-left: 4px;
         display: inline-block;
-        color: var(--app-header-txt-clr1);
+        color: var(--header-logo-clr1);
+        cursor: pointer;
     }
 }
 
@@ -46,7 +45,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* margin-inline-start: 115px; */
+    margin-inline-start: calc(25.6rem - 4px);
 
     >svg {
         flex: 1;
@@ -82,12 +81,12 @@
 
     >button {
         width: fit-content;
-        font-family: "" Atlassian Sans", ui-sans-serif, -apple-system, " system-ui", " Segoe UI", Ubuntu, " Helvetica Neue", sans-serif";
+        font-family: "Atlassian Sans", ui-sans-serif, -apple-system, system-ui, "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
         height: 32px;
         background-color: #666666;
         border-radius: 5px;
         font-size: 14px;
         color: white;
-        margin-inline-start: 8px;
+        margin-left: 8px;
     }
 }
