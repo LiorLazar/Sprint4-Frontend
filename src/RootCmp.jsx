@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router'
 
 import { HomePage } from './pages/HomePage'
 import { AboutUs, AboutTeam, AboutVision } from './pages/AboutUs'
-import {BoardIndex } from './pages/BoardIndex.jsx'
+import { BoardIndex } from './pages/BoardIndex.jsx'
 import { ReviewIndex } from './pages/ReviewIndex.jsx'
 import { ChatApp } from './pages/Chat.jsx'
 import { AdminIndex } from './pages/AdminIndex.jsx'
@@ -12,7 +12,6 @@ import { BoardDetails } from './pages/BoardDetails/BoardDetails.jsx'
 import { UserDetails } from './pages/UserDetails'
 
 import { AppHeader } from './cmps/AppHeader'
-import { AppFooter } from './cmps/AppFooter'
 import { UserMsg } from './cmps/UserMsg.jsx'
 import { LoginSignup, Login, Signup } from './pages/LoginSignup.jsx'
 
@@ -42,7 +41,6 @@ export function RootCmp() {
                     </Route>
                 </Routes>
             </main>
-            <AppFooter />
         </div>
     )
 }
