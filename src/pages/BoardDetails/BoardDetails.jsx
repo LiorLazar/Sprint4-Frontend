@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { TaskList } from '../../cmps/BoardDetails/TaskList.jsx'
-import { boardService } from '../../services/board/board.service.js'
+import { boardService } from '../../services/board/board.service.local.js'
 import { utilService } from '../../services/util.service.js'
 import { icons } from '../../cmps/SvgIcons.jsx'
 import { BoardHeader } from '../../cmps/BoardDetails/BoardHeader.jsx'
