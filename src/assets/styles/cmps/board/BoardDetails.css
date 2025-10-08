@@ -59,8 +59,8 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 14px;
   border-radius: 6px;
+  
 }
 
 .list-actions-btn:hover {
