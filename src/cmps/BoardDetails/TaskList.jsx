@@ -8,6 +8,7 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList }) {
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [titleEdit, setTitleEdit] = useState(list.title || "")
   const listRef = useRef(null)
+  const addFormRef = useRef(null)
 
   useEffect(() => {
     function onDocMouseDown(ev) {
@@ -34,8 +35,12 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList }) {
     const t = newTitle.trim()
     if (!t) return
     onAddCard(list.id, t)
-    setNewTitle("")
-    setIsAdding(false)
+    setNewTitle("") // ננקה את השדה
+
+    // נגלול בעדינות כך שכל אזור ההוספה (כולל הכפתורים) יהיה גלוי
+    setTimeout(() => {
+      addFormRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
+    }, 50)
   }
 
   function handleCancelCard() {
@@ -53,12 +58,6 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList }) {
     setIsEditingTitle(false)
   }
 
-  function handleCancelTitle() {
-    setIsEditingTitle(false)
-    setTitleEdit(list.title || "")
-  }
-
-  // צבע רקע של הרשימה מוגדר לפי ה־style שבדאטה
   const listBg = list.style?.backgroundColor || "#f1f2f4"
 
   return (
@@ -94,19 +93,23 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList }) {
         ))}
 
         {isAdding && (
-          <div className="add-card-form">
+          <div className="add-card-form" ref={addFormRef} tabIndex={-1}>
             <input
               type="text"
               className="task-preview-add-input"
-              placeholder="Enter a title or paste a link"
+              placeholder="Enter a title for this card..."
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleAddCard()}
               autoFocus
             />
             <div className="add-card-actions">
-              <button className="add-card-btn" onClick={handleAddCard}>Add card</button>
-              <button className="cancel-btn" onClick={handleCancelCard}>{icons.xButton}</button>
+              <button className="add-card-btn" onClick={handleAddCard}>
+                Add card
+              </button>
+              <button className="cancel-btn" onClick={handleCancelCard}>
+                {icons.xButton}
+              </button>
             </div>
           </div>
         )}

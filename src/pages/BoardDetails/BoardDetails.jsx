@@ -10,6 +10,7 @@ export function BoardDetails() {
   const [isAddingList, setIsAddingList] = useState(false)
   const [newListTitle, setNewListTitle] = useState('')
   const addListRef = useRef(null)
+  const listsContainerRef = useRef(null)
 
   useEffect(() => {
     loadBoard()
@@ -44,10 +45,18 @@ export function BoardDetails() {
     const updatedBoard = { ...board, lists: [...board.lists, newList] }
 
     setBoard(updatedBoard)
-    setNewListTitle('')
     boardService.save(updatedBoard)
-
-
+    setNewListTitle('')
+    setIsAddingList(true)
+    setTimeout(() => {
+      listsContainerRef.current?.lastElementChild?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'end',
+      })
+      const input = addListRef.current?.querySelector('input')
+      input?.focus()
+    }, 100)
   }
 
   function onRenameList(listId, newTitle) {
@@ -87,7 +96,7 @@ export function BoardDetails() {
   return (
     <section className="board-details">
       <BoardHeader />
-      <div className="lists-container">
+      <div className="lists-container" ref={listsContainerRef}>
         {board.lists.map(list => (
           <TaskList
             key={list.id}
@@ -95,15 +104,11 @@ export function BoardDetails() {
             onCancelEmptyList={onCancelEmptyList}
             onRenameList={onRenameList}
             onAddCard={onAddCard}
-            />
-          ))}
+          />
+        ))}
 
-        {!isAddingList ? (
-          <button className="add-list-btn" onClick={() => setIsAddingList(true)}>
-            {icons.addCard} Add another list
-          </button>
-        ) : (
-          <div className="tasks-list" ref={addListRef}>
+        {isAddingList ? (
+          <div className="tasks-list add-list-form" ref={addListRef}>
             <input
               type="text"
               className="list-title-input"
@@ -117,11 +122,21 @@ export function BoardDetails() {
               <button className="add-card-btn" onClick={onAddListConfirm}>
                 Add list
               </button>
-              <button className="cancel-btn" onClick={() => setIsAddingList(false)}>
+              <button
+                className="cancel-btn"
+                onClick={() => setIsAddingList(false)}
+              >
                 {icons.xButton}
               </button>
             </div>
           </div>
+        ) : (
+          <button
+            className="add-list-btn"
+            onClick={() => setIsAddingList(true)}
+          >
+            {icons.addCard} Add another list
+          </button>
         )}
       </div>
     </section>
