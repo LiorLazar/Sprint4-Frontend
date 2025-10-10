@@ -31,6 +31,7 @@ export function RootCmp() {
                     </Route>
                     <Route path="board" element={<BoardIndex />} />
                     <Route path="board/:boardId" element={<BoardDetails />} />
+                    <Route path="board/:boardId/card/:taskId" element={<BoardDetails />} />
                     <Route path="user/:id" element={<UserDetails />} />
                     <Route path="review" element={<ReviewIndex />} />
                     <Route path="chat" element={<ChatApp />} />

@@ -1,20 +1,84 @@
 import { useEffect, useRef, useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { TaskList } from '../../cmps/BoardDetails/TaskList.jsx'
+import { TaskDetails } from '../../cmps/BoardDetails/TaskDetails.jsx'
 import { boardService } from '../../services/board/board.service.local.js'
 import { utilService } from '../../services/util.service.js'
 import { icons } from '../../cmps/SvgIcons.jsx'
 import { BoardHeader } from '../../cmps/BoardDetails/BoardHeader.jsx'
 
 export function BoardDetails() {
+  const { boardId, taskId } = useParams()
+  const navigate = useNavigate()
   const [board, setBoard] = useState(null)
+  const [selectedTask, setSelectedTask] = useState(null)
+  const [isTaskDetailsOpen, setIsTaskDetailsOpen] = useState(false)
   const [isAddingList, setIsAddingList] = useState(false)
   const [newListTitle, setNewListTitle] = useState('')
   const addListRef = useRef(null)
   const listsContainerRef = useRef(null)
 
+  function onTaskClick(task) {
+    setSelectedTask(task)
+    setIsTaskDetailsOpen(true)
+    navigate(`/board/${boardId}/card/${task.id}`)
+  }
+
+  function onCloseTaskDetails() {
+    setSelectedTask(null)
+    setIsTaskDetailsOpen(false)
+    navigate(`/board/${boardId}`)
+  }
+
+  function onSaveTask(updatedTask) {
+    // Update the task in the board state
+    const updatedLists = board.lists.map(list => ({
+      ...list,
+      tasks: list.tasks.map(task =>
+        task.id === updatedTask.id ? updatedTask : task
+      )
+    }))
+    const updatedBoard = { ...board, lists: updatedLists }
+    setBoard(updatedBoard)
+    boardService.save(updatedBoard)
+  }
+
+  function onDeleteTask(taskId) {
+    const updatedLists = board.lists.map(list => ({
+      ...list,
+      tasks: list.tasks.filter(task => task.id !== taskId)
+    }))
+    const updatedBoard = { ...board, lists: updatedLists }
+    setBoard(updatedBoard)
+    boardService.save(updatedBoard)
+    onCloseTaskDetails()
+  }
+
   useEffect(() => {
     loadBoard()
-  }, [])
+  }, [boardId])
+
+  // Handle task URL parameter
+  useEffect(() => {
+    if (board && taskId) {
+      // Find the task in the board
+      const task = board.lists
+        .flatMap(list => list.tasks)
+        .find(task => task.id === taskId)
+
+      if (task) {
+        setSelectedTask(task)
+        setIsTaskDetailsOpen(true)
+      } else {
+        // Task not found, redirect to board
+        navigate(`/board/${boardId}`)
+      }
+    } else if (board && !taskId) {
+      // No task in URL, close modal if open
+      setSelectedTask(null)
+      setIsTaskDetailsOpen(false)
+    }
+  }, [board, taskId, boardId, navigate])
 
   async function loadBoard() {
     const boards = await boardService.query()
@@ -104,6 +168,7 @@ export function BoardDetails() {
             onCancelEmptyList={onCancelEmptyList}
             onRenameList={onRenameList}
             onAddCard={onAddCard}
+            onTaskClick={onTaskClick}
           />
         ))}
 
@@ -139,6 +204,14 @@ export function BoardDetails() {
           </button>
         )}
       </div>
+
+      <TaskDetails
+        task={selectedTask}
+        isOpen={isTaskDetailsOpen}
+        onClose={onCloseTaskDetails}
+        onSave={onSaveTask}
+        onDelete={onDeleteTask}
+      />
     </section>
   )
 }

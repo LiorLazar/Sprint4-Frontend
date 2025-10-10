@@ -24,6 +24,7 @@
 @import "cmps/board/BoardSidebar.css";
 @import "cmps/board/BoardHeader.css";
 @import "cmps/board/BoardDetails.css";
+@import 'cmps/board/TaskDetails.css';
 
 @import "cmps/car/CarList";
 @import "cmps/car/CarPreview";

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { icons } from "../SvgIcons.jsx"
 import { TaskPreview } from "./TaskPreview.jsx"
 
-export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList }) {
+export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList, onTaskClick }) {
   const [isAdding, setIsAdding] = useState(false)
   const [newTitle, setNewTitle] = useState("")
   const [isEditingTitle, setIsEditingTitle] = useState(false)
@@ -89,7 +89,11 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList }) {
 
       <div className="task-list">
         {(list.tasks || []).map((task, idx) => (
-          <TaskPreview key={task.id || `t_${idx}`} task={task} />
+          <TaskPreview 
+            key={task.id || `t_${idx}`} 
+            task={task} 
+            onTaskClick={onTaskClick || (() => console.warn('onTaskClick not provided to TaskList'))} 
+          />
         ))}
 
         {isAdding && (
