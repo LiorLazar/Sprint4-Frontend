@@ -153,7 +153,7 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
                                 style={{ backgroundColor: color }}
                                 onClick={() => setSelectedBackground(color)}
                             >
-                                {selectedBackground === color && <span className="checkmark">✓</span>}
+                                {selectedBackground === color && icons.checkmark}
                             </button>
                         ))}
                     </div>

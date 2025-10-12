@@ -52,15 +52,8 @@
 }
 
 .close-btn {
-    background: none;
-    border: none;
+    border-radius: 8px !important;
     padding: 4px;
-    cursor: pointer;
-    color: #6b778c;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
     transition: background-color 0.2s;
 }
 
@@ -135,10 +128,6 @@
 
 .background-option:hover {
     border-color: #dfe1e6;
-}
-
-.background-option.selected {
-    border-color: #0079bf !important;
 }
 
 .checkmark {
