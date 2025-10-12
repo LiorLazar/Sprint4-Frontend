@@ -39,11 +39,9 @@
 
 .modal-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #dfe1e6;
+    margin-bottom: 16px;
 }
 
 .modal-header h3 {
@@ -110,8 +108,7 @@
     margin: 0 0 8px 0;
     font-size: 12px;
     font-weight: 600;
-    color: #5e6c84;
-    text-transform: uppercase;
+    color: #55585d;
     letter-spacing: 0.04em;
 }
 
@@ -160,8 +157,7 @@
     margin-bottom: 8px;
     font-size: 12px;
     font-weight: 600;
-    color: #5e6c84;
-    text-transform: uppercase;
+    color: #55585d;
     letter-spacing: 0.04em;
 }
 

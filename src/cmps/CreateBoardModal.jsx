@@ -169,7 +169,6 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
                             setTitle(e.target.value)
                             setShowTitleError(false)
                         }}
-                        placeholder="Enter board title"
                         className={showTitleError ? 'error' : ''}
                         maxLength={512}
                     />
