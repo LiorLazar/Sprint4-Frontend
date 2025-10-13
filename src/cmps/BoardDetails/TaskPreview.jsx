@@ -4,7 +4,9 @@ export function TaskPreview({ task, onTaskClick }) {
   const bgColor = task.style?.backgroundColor || '#fff'
 
   return (
-    <div className="task-preview" onClick={() => onTaskClick(task)}>
+    <div className="task-preview"
+     onClick={() => onTaskClick(task)}
+     style={{ backgroundColor: bgColor }}>
       <span className="task-title">{task.title}</span>
       <button className="edit-task-btn">
         {icons.editCard}

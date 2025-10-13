@@ -1,38 +1,39 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
+
 import { BoardSidebar } from '../cmps/BoardSidebar.jsx'
 import { StarredBoards } from '../cmps/StarredBoards.jsx'
 import { RecentlyViewed } from '../cmps/RecentlyViewed.jsx'
 import { Workspace } from '../cmps/Workspace.jsx'
 import { loadBoards } from '../store/actions/board.actions.js'
 
-
-// import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
-// import { boardService } from '../services/board/board.service'
-// import { userService } from '../services/user'
-
-// import { TaskList } from '../cmps/BoardDetails/TaskList'
-// import { BoardFilter } from '../cmps/BoardFilter'
-
 export function BoardIndex() {
-    const boards = useSelector(storeState => storeState.boardModule.boards)
+  const boards = useSelector(storeState => storeState.boardModule.boards)
 
-    useEffect(() => {
-        loadBoards()
-    }, [])
+  useEffect(() => {
+    loadBoards()
+  }, [])
 
-    console.log('Boards:', boards);
-    
+  if (!boards?.length) return <div className="loading">Loading boards...</div>
 
-    return (
-        <section className="board-index full">
-            <BoardSidebar />
+  return (
+    <section className="board-index full">
+      <BoardSidebar />
 
-            <section className="board-main">
-                <StarredBoards boards={boards} />
-                <RecentlyViewed boards={boards} />
-                <Workspace boards={boards} />
-            </section>
-        </section>
-    )
+      <section className="board-main">
+        <StarredBoards boards={boards.filter(b => b.isStarred)} />
+
+        <RecentlyViewed
+          boards={boards
+            .filter(b => b.recentlyViewed)
+            .sort(
+              (a, b) =>
+                new Date(b.recentlyViewed) - new Date(a.recentlyViewed)
+            )}
+        />
+
+        <Workspace boards={boards} />
+      </section>
+    </section>
+  )
 }
