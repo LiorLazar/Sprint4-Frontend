@@ -57,7 +57,7 @@ export function TaskDetails({ task, isOpen, onClose, onSave, onDelete }) {
                             <h3>Members</h3>
                             <div className="members-list">
                                 <div className="member-avatar">GA</div>
-                                <button className="add-member-btn">+</button>
+                                <button className="add-member-btn">{icons.addCard}</button>
                             </div>
                         </div>
 
