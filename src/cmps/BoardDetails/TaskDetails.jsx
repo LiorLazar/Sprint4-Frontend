@@ -67,7 +67,7 @@ export function TaskDetails({ task, isOpen, onClose, onSave, onDelete }) {
                     <div className="grid-main">
                         {/* Task Title */}
                         <div className="task-title-section">
-                            <div className="task-icon">{icons.checklistItem}</div>
+                            <div className="task-icon">{icons.circle}</div>
                             <input
                                 type="text"
                                 value={title}
@@ -107,7 +107,7 @@ export function TaskDetails({ task, isOpen, onClose, onSave, onDelete }) {
                             <h3 className="section-title">Members</h3>
                             <div className="members-list">
                                 <div className="member-avatar">LL</div>
-                                <button className="add-member-btn">+</button>
+                                <button className="add-member-btn">{icons.plus}</button>
                             </div>
                         </div>
 
@@ -131,7 +131,8 @@ export function TaskDetails({ task, isOpen, onClose, onSave, onDelete }) {
                     <div className="grid-sidebar">
                         <div className="comments-section">
                             <div className="section-header">
-                                <h3 className="section-title">Comments and activity</h3>
+                                <h3 className="section-title"><span className='svg-chat'>{icons.chat}</span>
+                                Comments and activity</h3>
                                 <button className="show-details-btn">Show details</button>
                             </div>
                             <div className="comment-input-section">

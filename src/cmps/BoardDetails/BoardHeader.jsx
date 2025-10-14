@@ -13,6 +13,15 @@ export function BoardHeader() {
     const currentBoard = boards.find(board => board._id === boardId)
     const starred = currentBoard?.isStarred || false
 
+    // Return null or loading state if board is not found
+    if (!currentBoard) {
+        return (
+            <section className="board-header-container">
+                <span className="board-name">Loading...</span>
+            </section>
+        )
+    }
+
     return (
         <section className="board-header-container">
             <span className="board-name">{currentBoard.title}</span>

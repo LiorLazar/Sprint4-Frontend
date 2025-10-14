@@ -48,11 +48,13 @@ body.modal-open > *:not(.task-details-overlay) {
     box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25), 0 0 0 1px rgba(9, 30, 66, 0.08);
     position: relative;
     padding: 0;
-    overflow-y: auto;
+    overflow: hidden;
     box-sizing: border-box;
     margin-top: 48px;
     pointer-events: auto;
     z-index: 1001;
+    display: flex;
+    flex-direction: column;
 }
 
 .close-btn {
@@ -84,7 +86,8 @@ body.modal-open > *:not(.task-details-overlay) {
     grid-template-columns: 2fr 1.5fr;
     grid-template-rows: 57px 1fr;
     gap: 0;
-    min-height: 500px;
+    flex: 1;
+    overflow: hidden;
     position: relative;
 }
 
@@ -97,6 +100,7 @@ body.modal-open > *:not(.task-details-overlay) {
     display: flex;
     align-items: center;
     background: #fff;
+    overflow: hidden;
 }
 
 .task-location {
@@ -124,6 +128,8 @@ body.modal-open > *:not(.task-details-overlay) {
     gap: 20px;
     padding: 20px;
     position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* Row 2, Column 2 - Sidebar */
@@ -133,6 +139,8 @@ body.modal-open > *:not(.task-details-overlay) {
     padding: 20px;
     border-left: 1px solid #e4e6ea;
     position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* Remove the extended vertical border - only show it in row 2 */
@@ -149,14 +157,11 @@ body.modal-open > *:not(.task-details-overlay) {
 }
 
 .task-icon {
-    color: #5e6c84;
-    width: 24px;
-    height: 24px;
+    color: #000000;
+    width: 16px;
+    height: 16px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 8px;
-    flex-shrink: 0;
+    align-self: center;
 }
 
 .task-title-input {
@@ -166,7 +171,7 @@ body.modal-open > *:not(.task-details-overlay) {
     border: none;
     outline: none;
     background: transparent;
-    color: #172b4d;
+    color: black;
     padding: 8px 12px;
     border-radius: 3px;
     margin: 0;
@@ -175,7 +180,6 @@ body.modal-open > *:not(.task-details-overlay) {
     word-wrap: break-word;
 }
 
-.task-title-input:hover,
 .task-title-input:focus {
     background: #f4f5f7;
     box-shadow: inset 0 0 0 2px #0079bf;
@@ -193,20 +197,19 @@ body.modal-open > *:not(.task-details-overlay) {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 7px;
-    border: none;
+    padding: 6px 12px;
+    border: 1px solid #dfe1e6;
     border-radius: 3px;
     color: #172b4d;
     font-size: 14px;
     cursor: pointer;
     font-weight: 400;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Noto Sans, Ubuntu, Droid Sans, sans-serif;
-    transition: background-color 0.1s ease;
-    border: 1px solid #e4e6ea;
 }
 
 .action-button:hover {
-    background: #e4e7eb;
+    background: #f2f3f4;
+    border-color: #c5c9ce;
 }
 
 .action-button-icon {
@@ -228,11 +231,12 @@ body.modal-open > *:not(.task-details-overlay) {
 }
 
 .section-title {
+    display: flex;
     font-size: 16px;
-    color: #5e6c84;
-    margin: 0 0 12px 0;
+    color: #121213;
     font-weight: 600;
     line-height: 20px;
+    align-items: center;
 }
 
 .section-header {
@@ -302,7 +306,7 @@ body.modal-open > *:not(.task-details-overlay) {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 10px;
     font-weight: 400;
 }
 
@@ -364,6 +368,16 @@ body.modal-open > *:not(.task-details-overlay) {
 
 .comment-input::placeholder {
     color: #a5adba;
+}
+
+.svg-chat {
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    color: black;
 }
 
 /* Responsive adjustments */
