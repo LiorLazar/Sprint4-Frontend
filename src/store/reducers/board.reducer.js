@@ -11,36 +11,42 @@ const initialState = {
 }
 
 export function boardReducer(state = initialState, action) {
-    var newState = state
-    var boards
     switch (action.type) {
         case SET_BOARDS:
-            newState = { ...state, boards: action.boards }
-            break
+            return { ...state, boards: action.boards }
+
         case SET_BOARD:
-            newState = { ...state, board: action.board }
-            break
-        case REMOVE_BOARD:
-            const lastRemovedBoard = state.boards.find(board => board._id === action.boardId)
-            boards = state.boards.filter(board => board._id !== action.boardId)
-            newState = { ...state, boards, lastRemovedBoard }
-            break
+            return { ...state, board: action.board }
+
+        case REMOVE_BOARD: {
+            const boards = state.boards.filter(board => board._id !== action.boardId)
+            return { ...state, boards }
+        }
+
         case ADD_BOARD:
-            newState = { ...state, boards: [...state.boards, action.board] }
-            break
-        case UPDATE_BOARD:
-            boards = state.boards.map(board => (board._id === action.board._id) ? action.board : board)
-            newState = { ...state, boards }
-            break
+            return { ...state, boards: [...state.boards, action.board] }
+
+        case UPDATE_BOARD: {
+            const boards = state.boards.map(board =>
+                board._id === action.board._id ? action.board : board
+            )
+            // אם הלוח הפתוח כרגע הוא זה שהתעדכן – נעדכן גם אותו
+            const board =
+                state.board?._id === action.board._id ? action.board : state.board
+
+            return { ...state, boards, board }
+        }
+
         case ADD_BOARD_MSG:
-            if (action.msg && state.board) {
-                newState = { ...state, board: { ...state.board, msgs: [...state.board.msgs || [], action.msg] } }
-                break
-            }
+            if (!state.board) return state
+            const updatedMsgs = [...(state.board.msgs || []), action.msg]
+            return { ...state, board: { ...state.board, msgs: updatedMsgs } }
+
         default:
+            return state
     }
-    return newState
 }
+
 
 // unitTestReducer()
 

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-
 import { TaskList } from '../../cmps/BoardDetails/TaskList.jsx'
 import { TaskDetails } from '../../cmps/BoardDetails/TaskDetails.jsx'
 import { utilService } from '../../services/util.service.js'
@@ -14,6 +13,7 @@ export function BoardDetails() {
   const navigate = useNavigate()
   const board = useSelector(storeState => storeState.boardModule.board)
 
+  const [localBoard, setLocalBoard] = useState(null)
   const [selectedTask, setSelectedTask] = useState(null)
   const [isTaskDetailsOpen, setIsTaskDetailsOpen] = useState(false)
   const [isAddingList, setIsAddingList] = useState(false)
@@ -21,31 +21,29 @@ export function BoardDetails() {
   const addListRef = useRef(null)
   const listsContainerRef = useRef(null)
 
-  // טוען את הלוח מה־Redux כשיש שינוי ב־boardId
   useEffect(() => {
     if (boardId) loadBoard(boardId)
   }, [boardId])
 
-  // ניהול פרטי הטאסק לפי taskId ב־URL
   useEffect(() => {
-    if (board && taskId) {
-      const task = board.lists
+    if (board) setLocalBoard(board)
+  }, [board])
+
+  useEffect(() => {
+    if (localBoard && taskId) {
+      const task = localBoard.lists
         .flatMap(list => list.tasks)
         .find(task => task.id === taskId)
-
       if (task) {
         setSelectedTask(task)
         setIsTaskDetailsOpen(true)
-      } else {
-        navigate(`/board/${boardId}`)
-      }
-    } else if (board && !taskId) {
+      } else navigate(`/board/${boardId}`)
+    } else if (localBoard && !taskId) {
       setSelectedTask(null)
       setIsTaskDetailsOpen(false)
     }
-  }, [board, taskId, boardId, navigate])
+  }, [localBoard, taskId, boardId, navigate])
 
-  // סגירת מצב הוספת רשימה בלחיצה מחוץ
   useEffect(() => {
     function handleClickOutside(ev) {
       if (!isAddingList) return
@@ -71,24 +69,46 @@ export function BoardDetails() {
   }
 
   async function onSaveTask(updatedTask) {
-    const updatedLists = board.lists.map(list => ({
+    const updatedLists = localBoard.lists.map(list => ({
       ...list,
       tasks: list.tasks.map(task =>
         task.id === updatedTask.id ? updatedTask : task
       ),
     }))
-    const updatedBoard = { ...board, lists: updatedLists }
-    await updateBoard(updatedBoard)
+    const updatedBoard = { ...localBoard, lists: updatedLists }
+    setLocalBoard(updatedBoard)
+    updateBoard(updatedBoard)
   }
 
   async function onDeleteTask(taskId) {
-    const updatedLists = board.lists.map(list => ({
+    const updatedLists = localBoard.lists.map(list => ({
       ...list,
       tasks: list.tasks.filter(task => task.id !== taskId),
     }))
-    const updatedBoard = { ...board, lists: updatedLists }
-    await updateBoard(updatedBoard)
+    const updatedBoard = { ...localBoard, lists: updatedLists }
+    setLocalBoard(updatedBoard)
+    updateBoard(updatedBoard)
     onCloseTaskDetails()
+  }
+
+  function focusOnNewTask(listId) {
+    setTimeout(() => {
+      const listEl = document.querySelector(`[data-list-id="${listId}"]`)
+      if (listEl) {
+        listEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        const input = listEl.querySelector('input, textarea, button')
+        input?.focus()
+      }
+    }, 120)
+  }
+
+  function focusOnNewList() {
+    setTimeout(() => {
+      const newListEl = listsContainerRef.current?.lastElementChild
+      newListEl?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'end' })
+      const input = newListEl?.querySelector('input, textarea, button')
+      input?.focus()
+    }, 120)
   }
 
   async function onAddListConfirm() {
@@ -98,60 +118,55 @@ export function BoardDetails() {
       setNewListTitle('')
       return
     }
-
     const newList = { id: utilService.makeId(), title, tasks: [] }
-    const updatedBoard = { ...board, lists: [...board.lists, newList] }
-    await updateBoard(updatedBoard)
+    const updatedBoard = { ...localBoard, lists: [...localBoard.lists, newList] }
+    setLocalBoard(updatedBoard)
+    updateBoard(updatedBoard)
     setNewListTitle('')
     setIsAddingList(true)
-
-    setTimeout(() => {
-      listsContainerRef.current?.lastElementChild?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'end',
-      })
-      const input = addListRef.current?.querySelector('input')
-      input?.focus()
-    }, 100)
+    focusOnNewList()
   }
 
   async function onRenameList(listId, newTitle) {
     const trimmed = newTitle.trim()
     if (!trimmed) return onCancelEmptyList(listId)
-    const updatedLists = board.lists.map(list =>
+    const updatedLists = localBoard.lists.map(list =>
       list.id === listId ? { ...list, title: trimmed } : list
     )
-    const updatedBoard = { ...board, lists: updatedLists }
-    await updateBoard(updatedBoard)
+    const updatedBoard = { ...localBoard, lists: updatedLists }
+    setLocalBoard(updatedBoard)
+    updateBoard(updatedBoard)
   }
 
   async function onAddCard(listId, title) {
     const t = title.trim()
     if (!t) return
     const newTask = { id: utilService.makeId(), title: t, createdAt: Date.now() }
-    const updatedLists = board.lists.map(list =>
+    const updatedLists = localBoard.lists.map(list =>
       list.id === listId ? { ...list, tasks: [...list.tasks, newTask] } : list
     )
-    const updatedBoard = { ...board, lists: updatedLists }
-    await updateBoard(updatedBoard)
+    const updatedBoard = { ...localBoard, lists: updatedLists }
+    setLocalBoard(updatedBoard)
+    updateBoard(updatedBoard)
+    focusOnNewTask(listId)
   }
 
   async function onCancelEmptyList(listId) {
-    const list = board.lists.find(l => l.id === listId)
+    const list = localBoard.lists.find(l => l.id === listId)
     if (!list || list.tasks.length > 0) return
-    const updatedLists = board.lists.filter(l => l.id !== listId)
-    const updatedBoard = { ...board, lists: updatedLists }
-    await updateBoard(updatedBoard)
+    const updatedLists = localBoard.lists.filter(l => l.id !== listId)
+    const updatedBoard = { ...localBoard, lists: updatedLists }
+    setLocalBoard(updatedBoard)
+    updateBoard(updatedBoard)
   }
 
-  if (!board) return <div>Loading board...</div>
+  if (!localBoard) return <div>Loading board...</div>
 
   return (
     <section className="board-details">
       <BoardHeader />
       <div className="lists-container" ref={listsContainerRef}>
-        {board.lists.map(list => (
+        {localBoard.lists.map(list => (
           <TaskList
             key={list.id}
             list={list}
@@ -161,7 +176,6 @@ export function BoardDetails() {
             onTaskClick={onTaskClick}
           />
         ))}
-
         {isAddingList ? (
           <div className="tasks-list add-list-form" ref={addListRef}>
             <input
@@ -194,7 +208,6 @@ export function BoardDetails() {
           </button>
         )}
       </div>
-
       <TaskDetails
         task={selectedTask}
         isOpen={isTaskDetailsOpen}
