@@ -14,6 +14,9 @@ export function BoardIndex() {
     loadBoards()
   }, [])
 
+  console.log('boards:', boards);
+  
+
   if (!boards?.length) return <div className="loading">Loading boards...</div>
 
   return (

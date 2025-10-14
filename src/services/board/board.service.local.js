@@ -71,8 +71,16 @@ async function _createRandomBoard() {
 
 function getEmptyBoard() {
     return {
+        id: utilService.makeId(),
         title: 'New Board',
+        createdBy: null,
+        isStarred: false,
+        style: { backgroundColor: '#0079bf' },
+        labels: [],
+        members: [],
         lists: [],
+        activities: [],
+        createdAt: Date.now(),
     }
 }
 
