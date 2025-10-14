@@ -15,7 +15,7 @@ export function BoardSidebar() {
             </button>
             
             <div className="workspace-section">
-                <h3>Workspaces</h3>
+                {/* <h3>Workspaces</h3>
                 <div className="workspace-item">
                     <div className="workspace-avatar">S</div>
                     <span>Sprint4</span>
@@ -24,7 +24,7 @@ export function BoardSidebar() {
                             <path d="M7 10l5 5 5-5z"/>
                         </svg>
                     </button>
-                </div>
+                </div> */}
             </div>
         </section>
     )

@@ -52,9 +52,8 @@
 
 .board-title {
     margin: 0 !important;
-    padding: 8px 12px !important;
+    padding: 8px !important;
     font-size: 14px;
-    font-weight: 600;
     color: #172b4d;
     line-height: 1.4;
     width: 100%;

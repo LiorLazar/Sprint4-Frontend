@@ -3,11 +3,10 @@ import { BoardList } from './BoardList.jsx'
 export function Workspace({ boards }) {
     return (
         <section className="board-section">
-            <h1>YOUR WORKSPACES</h1>
+            <h1 className='workspace-title'>YOUR WORKSPACES</h1>
             <div className="workspace-header">
                 <div className="workspace-info">
-                    <div className="workspace-avatar">S</div>
-                    <span>Sprint4</span>
+                    <span>{/*Workspace*/}</span>
                 </div>
                 <div className="workspace-actions">
                     <button className="workspace-btn">
