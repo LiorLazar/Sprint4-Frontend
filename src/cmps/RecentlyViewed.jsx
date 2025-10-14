@@ -2,11 +2,8 @@ import { BoardList } from './BoardList.jsx'
 import { icons } from './SvgIcons.jsx'
 
 export function RecentlyViewed({ boards }) {
-    // Filter boards that have been recently viewed and sort by most recent first
-    const recentlyViewed = boards
-        .filter(board => board.recentlyViewed) // Only boards that have been viewed
-        .sort((a, b) => new Date(b.recentlyViewed) - new Date(a.recentlyViewed)) // Sort by most recent first
-        .slice(0, 4) // Take only the first 4
+    // Take only the first 4 (boards are already filtered and sorted by BoardIndex)
+    const recentlyViewed = boards.slice(0, 4)
 
     if (recentlyViewed.length === 0) {
         return null
