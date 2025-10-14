@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { addBoard } from '../store/actions/board.actions.js'
+import { boardService } from '../services/board/board.service.local.js'
 import { icons } from './SvgIcons.jsx'
 
 export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
@@ -94,11 +95,9 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
         }
 
         try {
-            await addBoard({
-                title: title.trim(),
-                isStarred: false,
-                style: { backgroundColor: selectedBackground }
-            })
+            let board = boardService.getEmptyBoard()
+            board = { ...board, title: title.trim(), style: { backgroundColor: selectedBackground } }
+            await addBoard(board)
             handleClose()
         } catch (err) {
             console.log('Failed to create board:', err)
@@ -153,7 +152,7 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
                                 style={{ backgroundColor: color }}
                                 onClick={() => setSelectedBackground(color)}
                             >
-                                {selectedBackground === color && icons.checkmark}
+                                {selectedBackground === color && <span className="checkmark">✓</span>}
                             </button>
                         ))}
                     </div>
