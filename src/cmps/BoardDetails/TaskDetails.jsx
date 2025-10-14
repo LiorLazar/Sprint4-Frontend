@@ -81,23 +81,23 @@ export function TaskDetails({ task, isOpen, onClose, onSave, onDelete }) {
                         {/* Action Buttons */}
                         <div className="action-buttons-row">
                             <button className="action-button">
-                                <span className="action-button-icon">+</span>
+                                <span className="action-button-icon">{icons.plus}</span>
                                 Add
                             </button>
                             <button className="action-button">
-                                <span className="action-button-icon">🏷️</span>
+                                <span className="action-button-icon">{icons.labels}</span>
                                 Labels
                             </button>
                             <button className="action-button">
-                                <span className="action-button-icon">📅</span>
+                                <span className="action-button-icon">{icons.clock}</span>
                                 Dates
                             </button>
                             <button className="action-button">
-                                <span className="action-button-icon">✅</span>
+                                <span className="action-button-icon">{icons.checklistItem}</span>
                                 Checklist
                             </button>
                             <button className="action-button">
-                                <span className="action-button-icon">📎</span>
+                                <span className="action-button-icon">{icons.attachment}</span>
                                 Attachment
                             </button>
                         </div>
