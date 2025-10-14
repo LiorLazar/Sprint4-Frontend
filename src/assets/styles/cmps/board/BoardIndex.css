@@ -23,6 +23,7 @@
 
 .board-main h1:first-child {
     margin-top: 0;
+    padding-left: 4px;
 }
 
 /* Add some spacing between sections */
@@ -40,6 +41,10 @@
 }
 
 /* Workspace header */
+.workspace-title {
+    color: #505258 !important;
+}
+
 .workspace-header {
     display: flex;
     align-items: center;
