@@ -10,7 +10,7 @@
     background-color: transparent;
     border: none;
     border-radius: 8px;
-    padding: 8px 12px;
+    padding: 10px 12px;
     font-size: 14px;
     font-weight: 550;
     cursor: pointer;
@@ -88,4 +88,10 @@
 
 .workspace-toggle:hover {
     background-color: #dfe1e6;
+}
+
+.btn-sidebar svg {
+    margin-right: 6px;
+    width: 16px;
+    height: 16px;
 }
