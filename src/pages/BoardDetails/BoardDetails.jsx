@@ -1,24 +1,27 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+
+import { BoardHeader } from '../../cmps/BoardDetails/BoardHeader.jsx'
 import { TaskList } from '../../cmps/BoardDetails/TaskList.jsx'
-import { TaskDetails } from '../../cmps/BoardDetails/TaskDetails.jsx'
+import { TaskDetails } from '../../cmps/TaskDetails/TaskDetails.jsx'
+
 import { utilService } from '../../services/util.service.js'
 import { icons } from '../../cmps/SvgIcons.jsx'
-import { BoardHeader } from '../../cmps/BoardDetails/BoardHeader.jsx'
+
 import { loadBoard, updateBoard } from '../../store/actions/board.actions.js'
 
 export function BoardDetails() {
   const { boardId, taskId } = useParams()
   const navigate = useNavigate()
-  const board = useSelector(storeState => storeState.boardModule.board)
+  const boardFromStore = useSelector(storeState => storeState.boardModule.board)
 
   const [localBoard, setLocalBoard] = useState(null)
   const [selectedTask, setSelectedTask] = useState(null)
   const [isTaskDetailsOpen, setIsTaskDetailsOpen] = useState(false)
   const [isAddingList, setIsAddingList] = useState(false)
   const [newListTitle, setNewListTitle] = useState('')
-  const addListRef = useRef(null)
+  const addListFormRef = useRef(null)
   const listsContainerRef = useRef(null)
 
   useEffect(() => {
@@ -26,18 +29,21 @@ export function BoardDetails() {
   }, [boardId])
 
   useEffect(() => {
-    if (board) setLocalBoard(board)
-  }, [board])
+    if (boardFromStore) setLocalBoard(boardFromStore)
+  }, [boardFromStore])
 
   useEffect(() => {
     if (localBoard && taskId) {
-      const task = localBoard.lists
+      const foundTask = localBoard.lists
         .flatMap(list => list.tasks)
         .find(task => task.id === taskId)
-      if (task) {
-        setSelectedTask(task)
+
+      if (foundTask) {
+        setSelectedTask(foundTask)
         setIsTaskDetailsOpen(true)
-      } else navigate(`/board/${boardId}`)
+      } else {
+        navigate(`/board/${boardId}`)
+      }
     } else if (localBoard && !taskId) {
       setSelectedTask(null)
       setIsTaskDetailsOpen(false)
@@ -45,9 +51,9 @@ export function BoardDetails() {
   }, [localBoard, taskId, boardId, navigate])
 
   useEffect(() => {
-    function handleClickOutside(ev) {
+    function handleClickOutside(event) {
       if (!isAddingList) return
-      if (addListRef.current && !addListRef.current.contains(ev.target)) {
+      if (addListFormRef.current && !addListFormRef.current.contains(event.target)) {
         setIsAddingList(false)
         setNewListTitle('')
       }
@@ -56,62 +62,67 @@ export function BoardDetails() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isAddingList])
 
-  function onTaskClick(task) {
+  function handleTaskClick(task) {
     setSelectedTask(task)
     setIsTaskDetailsOpen(true)
     navigate(`/board/${boardId}/card/${task.id}`)
   }
 
-  function onCloseTaskDetails() {
+  function handleCloseTaskDetails() {
     setSelectedTask(null)
     setIsTaskDetailsOpen(false)
     navigate(`/board/${boardId}`)
   }
 
-  async function onSaveTask(updatedTask) {
-    const updatedLists = localBoard.lists.map(list => ({
-      ...list,
-      tasks: list.tasks.map(task =>
-        task.id === updatedTask.id ? updatedTask : task
-      ),
-    }))
+  async function handleSaveTask(updatedTask) {
+    const updatedLists = localBoard.lists.map(list => {
+      const hasTask = list.tasks.some(taskItem => taskItem.id === updatedTask.id)
+      if (!hasTask) return list
+      return {
+        ...list,
+        tasks: list.tasks.map(taskItem =>
+          taskItem.id === updatedTask.id ? { ...taskItem, ...updatedTask } : taskItem
+        ),
+      }
+    })
+
     const updatedBoard = { ...localBoard, lists: updatedLists }
     setLocalBoard(updatedBoard)
-    updateBoard(updatedBoard)
+    await updateBoard(updatedBoard)
   }
 
-  async function onDeleteTask(taskId) {
+  async function handleDeleteTask(taskIdToDelete) {
     const updatedLists = localBoard.lists.map(list => ({
       ...list,
-      tasks: list.tasks.filter(task => task.id !== taskId),
+      tasks: list.tasks.filter(taskItem => taskItem.id !== taskIdToDelete),
     }))
     const updatedBoard = { ...localBoard, lists: updatedLists }
     setLocalBoard(updatedBoard)
     updateBoard(updatedBoard)
-    onCloseTaskDetails()
+    handleCloseTaskDetails()
   }
 
   function focusOnNewTask(listId) {
     setTimeout(() => {
-      const listEl = document.querySelector(`[data-list-id="${listId}"]`)
-      if (listEl) {
-        listEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        const input = listEl.querySelector('input, textarea, button')
-        input?.focus()
+      const listElement = document.querySelector(`[data-list-id="${listId}"]`)
+      if (listElement) {
+        listElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        const inputElement = listElement.querySelector('input, textarea, button')
+        inputElement?.focus()
       }
     }, 120)
   }
 
   function focusOnNewList() {
     setTimeout(() => {
-      const newListEl = listsContainerRef.current?.lastElementChild
-      newListEl?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'end' })
-      const input = newListEl?.querySelector('input, textarea, button')
-      input?.focus()
+      const newListElement = listsContainerRef.current?.lastElementChild
+      newListElement?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'end' })
+      const inputElement = newListElement?.querySelector('input, textarea, button')
+      inputElement?.focus()
     }, 120)
   }
 
-  async function onAddListConfirm() {
+  async function handleAddListConfirm() {
     const title = newListTitle.trim()
     if (!title) {
       setIsAddingList(false)
@@ -127,34 +138,44 @@ export function BoardDetails() {
     focusOnNewList()
   }
 
-  async function onRenameList(listId, newTitle) {
-    const trimmed = newTitle.trim()
-    if (!trimmed) return onCancelEmptyList(listId)
+  async function handleRenameList(listId, newTitle) {
+    const trimmedTitle = newTitle.trim()
+    if (!trimmedTitle) return handleCancelEmptyList(listId)
+
     const updatedLists = localBoard.lists.map(list =>
-      list.id === listId ? { ...list, title: trimmed } : list
+      list.id === listId ? { ...list, title: trimmedTitle } : list
     )
     const updatedBoard = { ...localBoard, lists: updatedLists }
     setLocalBoard(updatedBoard)
     updateBoard(updatedBoard)
   }
 
-  async function onAddCard(listId, title) {
-    const t = title.trim()
-    if (!t) return
-    const newTask = { id: utilService.makeId(), title: t, createdAt: Date.now() }
+  async function handleAddCard(listId, cardTitle) {
+    const trimmedTitle = cardTitle.trim()
+    if (!trimmedTitle) return
+
+    const newTask = {
+      id: utilService.makeId(),
+      title: trimmedTitle,
+      createdAt: Date.now(),
+      dueDate: null,
+    }
+
     const updatedLists = localBoard.lists.map(list =>
       list.id === listId ? { ...list, tasks: [...list.tasks, newTask] } : list
     )
+
     const updatedBoard = { ...localBoard, lists: updatedLists }
     setLocalBoard(updatedBoard)
     updateBoard(updatedBoard)
     focusOnNewTask(listId)
   }
 
-  async function onCancelEmptyList(listId) {
-    const list = localBoard.lists.find(l => l.id === listId)
-    if (!list || list.tasks.length > 0) return
-    const updatedLists = localBoard.lists.filter(l => l.id !== listId)
+  async function handleCancelEmptyList(listId) {
+    const foundList = localBoard.lists.find(list => list.id === listId)
+    if (!foundList || foundList.tasks.length > 0) return
+
+    const updatedLists = localBoard.lists.filter(list => list.id !== listId)
     const updatedBoard = { ...localBoard, lists: updatedLists }
     setLocalBoard(updatedBoard)
     updateBoard(updatedBoard)
@@ -165,30 +186,32 @@ export function BoardDetails() {
   return (
     <section className="board-details">
       <BoardHeader />
+
       <div className="lists-container" ref={listsContainerRef}>
         {localBoard.lists.map(list => (
           <TaskList
             key={list.id}
             list={list}
-            onCancelEmptyList={onCancelEmptyList}
-            onRenameList={onRenameList}
-            onAddCard={onAddCard}
-            onTaskClick={onTaskClick}
+            onCancelEmptyList={handleCancelEmptyList}
+            onRenameList={handleRenameList}
+            onAddCard={handleAddCard}
+            onTaskClick={handleTaskClick}
           />
         ))}
+
         {isAddingList ? (
-          <div className="tasks-list add-list-form" ref={addListRef}>
+          <div className="tasks-list add-list-form" ref={addListFormRef}>
             <input
               type="text"
               className="list-title-input"
               placeholder="Enter list name..."
               value={newListTitle}
-              onChange={ev => setNewListTitle(ev.target.value)}
-              onKeyDown={ev => ev.key === 'Enter' && onAddListConfirm()}
+              onChange={event => setNewListTitle(event.target.value)}
+              onKeyDown={event => event.key === 'Enter' && handleAddListConfirm()}
               autoFocus
             />
             <div className="add-card-actions">
-              <button className="add-card-btn" onClick={onAddListConfirm}>
+              <button className="add-card-btn" onClick={handleAddListConfirm}>
                 Add list
               </button>
               <button
@@ -208,12 +231,13 @@ export function BoardDetails() {
           </button>
         )}
       </div>
+
       <TaskDetails
         task={selectedTask}
         isOpen={isTaskDetailsOpen}
-        onClose={onCloseTaskDetails}
-        onSave={onSaveTask}
-        onDelete={onDeleteTask}
+        onClose={handleCloseTaskDetails}
+        onSave={handleSaveTask}
+        onDelete={handleDeleteTask}
       />
     </section>
   )
