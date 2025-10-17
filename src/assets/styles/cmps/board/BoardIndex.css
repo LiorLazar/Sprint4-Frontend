@@ -6,9 +6,15 @@
 }
 
 .board-main {
-    padding: 40px 134px;
+    display: grid;
+    padding-top: 40px;
+    grid-template-columns: minmax(48px, 1fr) minmax(514px, 917px) minmax(48px, 1fr);
     background-color: #ffffff;
     overflow-y: auto;
+}
+
+.board-starred, .board-recently-viewed, .board-workspace {
+    grid-column: 2;
 }
 
 .board-main h1 {

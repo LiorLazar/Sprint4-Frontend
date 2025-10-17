@@ -15,7 +15,7 @@ export function BoardIndex() {
   }, [])
 
   console.log('boards:', boards);
-  
+
 
   if (!boards?.length) return <div className="loading">Loading boards...</div>
 
@@ -24,18 +24,25 @@ export function BoardIndex() {
       <BoardSidebar />
 
       <section className="board-main">
-        <StarredBoards boards={boards.filter(b => b.isStarred)} />
+        
+        <section className="board-starred">
+          <StarredBoards boards={boards.filter(b => b.isStarred)} />
+        </section>
 
-        <RecentlyViewed
-          boards={boards
-            .filter(b => b.recentlyViewed)
-            .sort(
-              (a, b) =>
-                new Date(b.recentlyViewed) - new Date(a.recentlyViewed)
-            )}
-        />
+        <section className="board-recently-viewed">
+          <RecentlyViewed
+            boards={boards
+              .filter(b => b.recentlyViewed)
+              .sort(
+                (a, b) =>
+                  new Date(b.recentlyViewed) - new Date(a.recentlyViewed)
+              )}
+          />
+        </section>
 
-        <Workspace boards={boards} />
+        <section className="board-workspace">
+          <Workspace boards={boards} />
+        </section>
       </section>
     </section>
   )
