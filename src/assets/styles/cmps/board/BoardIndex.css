@@ -5,12 +5,30 @@
     background-color: #ffffff;
 }
 
+/* Hide sidebar below 900px and make main content full width */
+@media (max-width: 899px) {
+    .board-index {
+        grid-template-columns: 1fr;
+    }
+    
+    .board-index .board-sidebar {
+        display: none;
+    }
+}
+
 .board-main {
     display: grid;
     padding-top: 40px;
     grid-template-columns: minmax(48px, 1fr) minmax(514px, 917px) minmax(48px, 1fr);
     background-color: #ffffff;
     overflow-y: auto;
+}
+
+/* Change board-main grid columns 1 and 3 to 16px below 900px */
+@media (max-width: 899px) {
+    .board-main {
+        grid-template-columns: 1fr 446px 1fr;
+    }
 }
 
 .board-starred, .board-recently-viewed, .board-workspace {
