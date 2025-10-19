@@ -31,7 +31,6 @@
     }
 
     & button {
-        background-color: var(--gray1);
         padding: 1px 6px;
         border: 0;
         border-radius: 50%;

@@ -1,3 +1,4 @@
+/* ========== OVERLAY & MAIN MODAL ========== */
 .task-details-overlay {
   position: fixed;
   inset: 0;
@@ -8,6 +9,7 @@
   padding: 24px;
   overflow-y: auto;
 }
+
 .task-details-modal {
   background: #fff;
   border-radius: 10px;
@@ -20,14 +22,15 @@
   position: relative;
   z-index: 2000;
 }
+
 .close-btn {
   position: absolute;
   top: 12px;
   right: 12px;
   background: none;
   border: none;
-  width: 32px;
-  height: 32px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
   color: #6b778c;
@@ -35,12 +38,27 @@
   cursor: pointer;
 }
 
-
-.task-title-section {
+/* ========== COVER IMAGE ========== */
+.task-cover-preview {
+  width: 100%;
+  overflow: hidden;
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
+
+.task-cover-image {
+  width: 100%;
+  height: auto;
+  max-height: 188px;
+  object-fit: contain;
+  /* border-radius: 8px; */
+  background: #fff;
+  margin-bottom: 4px;
+}
+
+/* ========== HEADER & ICONS ========== */
 .task-icon {
   width: 16px;
   height: 16px;
@@ -48,27 +66,15 @@
   align-items: center;
   color: #000;
 }
-.task-title-input {
-  flex: 1;
-  font-size: 20px;
-  font-weight: 600;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: #000;
-  padding: 8px 12px;
-  border-radius: 3px;
-}
-.task-title-input:focus {
-  background: #f4f5f7;
-  box-shadow: inset 0 0 0 2px #0079bf;
-}
+
+/* ========== ACTION BUTTONS ========== */
 .action-buttons-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 4px;
 }
+
 .action-button {
   display: flex;
   align-items: center;
@@ -80,33 +86,31 @@
   color: #172b4d;
   cursor: pointer;
 }
+
 .action-button:hover {
   background: #ebecf0;
 }
+
 .action-button-icon {
   width: 16px;
   height: 16px;
   display: grid;
   place-items: center;
 }
+
+/* ========== META ROW (INLINE SECTIONS) ========== */
 .meta-row {
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap;
   align-items: flex-start;
+  gap: 24px;
+  width: 100%;
 }
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.meta-row > * {
+  flex-shrink: 0;
 }
-.section-header.tight {
-  margin-bottom: 6px;
-}
-.section-title {
-  font-weight: 600;
-  color: #121213;
-  margin: 0;
-}
+
+/* ========== MEMBERS INLINE ========== */
 .members-inline-list {
   display: flex;
   align-items: center;
@@ -119,11 +123,11 @@
   color: #fff;
   display: grid;
   place-items: center;
-  font-weight: 700;
+  font-weight: 500;
 }
 .avatar.sm {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   font-size: 12px;
 }
 .add-member-inline {
@@ -139,23 +143,20 @@
   cursor: pointer;
   line-height: 1;
 }
-.add-member-inline svg {
-  width: 20px;
-  height: 20px;
-  display: block;
-  transform: translateY(0.5px);
-}
 .add-member-inline:hover {
   background: #d4d7db;
 }
+
+/* ========== LABELS INLINE ========== */
 .labels-inline-list {
   display: flex;
   align-items: center;
   gap: 6px;
+  cursor: pointer;
 }
 .label-chip-fat {
-  height: 28px;
-  min-width: 56px;
+  height: 32px;
+  width: 48px;
   border-radius: 6px;
 }
 .add-label-inline {
@@ -174,6 +175,8 @@
 .add-label-inline:hover {
   background: #ebecf0;
 }
+
+/* ========== DUE DATE ========== */
 .due-inline-controls {
   display: flex;
   align-items: center;
@@ -184,61 +187,40 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 6px 10px;
+  padding: 8px 10px;
   border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
+  font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
   border: none;
   cursor: pointer;
   line-height: 1;
-  background:#f0f1f3;
-  color: #946200;
+  background: #f0f1f3;
+  color: #292a2e;
 }
-.due-pill.overdue {
-  color: #c62828;
+.due-pill:hover {
+  background: #e1e2e5;
 }
-.due-pill.upcoming {
-  color: #292A2E;
+.due-badge.overdue {
+  color: #ae2e24;
+  background-color: #f0f1f3;
+  border-radius: 2px;
+  padding: 2px;
+  font-weight: 500;
 }
-.due-pill-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  transform: translateY(0.5px);
+.due-badge.due-soon {
+  background-color: #f9cb23;
+  border-radius: 2px;
+  padding: 2px;
+  font-weight: 500;
 }
 .due-badge {
   margin-left: 6px;
-  font-weight: 700;
+  font-weight: 400;
+  font-size: 12px;
 }
-.add-date-btn {
-  background: #f4f5f7;
-  border: 1px solid #dfe1e6;
-  border-radius: 4px;
-  padding: 6px 10px;
-  cursor: pointer;
-}
-.add-date-btn:hover {
-  background: #ebecf0;
-}
-.description-textarea {
-  width: 100%;
-  min-height: 108px;
-  border: 1px solid #dfe1e6;
-  border-radius: 3px;
-  padding: 12px;
-  resize: vertical;
-  font-size: 14px;
-  outline: none;
-  background: #fff;
-  color: #172b4d;
-}
-.description-textarea:focus {
-  border-color: #0079bf;
-  box-shadow: 0 0 0 2px rgba(0, 121, 191, 0.2);
-}
+
+/* ========== DYNAMIC MODALS (LABELS / MEMBERS / DATES / CHECKLIST / ATTACHMENTS) ========== */
 .submodal-overlay {
   position: fixed;
   inset: 0;
@@ -247,7 +229,7 @@
 .smart-modal {
   background: #fff;
   border-radius: 10px;
-  width: 360px;
+  width: 288px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
   animation: fadeIn 0.15s ease-out;
   z-index: 3200;
@@ -303,16 +285,12 @@
   padding: 8px 10px;
   cursor: pointer;
 }
-.smart-modal-footer .link-danger {
-  background: none;
-  color: #c62828;
-  border: none;
-  cursor: pointer;
-}
+
+/* ========== LABELS LIST IN MODAL ========== */
 .labels-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
 }
 .label-row {
   display: grid;
@@ -321,8 +299,9 @@
   gap: 10px;
 }
 .label-long {
-  height: 36px;
-  border-radius: 8px;
+  height: 32px;
+  width: 212px;
+  border-radius: 4px;
 }
 .label-edit {
   background: none;
@@ -334,146 +313,181 @@
   display: grid;
   place-items: center;
 }
+
+/* ========== MEMBERS MODAL ========== */
 .members-list-rows {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 .member-row {
-  display: grid;
-  grid-template-columns: 18px 28px 1fr;
+  display: flex;
   align-items: center;
   gap: 10px;
+  background-color: white;
+}
+.member-row:hover {
+  background-color: #e9eaec;
 }
 .member-name {
   color: #172b4d;
   font-size: 14px;
+  white-space: nowrap;
 }
-.drawer-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
-  display: flex;
-  justify-content: flex-end;
-  z-index: 3500;
+.remove-icon {
+  color: #000;
+  margin-left: auto;
 }
-.attachments-drawer {
-  width: 420px;
-  height: 100vh;
-  background: #fff;
-  box-shadow: -6px 0 18px rgba(0,0,0,0.2);
-  border-left: 1px solid #dfe1e6;
-  display: flex;
-  flex-direction: column;
-  animation: slideFromRight 0.25s ease-out;
-}
-.drawer-header {
+
+/* ========== CHECKLIST ========== */
+.checklist-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  border-bottom: 1px solid #dfe1e6;
-}
-.drawer-header h2 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-.drawer-body {
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  overflow-y: auto;
-}
-.drawer-group .drawer-title {
-  font-weight: 600;
-  color: #172b4d;
-  margin-bottom: 6px;
-}
-.drawer-group .drawer-sub {
-  color: #5e6c84;
-  font-size: 13px;
+  justify-content: space-between;
   margin-bottom: 8px;
 }
-.file-btn {
+.progress-bar-container {
+  height: 6px;
   background: #f4f5f7;
-  border: 1px solid #dfe1e6;
-  border-radius: 4px;
-  padding: 8px 10px;
+  border-radius: 3px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: #0c66e4;
+  border-radius: 3px;
+  transition: width 0.2s ease;
+}
+.checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+}
+.checklist-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
   cursor: pointer;
+  accent-color: #0c66e4;
 }
-.drawer-hint {
+.checklist-item span {
+  flex: 1;
+  font-size: 14px;
+  color: #172b4d;
+}
+.remove-item-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
   color: #5e6c84;
-  font-size: 12px;
+  padding: 4px;
 }
-.drawer-footer {
-  padding: 12px 16px;
+.remove-item-btn:hover {
+  color: #172b4d;
+}
+.add-item-row {
   display: flex;
   gap: 8px;
-  border-top: 1px solid #dfe1e6;
+  margin-top: 8px;
 }
-.drawer-footer .primary {
+.add-item-row input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  outline: none;
+}
+.add-item-row input:focus {
+  border-color: #0079bf;
+  box-shadow: 0 0 0 2px rgba(0, 121, 191, 0.2);
+}
+.add-item-row button {
   background: #0c66e4;
   color: #fff;
   border: none;
   border-radius: 4px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   cursor: pointer;
 }
-.drawer-footer .secondary {
-  background: #f4f5f7;
-  color: #172b4d;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 10px;
-  cursor: pointer;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes slideFromRight {
-  from { transform: translateX(60px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-@media (max-width: 900px) {
-  .task-details-grid { grid-template-columns: 1fr; grid-template-rows: 57px auto auto; }
-  .grid-sidebar { grid-column: 1; border-left: none; border-top: 1px solid #e4e6ea; }
-  .meta-row { flex-direction: column; }
+.add-item-row button:hover {
+  background: #0959c9;
 }
 
-/* ========== PREVIEW LABEL BAR ========== */
+/* ========== ATTACHMENTS SECTION ========== */
+.attachments-section {
+  margin-top: 16px;
+}
+.attachments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.attachment-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid #dfe1e6;
+  border-radius: 6px;
+  padding: 8px;
+  background: #f9fafc;
+}
+.attachment-preview {
+  max-width: 100%;
+  max-height: 188px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #fff;
+}
+.attachment-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.attachment-actions button {
+  background: #f4f5f7;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.attachment-actions button:hover {
+  background: #ebecf0;
+}
+
+/* ========== PREVIEW LABELS BAR ========== */
 .preview-labels-bar {
   display: flex;
   gap: 6px;
-  width: 40px;
+  width: 100%;
   height: 8px;
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 6px;
 }
-
 .preview-label-bar {
-  flex-grow: 1;
   border-radius: 3px;
+  width: 40px;
 }
 
-
+/* ========== TASK PREVIEW ========== */
 .task-preview:hover {
   background-color: #f4f5f7;
 }
-
 .task-content {
   display: flex;
   flex-direction: column;
 }
-
 .task-title {
   font-size: 14px;
   color: #172b4d;
 }
-
 .edit-task-btn {
   position: absolute;
   top: 6px;
@@ -485,16 +499,8 @@
   opacity: 0;
   transition: opacity 0.2s ease;
 }
-
 .task-preview:hover .edit-task-btn {
   opacity: 1;
-}
-
-.task-meta-below {
-  margin-top: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .task-due-container {
@@ -503,4 +509,28 @@
   gap: 4px;
 }
 
+/* ========== CHECKBOX BASE ========== */
+input[type="checkbox"].label-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #0c66e4;
+  cursor: pointer;
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideFromRight {
+  from { transform: translateX(60px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 900px) {
+  .task-details-grid { grid-template-columns: 1fr; grid-template-rows: 57px auto auto; }
+  .grid-sidebar { grid-column: 1; border-left: none; border-top: 1px solid #e4e6ea; }
+  .meta-row { flex-direction: column; }
+}
 
