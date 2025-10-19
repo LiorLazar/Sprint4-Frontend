@@ -29,21 +29,29 @@
 }
 
 .logo {
-    >svg {
-        border-radius: 0.25rem;
-        font-size: 14px;
-        line-height: 20px;
-        width: 75px;
-        overflow: visible;
-        height: 32px;
-        box-sizing: border-box;
-        padding: 4px 8px;
-        margin-top: 4px;
-        margin-left: 4px;
-        display: inline-block;
-        color: var(--header-logo-clr1);
-        cursor: pointer;
+    >a {
+        >svg {
+            border-radius: 0.25rem;
+            font-size: 14px;
+            line-height: 20px;
+            width: 75px;
+            overflow: visible;
+            height: 32px;
+            box-sizing: border-box;
+            padding: 4px 8px;
+            margin-top: 4px;
+            margin-left: 4px;
+            display: inline-block;
+            color: var(--header-logo-clr1);
+            cursor: pointer;
+
+            &:hover {
+                background-color: var(--header-bckgrd-clr1);
+                width: 30%;
+            }
+        }
     }
+
 }
 
 .search-bar {
