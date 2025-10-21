@@ -6,7 +6,7 @@ export function Workspace({ boards }) {
             <h1 className='workspace-title'>YOUR WORKSPACES</h1>
             <div className="workspace-header">
                 <div className="workspace-info">
-                    <span>{/*Workspace*/}</span>
+                    <span>My Workspace</span>
                 </div>
                 <div className="workspace-actions">
                     <button className="workspace-btn">
