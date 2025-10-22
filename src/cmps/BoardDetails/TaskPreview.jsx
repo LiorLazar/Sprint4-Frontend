@@ -8,6 +8,7 @@ export function TaskPreview({ task, onTaskClick }) {
     return boardMembers.find(member => member.id === memberId)
   }
 
+  // ======== DATE ========
   function parseDate(value) {
     if (!value && value !== 0) return null
     const dateObj = typeof value === "number" ? new Date(value) : new Date(String(value))
@@ -30,20 +31,33 @@ export function TaskPreview({ task, onTaskClick }) {
     return "upcoming"
   }
 
-  const dueLabel = formatDueDate(task?.dueDate)
-  const dueClass = getDueClass(task?.dueDate)
-  const checklist = task?.checklist
-  const hasChecklist =
-    checklist &&
-    typeof checklist.done === "number" &&
-    typeof checklist.total === "number" &&
-    checklist.total > 0
+  // ======== CHECKLIST ========
+  function getChecklistSummary(task) {
+    if (!task.checklists || !task.checklists.length) return null
+    let done = 0
+    let total = 0
+    for (const list of task.checklists) {
+      for (const item of list.items) {
+        total++
+        if (item.done) done++
+      }
+    }
+    if (total === 0) return null
+    return { done, total }
+  }
 
+  const checklistSummary = getChecklistSummary(task)
+  const hasChecklist = checklistSummary !== null
+
+  // ======== MEMBERS ========
   const allMembers = task?.members?.map(getMemberDetails).filter(Boolean) || []
   const isManyMembers = allMembers.length > 2
-
   const visibleMembers = allMembers.slice(0, 3)
   const hiddenCount = allMembers.length - visibleMembers.length
+
+  // ======== DUE DATE ========
+  const dueLabel = formatDueDate(task?.dueDate)
+  const dueClass = getDueClass(task?.dueDate)
 
   return (
     <div
@@ -87,77 +101,45 @@ export function TaskPreview({ task, onTaskClick }) {
           {icons.editCard}
         </button>
 
-        {(dueLabel || hasChecklist || allMembers.length > 0) && (
-          <div
-            className={`task-meta-below ${isManyMembers ? "multi-line" : ""}`}
-            style={{ width: "100%" }}
-          >
-            <div
-              className="meta-top-row"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                flexWrap: "wrap",
-              }}
-            >
-              {dueLabel && (
-                <div
-                  className={`task-due-container ${dueClass}`}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    borderRadius: "4px",
-                    padding: "2px 6px",
-                  }}
-                >
-                  <span className="task-due-icon">{icons.clock}</span>
-                  <span>{dueLabel}</span>
+        {(dueLabel || hasChecklist || task.description || allMembers.length > 0) && (
+          <div className={`task-meta-below ${isManyMembers ? "multi-line" : ""}`}>
+            <div className="meta-top-row">
 
-                  {hasChecklist && (
-                    <div
-                      className="task-checklist-inline"
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "4px",
-                        marginLeft: "4px",
-                      }}
-                    >
-                      <span className="icon">{icons.checklistItem}</span>
-                      <span>{`${checklist.done}/${checklist.total}`}</span>
-                    </div>
-                  )}
-                </div>
-              )}
+              {/* LEFT SIDE META GROUP */}
+              <div className="meta-left">
+                {/* DUE DATE */}
+                {dueLabel && (
+                  <div className={`task-due-container ${dueClass}`}>
+                    <span className="task-due-icon">{icons.clock}</span>
+                    <span>{dueLabel}</span>
+                  </div>
+                )}
 
-              {!dueLabel && hasChecklist && (
-                <div
-                  className="task-checklist-status"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                    borderRadius: "4px",
-                    padding: "2px 6px",
-                  }}
-                >
-                  <span className="icon">{icons.checklistItem}</span>
-                  <span>{`${checklist.done}/${checklist.total}`}</span>
-                </div>
-              )}
+                {/* CHECKLIST */}
+                {hasChecklist && (
+                  <div
+                    className={`task-checklist-inline ${
+                      checklistSummary.done === checklistSummary.total
+                        ? "completed"
+                        : "in-progress"
+                    }`}
+                  >
+                    <span className="icon">{icons.checklistItem}</span>
+                    <span>{`${checklistSummary.done}/${checklistSummary.total}`}</span>
+                  </div>
+                )}
 
-              {!isManyMembers && (
-                <div
-                  className="task-members-inline"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginLeft: "auto",
-                    gap: "4px",
-                  }}
-                >
+                {/* DESCRIPTION ICON */}
+                {task.description && task.description.trim() && (
+                  <div className="task-desc-icon" title="Has description">
+                    {icons.cardDescriptions}
+                  </div>
+                )}
+              </div>
+
+              {/* RIGHT SIDE MEMBERS */}
+              {!isManyMembers && allMembers.length > 0 && (
+                <div className="task-members-inline">
                   {visibleMembers.map(member => (
                     <span
                       key={member.id}
@@ -175,6 +157,7 @@ export function TaskPreview({ task, onTaskClick }) {
               )}
             </div>
 
+            {/* MEMBERS BELOW */}
             {isManyMembers && (
               <div className="task-members-below">
                 {visibleMembers.map(member => (
