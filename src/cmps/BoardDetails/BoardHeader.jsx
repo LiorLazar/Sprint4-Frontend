@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 
@@ -12,7 +12,6 @@ import { loadBoards } from '../../store/actions/board.actions'
 
 export function BoardHeader() {
     const { boardId } = useParams()
-    const dispatch = useDispatch()
     const boards = useSelector(storeState => storeState.boardModule.boards)
     const currentBoard = boards.find(board => board._id === boardId)
     const starred = currentBoard?.isStarred || false
