@@ -24,14 +24,16 @@ export function BoardHeader() {
     return (
         <section className="board-header-container">
             <span className="board-name">{currentBoard.title}</span>
-            <div className="collaborators flex">
-                <img src={edenImg} alt="Eden Avgi" className="collaborator-img" />
-                <img src={golanImg} alt="Golan Asraf" className="collaborator-img" />
-                <img src={liorImg} alt="Lior Lazar" className="collaborator-img" />
+            <div className='board-header-items'>
+                <div className="collaborators flex">
+                    <img src={edenImg} alt="Eden Avgi" className="collaborator-img" />
+                    <img src={golanImg} alt="Golan Asraf" className="collaborator-img" />
+                    <img src={liorImg} alt="Lior Lazar" className="collaborator-img" />
+                </div>
+                <span className={starred ? 'starred' : 'not-starred'}>
+                    {starred ? icons.starFilled : icons.star}
+                </span>
             </div>
-            <span className={starred ? 'starred' : 'not-starred'}>
-                {starred ? icons.starFilled : icons.star}
-            </span>
-        </section>
+        </section >
     )
 }
