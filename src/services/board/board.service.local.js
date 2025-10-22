@@ -10,86 +10,62 @@ export const boardService = {
     save,
     remove,
     updateRecentlyViewed,
-    _createRandomBoard,
+    updateTask,
     getEmptyBoard,
     getEmptyList,
     getEmptyTask,
     createDemoBoard,
-    addChecklistToTask,
-    updateChecklistItem,
-    removeChecklist,
+    _createRandomBoard,
 }
 
 window.cs = boardService
 
 async function query() {
     let boards = await storageService.query(STORAGE_KEY)
-    if (!boards || !boards.length) {
-        const savedBoard = await storageService.post(STORAGE_KEY, createDemoBoard())
-        boards = [savedBoard]
+    if (!boards?.length) {
+        const demo = createDemoBoard()
+        const saved = await storageService.post(STORAGE_KEY, demo)
+        boards = [saved]
     }
     return boards
 }
 
-async function getById(boardId) {
+function getById(boardId) {
     return storageService.get(STORAGE_KEY, boardId)
 }
 
-async function save(board) {
-    if (board._id) return storageService.put(STORAGE_KEY, board)
-    else return storageService.post(STORAGE_KEY, board)
+function save(board) {
+    return board._id
+        ? storageService.put(STORAGE_KEY, board)
+        : storageService.post(STORAGE_KEY, board)
 }
 
-async function remove(boardId) {
+function remove(boardId) {
     return storageService.remove(STORAGE_KEY, boardId)
 }
 
 async function updateRecentlyViewed(boardId) {
     const board = await getById(boardId)
-    if (!board) return null
+    if (!board) throw new Error('Board not found')
     board.recentlyViewed = new Date().toISOString()
-    await storageService.put(STORAGE_KEY, board)
-    return board
+    return save(board)
 }
 
-async function addChecklistToTask(boardId, listId, taskId, checklistData) {
-    const board = await getById(boardId)
-    const list = board.lists.find(l => l.id === listId)
-    if (!list) throw new Error('List not found')
-    const task = list.tasks.find(t => t.id === taskId)
-    if (!task) throw new Error('Task not found')
-    const newChecklist = {
-        id: utilService.makeId(),
-        title: checklistData.title || 'Checklist',
-        items: [],
-    }
-    task.checklists = task.checklists || []
-    task.checklists.push(newChecklist)
-    await save(board)
-    return board
-}
 
-async function updateChecklistItem(boardId, listId, taskId, checklistId, updatedItem) {
+async function updateTask(boardId, updatedTask) {
     const board = await getById(boardId)
-    const list = board.lists.find(l => l.id === listId)
-    const task = list?.tasks.find(t => t.id === taskId)
-    const checklist = task?.checklists?.find(cl => cl.id === checklistId)
-    if (!checklist) throw new Error('Checklist not found')
-    const idx = checklist.items.findIndex(i => i.id === updatedItem.id)
-    if (idx !== -1) checklist.items[idx] = updatedItem
-    else checklist.items.push(updatedItem)
-    await save(board)
-    return board
-}
+    if (!board) throw new Error('Board not found')
 
-async function removeChecklist(boardId, listId, taskId, checklistId) {
-    const board = await getById(boardId)
-    const list = board.lists.find(l => l.id === listId)
-    const task = list?.tasks.find(t => t.id === taskId)
-    if (!task?.checklists) return board
-    task.checklists = task.checklists.filter(cl => cl.id !== checklistId)
-    await save(board)
-    return board
+    const newLists = board.lists.map(list => ({
+        ...list,
+        tasks: list.tasks.map(task =>
+            task.id === updatedTask.id ? { ...task, ...updatedTask } : task
+        ),
+    }))
+
+    const updatedBoard = { ...board, lists: newLists }
+    await save(updatedBoard)
+    return updatedBoard
 }
 
 function getEmptyBoard() {
@@ -103,6 +79,7 @@ function getEmptyBoard() {
         members: [],
         lists: [],
         activities: [],
+        recentlyViewed: null,
         createdAt: Date.now(),
     }
 }
@@ -135,7 +112,7 @@ function createDemoBoard() {
 
 async function _createRandomBoard() {
     const board = getEmptyBoard()
-    board.title = 'New Random Board'
+    board.title = 'Random Board'
     board.style.backgroundColor = '#ffb84d'
-    return await save(board)
+    return save(board)
 }
