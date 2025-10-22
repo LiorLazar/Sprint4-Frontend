@@ -27,9 +27,6 @@
 @import 'cmps/board/TaskDetails.css';
 @import 'cmps/board/TaskPreview.css';
 
-@import "cmps/car/CarList";
-@import "cmps/car/CarPreview";
-@import "cmps/car/CarFilter";
 
 @import "cmps/review/ReviewEdit";
 @import "cmps/review/ReviewList";

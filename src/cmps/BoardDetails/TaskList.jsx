@@ -35,9 +35,8 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList, onT
     const t = newTitle.trim()
     if (!t) return
     onAddCard(list.id, t)
-    setNewTitle("") // ננקה את השדה
+    setNewTitle("")
 
-    // נגלול בעדינות כך שכל אזור ההוספה (כולל הכפתורים) יהיה גלוי
     setTimeout(() => {
       addFormRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
     }, 50)

@@ -1,15 +1,11 @@
 import { icons } from "../SvgIcons.jsx"
+import { boardMembers, labelPalette } from '../../services/data.js'
 
 export function TaskPreview({ task, onTaskClick }) {
   const backgroundColor = task.style?.backgroundColor || "#fff"
 
-  const labelPalette = {
-    green: "#61bd4f",
-    yellow: "#f2d600",
-    orange: "#ff9f1a",
-    red: "#eb5a46",
-    purple: "#c377e0",
-    blue: "#0079bf",
+  function getMemberDetails(memberId) {
+    return boardMembers.find(member => member.id === memberId)
   }
 
   function parseDate(value) {
@@ -43,12 +39,28 @@ export function TaskPreview({ task, onTaskClick }) {
     typeof checklist.total === "number" &&
     checklist.total > 0
 
+  const allMembers = task?.members?.map(getMemberDetails).filter(Boolean) || []
+  const isManyMembers = allMembers.length > 2
+
+  const visibleMembers = allMembers.slice(0, 3)
+  const hiddenCount = allMembers.length - visibleMembers.length
+
   return (
     <div
       className="task-preview"
       onClick={() => onTaskClick(task)}
       style={{ backgroundColor }}
     >
+      {task.attachment?.url && (
+        <div className="task-cover-preview">
+          <img
+            src={task.attachment.url}
+            alt="Task cover"
+            className="task-cover-image"
+          />
+        </div>
+      )}
+
       {task.labels?.length > 0 && (
         <div className="preview-labels-bar">
           {task.labels.map(labelId => (
@@ -75,31 +87,109 @@ export function TaskPreview({ task, onTaskClick }) {
           {icons.editCard}
         </button>
 
-        {(dueLabel || hasChecklist) && (
-          <div className="task-meta-below" style={{ width: "100%" }}>
-            {dueLabel && (
-              <div className={`task-due-container ${dueClass}`}>
-                <span className="task-due-icon">{icons.clock}</span>
-                <span>{dueLabel}</span>
-              </div>
-            )}
+        {(dueLabel || hasChecklist || allMembers.length > 0) && (
+          <div
+            className={`task-meta-below ${isManyMembers ? "multi-line" : ""}`}
+            style={{ width: "100%" }}
+          >
+            <div
+              className="meta-top-row"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                flexWrap: "wrap",
+              }}
+            >
+              {dueLabel && (
+                <div
+                  className={`task-due-container ${dueClass}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    borderRadius: "4px",
+                    padding: "2px 6px",
+                  }}
+                >
+                  <span className="task-due-icon">{icons.clock}</span>
+                  <span>{dueLabel}</span>
 
-            {hasChecklist && (
-              <div
-                className="task-checklist-status"
-                style={{
-                  marginTop: "4px",
-                  fontSize: "12px",
-                  color: "#6b778c",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                }}
-              >
-                <span style={{ display: "inline-flex", alignItems: "center" }}>
-                  {icons.checklistItem}
-                </span>
-                <span>{`${checklist.done}/${checklist.total}`}</span>
+                  {hasChecklist && (
+                    <div
+                      className="task-checklist-inline"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        marginLeft: "4px",
+                      }}
+                    >
+                      <span className="icon">{icons.checklistItem}</span>
+                      <span>{`${checklist.done}/${checklist.total}`}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {!dueLabel && hasChecklist && (
+                <div
+                  className="task-checklist-status"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    borderRadius: "4px",
+                    padding: "2px 6px",
+                  }}
+                >
+                  <span className="icon">{icons.checklistItem}</span>
+                  <span>{`${checklist.done}/${checklist.total}`}</span>
+                </div>
+              )}
+
+              {!isManyMembers && (
+                <div
+                  className="task-members-inline"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginLeft: "auto",
+                    gap: "4px",
+                  }}
+                >
+                  {visibleMembers.map(member => (
+                    <span
+                      key={member.id}
+                      className="member-avatar"
+                      style={{ backgroundColor: member.color }}
+                      title={member.name}
+                    >
+                      {member.initials}
+                    </span>
+                  ))}
+                  {hiddenCount > 0 && (
+                    <span className="member-avatar more">{`+${hiddenCount}`}</span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {isManyMembers && (
+              <div className="task-members-below">
+                {visibleMembers.map(member => (
+                  <span
+                    key={member.id}
+                    className="member-avatar"
+                    style={{ backgroundColor: member.color }}
+                    title={member.name}
+                  >
+                    {member.initials}
+                  </span>
+                ))}
+                {hiddenCount > 0 && (
+                  <span className="member-avatar more">{`+${hiddenCount}`}</span>
+                )}
               </div>
             )}
           </div>

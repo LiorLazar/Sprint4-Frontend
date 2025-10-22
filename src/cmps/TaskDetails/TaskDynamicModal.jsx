@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { icons } from '../SvgIcons.jsx'
+import { boardMembers, labelPalette } from '../../services/data.js'
 
 export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
   const [date, setDate] = useState(task?.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : '')
@@ -7,28 +8,12 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
   const [checklistTitle, setChecklistTitle] = useState('Checklist')
   const [copyFrom, setCopyFrom] = useState('(none)')
   const [link, setLink] = useState('')
-  const [displayText, setDisplayText] = useState('')
   const [labels, setLabels] = useState(task?.labels || [])
   const [members, setMembers] = useState(task?.members || [])
-
-  const boardMembers = [
-    { id: 'ea', name: 'Eden Avgi', initials: 'EA', color: '#1f845a' },
-    { id: 'ga', name: 'Golan Asraf', initials: 'GA', color: '#0c66e4' },
-    { id: 'll', name: 'Lior Lazar', initials: 'LL', color: '#1d7aFC' },
-    { id: 'r', name: 'Reut Ery', initials: 'R', color: '#8270db' },
-  ]
-
-  const labelPalette = [
-    { id: 'green', color: '#61bd4f' },
-    { id: 'yellow', color: '#f2d600' },
-    { id: 'orange', color: '#ff9f1a' },
-    { id: 'red', color: '#eb5a46' },
-    { id: 'purple', color: '#c377e0' },
-    { id: 'blue', color: '#0079bf' },
-  ]
+  const [previewUrl, setPreviewUrl] = useState(null)
 
   const boxRef = useRef(null)
-  const [position, setPosition] = useState({ top: 100, left: 100, width: 360 })
+  const [position, setPosition] = useState({ top: 100, left: 100 })
 
   useEffect(() => {
     if (!anchor) return
@@ -48,83 +33,90 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
   }, [onClose])
 
   function toggleLabel(labelId) {
-    setLabels(prevLabels =>
-      prevLabels.includes(labelId)
-        ? prevLabels.filter(existingLabel => existingLabel !== labelId)
-        : [...prevLabels, labelId]
-    )
+    setLabels(prev => {
+      const updated = prev.includes(labelId)
+        ? prev.filter(id => id !== labelId)
+        : [...prev, labelId]
+      onSave({ labels: updated })
+      return updated
+    })
   }
 
   function toggleMember(memberId) {
-    setMembers(prevMembers =>
-      prevMembers.includes(memberId)
-        ? prevMembers.filter(existingMember => existingMember !== memberId)
-        : [...prevMembers, memberId]
-    )
+    setMembers(prev => {
+      const updated = prev.includes(memberId)
+        ? prev.filter(id => id !== memberId)
+        : [...prev, memberId]
+      onSave({ members: updated })
+      return updated
+    })
   }
 
   function saveDates() {
-    if (!date) {
-      onSave({ dueDate: null })
-      return
-    }
-    onSave({ dueDate: new Date(date).toISOString(), dueReminder: reminder })
+    if (!date) onSave({ dueDate: null, dueReminder: null })
+    else onSave({ dueDate: new Date(date).toISOString(), dueReminder: reminder })
+    onClose()
   }
 
   function saveChecklist() {
     const newChecklist = {
       id: crypto.randomUUID(),
-      title: checklistTitle,
+      title: checklistTitle || 'Checklist',
       items: [],
       copiedFrom: copyFrom,
     }
     onSave({ checklists: [...(task.checklists || []), newChecklist] })
+    onClose()
   }
 
-  function saveLabels() {
-    onSave({ labels })
-  }
-
-  function saveMembers() {
-    onSave({ members })
-  }
-
-  function attach() {
-    if (!link && !displayText) return onClose()
+  function attachImage() {
+    if (!link.trim()) return
     const newAttachment = {
       id: crypto.randomUUID(),
-      url: link,
-      text: displayText,
+      url: link.trim(),
       createdAt: Date.now(),
     }
-    onSave({ attachments: [...(task.attachments || []), newAttachment] })
+    onSave({ attachment: newAttachment })
+    onClose()
+  }
+
+  function handleFileUpload(ev) {
+    const file = ev.target.files[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = e => {
+      setPreviewUrl(e.target.result)
+      onSave({
+        attachment: {
+          id: crypto.randomUUID(),
+          url: e.target.result,
+          name: file.name,
+          createdAt: Date.now(),
+        }
+      })
+      onClose()
+    }
+    reader.readAsDataURL(file)
   }
 
   function getHeaderText() {
     switch (type) {
-      case 'labels':
-        return 'Labels'
-      case 'checklist':
-        return 'Add checklist'
-      case 'members':
-        return 'Members'
-      case 'attachments':
-        return 'Attach'
-      case 'dates':
-      default:
-        return 'Dates'
+      case 'labels': return 'Labels'
+      case 'checklist': return 'Add checklist'
+      case 'members': return 'Members'
+      case 'attachments': return 'Add image'
+      case 'dates': default: return 'Dates'
     }
   }
 
+  const cardMembers = boardMembers.filter(m => members.includes(m.id))
+  const otherMembers = boardMembers.filter(m => !members.includes(m.id))
+
   return (
     <div className="submodal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      {/* LABELS */}
       {type === 'labels' && (
-        <div
-          ref={boxRef}
-          className="smart-modal"
-          style={{ position: 'fixed', top: position.top, left: position.left, width: position.width }}
-          onClick={e => e.stopPropagation()}
-        >
+        <div ref={boxRef} className="smart-modal" style={{ position: 'fixed', ...position }}>
           <div className="smart-modal-header">
             <h2>{getHeaderText()}</h2>
             <button className="close-btn" onClick={onClose}>{icons.xButton}</button>
@@ -132,69 +124,64 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
           <div className="smart-modal-body">
             <input className="modal-input" placeholder="Search labels..." />
             <div className="labels-list">
-              {labelPalette.map(label => (
-                <label key={label.id} className="label-row">
-                  <input
-                    type="checkbox"
-                    checked={labels.includes(label.id)}
-                    onChange={() => toggleLabel(label.id)}
-                  />
-                  <span className="label-long" style={{ backgroundColor: label.color }} />
-                  <button className="label-edit">{icons.pencil}</button>
-                </label>
-              ))}
+              {Object.entries(labelPalette).map(([labelId, color]) => {
+                const isSelected = labels.includes(labelId)
+                return (
+                  <div
+                    key={labelId}
+                    className={`label-row ${isSelected ? 'selected' : ''}`}
+                    onClick={() => toggleLabel(labelId)}
+                  >
+                    <input type="checkbox" checked={isSelected} readOnly className="label-checkbox" />
+                    <div className="label-long" style={{ backgroundColor: color }}></div>
+                    <button className="label-edit">{icons.editCard}</button>
+                  </div>
+                )
+              })}
             </div>
-          </div>
-          <div className="smart-modal-footer">
-            <button className="primary" onClick={saveLabels}>Save</button>
-            <button className="secondary" onClick={onClose}>Cancel</button>
           </div>
         </div>
       )}
 
+      {/* MEMBERS */}
       {type === 'members' && (
-        <div
-          ref={boxRef}
-          className="smart-modal"
-          style={{ position: 'fixed', top: position.top, left: position.left, width: position.width }}
-          onClick={e => e.stopPropagation()}
-        >
+        <div ref={boxRef} className="smart-modal" style={{ position: 'fixed', ...position }}>
           <div className="smart-modal-header">
             <h2>{getHeaderText()}</h2>
             <button className="close-btn" onClick={onClose}>{icons.xButton}</button>
           </div>
           <div className="smart-modal-body">
             <input className="modal-input" placeholder="Search members" />
+            {cardMembers.length > 0 && (
+              <>
+                <div className="members-section-title">Card members</div>
+                <div className="members-list-rows">
+                  {cardMembers.map(member => (
+                    <button key={member.id} className="member-row selected" onClick={() => toggleMember(member.id)}>
+                      <span className="avatar sm" style={{ backgroundColor: member.color }}>{member.initials}</span>
+                      <span className="member-name">{member.name}</span>
+                      <span className="remove-icon">{icons.xButton}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+            <div className="members-section-title">Board members</div>
             <div className="members-list-rows">
-              {boardMembers.map(member => (
-                <label key={member.id} className="member-row">
-                  <input
-                    type="checkbox"
-                    checked={members.includes(member.id)}
-                    onChange={() => toggleMember(member.id)}
-                  />
-                  <span className="avatar sm" style={{ backgroundColor: member.color }}>
-                    {member.initials}
-                  </span>
+              {otherMembers.map(member => (
+                <button key={member.id} className="member-row" onClick={() => toggleMember(member.id)}>
+                  <span className="avatar sm" style={{ backgroundColor: member.color }}>{member.initials}</span>
                   <span className="member-name">{member.name}</span>
-                </label>
+                </button>
               ))}
             </div>
-          </div>
-          <div className="smart-modal-footer">
-            <button className="primary" onClick={saveMembers}>Save</button>
-            <button className="secondary" onClick={onClose}>Cancel</button>
           </div>
         </div>
       )}
 
+      {/* CHECKLIST */}
       {type === 'checklist' && (
-        <div
-          ref={boxRef}
-          className="smart-modal"
-          style={{ position: 'fixed', top: position.top, left: position.left, width: position.width }}
-          onClick={e => e.stopPropagation()}
-        >
+        <div ref={boxRef} className="smart-modal" style={{ position: 'fixed', ...position }}>
           <div className="smart-modal-header">
             <h2>{getHeaderText()}</h2>
             <button className="close-btn" onClick={onClose}>{icons.xButton}</button>
@@ -206,14 +193,6 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
               value={checklistTitle}
               onChange={e => setChecklistTitle(e.target.value)}
             />
-            <label>Copy items from...</label>
-            <select className="modal-input" value={copyFrom} onChange={e => setCopyFrom(e.target.value)}>
-              <option>(none)</option>
-              <optgroup label="App Header"><option>Sub Tasks</option></optgroup>
-              <optgroup label="Board Details"><option>Sub Tasks</option></optgroup>
-              <optgroup label="Board Header"><option>Sub Tasks</option></optgroup>
-              <optgroup label="Board Index"><option>Sub Tasks</option></optgroup>
-            </select>
           </div>
           <div className="smart-modal-footer">
             <button className="primary" onClick={saveChecklist}>Add</button>
@@ -222,55 +201,39 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
         </div>
       )}
 
+      {/* ATTACHMENTS */}
       {type === 'attachments' && (
-        <div
-          ref={boxRef}
-          className="smart-modal"
-          style={{ position: 'fixed', top: position.top, left: position.left, width: position.width }}
-          onClick={e => e.stopPropagation()}
-        >
+        <div ref={boxRef} className="smart-modal" style={{ position: 'fixed', ...position }}>
           <div className="smart-modal-header">
             <h2>{getHeaderText()}</h2>
             <button className="close-btn" onClick={onClose}>{icons.xButton}</button>
           </div>
           <div className="smart-modal-body">
-            <div className="drawer-group">
-              <div className="drawer-title">Attach a file from your computer</div>
-              <div className="drawer-sub">You can also drag and drop files to upload them.</div>
-              <button className="file-btn">Choose a file</button>
-            </div>
-            <div className="drawer-group">
-              <div className="drawer-title">Search or paste a link</div>
-              <input
-                className="modal-input"
-                placeholder="Find recent links or paste a new link"
-                value={link}
-                onChange={e => setLink(e.target.value)}
-              />
-              <div className="drawer-title">Display text (optional)</div>
-              <input
-                className="modal-input"
-                placeholder="Text to display"
-                value={displayText}
-                onChange={e => setDisplayText(e.target.value)}
-              />
-              <div className="drawer-hint">Give this link a title or description</div>
-            </div>
+            <label>Search or paste a link</label>
+            <input
+              className="modal-input"
+              placeholder="find recent links or paste a new link"
+              value={link}
+              onChange={e => setLink(e.target.value)}
+            />
+            <label>Attach a file from your computer</label>
+            <input type="file" accept="image/*" onChange={handleFileUpload} />
+            {previewUrl && (
+              <div className="image-preview">
+                <img src={previewUrl} alt="preview" />
+              </div>
+            )}
           </div>
           <div className="smart-modal-footer">
-            <button className="primary" onClick={attach}>Attach</button>
+            <button className="primary" onClick={attachImage}>Attach</button>
             <button className="secondary" onClick={onClose}>Cancel</button>
           </div>
         </div>
       )}
 
+      {/* DATES */}
       {(type === 'dates' || !type) && (
-        <div
-          ref={boxRef}
-          className="smart-modal"
-          style={{ position: 'fixed', top: position.top, left: position.left, width: position.width }}
-          onClick={e => e.stopPropagation()}
-        >
+        <div ref={boxRef} className="smart-modal" style={{ position: 'fixed', ...position }}>
           <div className="smart-modal-header">
             <h2>{getHeaderText()}</h2>
             <button className="close-btn" onClick={onClose}>{icons.xButton}</button>
@@ -297,22 +260,10 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
                 }}
               />
             </div>
-            <label>Set due date reminder</label>
-            <select className="modal-input" value={reminder} onChange={e => setReminder(e.target.value)}>
-              <option value="none">None</option>
-              <option value="1h">1 hour before</option>
-              <option value="1d">1 day before</option>
-              <option value="2d">2 days before</option>
-              <option value="1w">1 week before</option>
-            </select>
-            <div className="reminder-note">
-              Reminders will be sent to all members and watchers of this card.
-            </div>
           </div>
           <div className="smart-modal-footer">
             <button className="primary" onClick={saveDates}>Save</button>
             <button className="secondary" onClick={onClose}>Cancel</button>
-            <button className="link-danger" onClick={() => { onSave({ dueDate: null }); onClose(); }}>Remove</button>
           </div>
         </div>
       )}
