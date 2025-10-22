@@ -22,6 +22,45 @@
   position: relative;
   z-index: 2000;
 }
+/* ===== GLOBAL FONT RESET ===== */
+body, button, input, textarea, select, .task-details-modal, .task-details-modal * {
+  font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui",
+    "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* ===== SECTION TITLES & HEADERS ===== */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #292a2e;
+  }
+  
+  .section-title {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color:#505258;
+}
+
+  .details-title {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color:#292A2E;
+}
+
+.details-title svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-right: 6px;
+  color:#292A2E;
+}
+
 
 .close-btn {
   position: absolute;
@@ -53,7 +92,6 @@
   height: auto;
   max-height: 188px;
   object-fit: contain;
-  /* border-radius: 8px; */
   background: #fff;
   margin-bottom: 4px;
 }
@@ -153,12 +191,18 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
+  flex-wrap: wrap;
 }
+
 .label-chip-fat {
   height: 32px;
   width: 48px;
   border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .add-label-inline {
   width: 32px;
   height: 32px;
@@ -171,9 +215,71 @@
   justify-content: center;
   cursor: pointer;
   line-height: 1;
+  transition: background 0.2s ease;
 }
-.add-label-inline:hover {
-  background: #ebecf0;
+
+
+/* ========== LABELS LIST MODAL ========== */
+.labels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label-row {
+  display: flex;
+  align-items: center;       
+  justify-content: space-between;
+  gap: 10px;
+  padding: 2px 4px;
+}
+
+
+/* Checkbox */
+.label-checkbox {
+  accent-color: #0c66e4;
+  flex-shrink: 0;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.label-long {
+  flex: 1;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.label-long:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.label-edit {
+  background: none;
+  border: none;
+  color:#292A2E;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease;
+}
+
+.label-edit svg {
+  width: 16px;
+  height: 16px;
+  color:#292A2E;
+}
+
+.label-edit:hover {
+  background-color: rgba(9, 30, 66, 0.08);
+  border-radius: 4px;
 }
 
 /* ========== DUE DATE ========== */
@@ -182,6 +288,7 @@
   align-items: center;
   gap: 8px;
 }
+
 .due-pill {
   display: inline-flex;
   align-items: center;
@@ -189,7 +296,8 @@
   gap: 6px;
   padding: 8px 10px;
   border-radius: 6px;
-  font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
+  font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui",
+    "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
   font-size: 14px;
   font-weight: 500;
   border: none;
@@ -197,10 +305,13 @@
   line-height: 1;
   background: #f0f1f3;
   color: #292a2e;
+  transition: background 0.2s ease;
 }
+
 .due-pill:hover {
   background: #e1e2e5;
 }
+
 .due-badge.overdue {
   color: #ae2e24;
   background-color: #f0f1f3;
@@ -208,17 +319,20 @@
   padding: 2px;
   font-weight: 500;
 }
+
 .due-badge.due-soon {
   background-color: #f9cb23;
   border-radius: 2px;
   padding: 2px;
   font-weight: 500;
 }
+
 .due-badge {
   margin-left: 6px;
   font-weight: 400;
   font-size: 12px;
 }
+
 
 /* ========== DYNAMIC MODALS (LABELS / MEMBERS / DATES / CHECKLIST / ATTACHMENTS) ========== */
 .submodal-overlay {
@@ -248,7 +362,7 @@
   color: #172b4d;
 }
 .smart-modal-body {
-  padding: 16px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -298,11 +412,7 @@
   align-items: center;
   gap: 10px;
 }
-.label-long {
-  height: 32px;
-  width: 212px;
-  border-radius: 4px;
-}
+
 .label-edit {
   background: none;
   border: none;
@@ -325,6 +435,7 @@
   align-items: center;
   gap: 10px;
   background-color: white;
+  padding: 2px 6px;
 }
 .member-row:hover {
   background-color: #e9eaec;
@@ -339,7 +450,8 @@
   margin-left: auto;
 }
 
-/* ========== CHECKLIST ========== */
+/* ========== CHECKLIST SECTION ========== */
+.checklist-section { margin-top: 16px; }
 .checklist-header {
   display: flex;
   align-items: center;
@@ -350,79 +462,203 @@
   height: 6px;
   background: #f4f5f7;
   border-radius: 3px;
-  margin-bottom: 10px;
+  margin: 8px 0 12px;
   overflow: hidden;
 }
 .progress-bar-fill {
   height: 100%;
-  background: #0c66e4;
+  background: #000000;
   border-radius: 3px;
   transition: width 0.2s ease;
 }
 .checklist-items {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
+
 .checklist-item {
   display: flex;
+  align-items: flex-start; 
+  gap: 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
   align-items: center;
-  gap: 6px;
-  padding: 4px 0;
 }
-.checklist-item input[type="checkbox"] {
+.checklist-item:hover { 
+  background-color: #f4f5f7;
+cursor: pointer;
+border-radius: 8px;
+}
+
+/* Checkbox */
+.checklist-item input[type='checkbox'] {
   width: 18px;
   height: 18px;
-  cursor: pointer;
+  flex-shrink: 0;
   accent-color: #0c66e4;
+  cursor: pointer;
 }
-.checklist-item span {
+
+/* Text */
+.checklist-item-text {
   flex: 1;
   font-size: 14px;
   color: #172b4d;
+  word-break: break-word;
 }
+
+/* Remove button */
 .remove-item-btn {
+  background: none;
   border: none;
-  background: transparent;
+  color: #6b778c;
   cursor: pointer;
-  color: #5e6c84;
   padding: 4px;
+  border-radius: 4px;
+ 
 }
 .remove-item-btn:hover {
+  background-color: rgba(9, 30, 66, 0.08);
   color: #172b4d;
 }
-.add-item-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
+
+
+
+
+.checklist-item.editing {
+  display: grid;
+  grid-template-columns: 26px 1fr;    
+  grid-template-rows: auto auto;      
+  grid-template-areas:
+    "cb input"
+    "cb actions";
+  column-gap: 8px;
+  row-gap: 8px;
+  background-color: #f4f5f7;
+  border-radius: 6px;
+  padding: 8px;
+  align-items: start;
 }
-.add-item-row input {
+
+.checklist-item.editing > input[type='checkbox'] {
+  grid-area: cb;
+  margin-top: 4px;
+}
+
+.edit-item-wrapper {
+  grid-area: input;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.edit-item-input {
+  flex: 1;
+  width: 100%;
+  border: 2px solid #0c66e4;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 14px;
+  background-color: #fff;
+  outline: none;
+  resize: none;
+  line-height: 1.4;
+}
+.edit-item-input:focus {
+  box-shadow: 0 0 0 2px rgba(12, 102, 228, 0.2);
+}
+
+.edit-actions {
+  grid-area: actions;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 0;     
+}
+
+.btn-save {
+  background-color: #0c66e4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.btn-save:hover { background-color: #0055cc; }
+
+.btn-cancel {
+  background: none;
+  border: none;
+  color: #172b4d;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* ===== ADD ITEM ===== */
+.add-item-btn {
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #292a2e;
+  padding: 6px 8px;
+  background-color: #f0f1f3;
+  cursor: pointer;
+  width: fit-content;
+  margin-left: 34px; 
+}
+.add-item-btn:hover { background-color: #dedddd; }
+
+.add-item-row.open {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.add-item-row.open input {
   flex: 1;
   padding: 8px;
   border: 1px solid #dfe1e6;
   border-radius: 4px;
   outline: none;
+  font-size: 14px;
 }
-.add-item-row input:focus {
-  border-color: #0079bf;
-  box-shadow: 0 0 0 2px rgba(0, 121, 191, 0.2);
+.add-item-row.open input:focus {
+  border: 2px solid #0c66e4;
 }
-.add-item-row button {
-  background: #0c66e4;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-.add-item-row button:hover {
-  background: #0959c9;
+.add-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ========== ATTACHMENTS SECTION ========== */
 .attachments-section {
   margin-top: 16px;
 }
+
+.upload-container {
+  margin-top: 6px;
+}
+
+.upload-btn {
+  display: inline-block;
+  background-color: #f0f1f3;
+  color: #000000;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.upload-btn:hover {
+  background-color: rgb(195, 201, 210);
+}
+
 .attachments-list {
   display: flex;
   flex-direction: column;
@@ -511,10 +747,11 @@
 
 /* ========== CHECKBOX BASE ========== */
 input[type="checkbox"].label-checkbox {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   accent-color: #0c66e4;
   cursor: pointer;
+  
 }
 
 /* ========== ANIMATIONS ========== */
@@ -534,3 +771,33 @@ input[type="checkbox"].label-checkbox {
   .meta-row { flex-direction: column; }
 }
 
+
+/* ====== PROGRESS BAR (CHECKLIST) ====== */
+.progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.progress-percent {
+  font-size: 12px;
+  color: #172b4d;
+  font-weight: 400;
+  text-align:left;
+}
+
+.progress-bar-container {
+  flex: 1;
+  height: 6px;
+  background: #f4f5f7;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #000;
+  border-radius: 3px;
+  transition: width 0.2s ease;
+}

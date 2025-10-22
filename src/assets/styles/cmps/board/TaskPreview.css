@@ -1,18 +1,16 @@
 .task-preview {
   position: relative;
   background: #fff;
-padding: 8px 0.4rem 6px;
+  padding: 8px 0.4rem 6px;
   border: 2.5px solid transparent;
   border-radius: 10px;
-  box-shadow:
-    0 1.5px 0 rgba(9, 30, 66, 0.187),
-    0 0 2px rgba(9, 30, 66, 0.2);
+  box-shadow: 0 1.5px 0 rgba(9, 30, 66, 0.187), 0 0 2px rgba(9, 30, 66, 0.2);
   font-size: 14px;
   color: #172b4d;
   cursor: pointer;
   margin-bottom: 4px;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   overflow-wrap: anywhere;
 }
 
@@ -26,30 +24,54 @@ padding: 8px 0.4rem 6px;
   width: 100%;
 }
 
-/* ===== DUE DATE INSIDE TASK PREVIEW ===== */
+/* ===== META STRUCTURE ===== */
+.task-meta-below {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.meta-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+
+.meta-left {
+  display: flex;
+  align-items: center;
+  gap:10px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ===== DUE DATE ===== */
 .task-due-container {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: 6px;
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 12px;
   font-weight: 400;
-  line-height: 1.2;
+  line-height: 1;
   transition: background-color 0.25s, color 0.25s;
 }
 
 .task-due-container.overdue {
-  background:#fcddd9;
+  background: #fcddd9;
   color: #cc4231;
 }
-
 .task-due-container.due-soon {
-  background-color:#fec731;
+  background-color: #fec731;
   color: #000000;
 }
-
 .task-due-container.upcoming {
   color: #292A2E;
 }
@@ -58,77 +80,68 @@ padding: 8px 0.4rem 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
-  font-size: 12px;
+  width: 14px;
+  height: 14px;
   color: inherit;
 }
 
-.edit-task-btn {
-  position: absolute;
-  bottom: 8px;
-  right: 4px;
-  width: 24px;              
-  height: 24px;
+/* ===== CHECKLIST ===== */
+.task-checklist-inline {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  color: #5e6c84;
+  line-height: 1; 
+}
+
+.task-checklist-inline svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  display: block; 
+  position: relative;
+  top: 0.5px; 
+}
+
+.task-checklist-inline.completed {
+  background-color: #5b7f24;
+  color: white;
+  border-radius: 4px;
+  padding: 4px;
+}
+.task-checklist-inline.in-progress {
+  color: #172b4d;
+}
+
+/* ===== DESCRIPTION ===== */
+.task-desc-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  border: none;
-  border-radius: 50%;
-  color: #000;
-  padding: 0;
-  opacity: 0;
-  z-index: 1;
+  color: #292A2E;
+  height: 20px;
 }
-
-.task-preview:hover .edit-task-btn {
-  opacity: 1;
-}
-
-.edit-task-btn:hover {
-  background: rgba(0, 0, 0, 0.053);
-}
-
-.edit-task-btn svg {
-  width: 14px;             
+.task-desc-icon svg {
+  width: 14px;
   height: 14px;
-  fill: currentColor;
-  display: block;
-  pointer-events: none;
 }
 
-.task-meta-below {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-    margin-top: 6px;
-
-}
-
-.meta-top-row {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 6px;
-  width: 100%;
-}
-
-.task-checklist-status {
+/* ===== MEMBERS ===== */
+.task-members-inline {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
-  color: #6b778c;
-}
-
-.task-members-inline {
-  display: flex;
-  align-items: flex-end; 
-  gap: 4px;
   margin-left: auto;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-self: flex-start;
 }
 
+.task-members-inline > * {
+  margin-top: 2px; 
+}
 
 .task-members-below {
   display: flex;
@@ -147,10 +160,40 @@ padding: 8px 0.4rem 6px;
   align-items: center;
   justify-content: center;
 }
-
 .member-avatar.more {
   background-color: #dfe1e6;
   color: #172b4d;
   font-weight: 500;
 }
 
+/* ===== EDIT BUTTON ===== */
+.edit-task-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: #000;
+  padding: 0;
+  opacity: 0;
+  z-index: 1;
+}
+.task-preview:hover .edit-task-btn {
+  opacity: 1;
+}
+.edit-task-btn:hover {
+  background: rgba(0, 0, 0, 0.053);
+}
+.edit-task-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  display: block;
+  pointer-events: none;
+}
