@@ -159,7 +159,7 @@ body.modal-open > *:not(.task-details-overlay) {
 .action-button {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   padding: 6px 12px;
   border: 1px solid #dfe1e6;
   border-radius: 4px;
@@ -259,3 +259,5 @@ body.modal-open > *:not(.task-details-overlay) {
     padding-top: 16px;
   }
 }
+
+/* ========== DUE DATE ========== */ .due-inline-controls { display: flex; align-items: center; gap: 8px; } .due-pill { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 10px; border-radius: 6px; font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif; font-size: 14px; font-weight: 500; border: none; cursor: pointer; line-height: 1; background: #f0f1f3; color: #292a2e; transition: background 0.2s ease; } .due-pill:hover { background: #e1e2e5; } .due-badge.overdue { color: #ae2e24; background-color: #f0f1f3; border-radius: 2px; padding: 2px; font-weight: 500; } .due-badge.due-soon { background-color: #f9cb23; border-radius: 2px; padding: 2px; font-weight: 500; } .due-badge { margin-left: 6px; font-weight: 400; font-size: 12px; }
