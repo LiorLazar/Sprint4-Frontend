@@ -65,9 +65,32 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
 
   const formattedDate = getFormattedDate(dueDate)
   const selectedMemberObjects = boardMembers.filter(m => members?.includes(m.id))
+  const attachments = task.attachments || []
 
-  // ====== CHECKLIST LOGIC ======
+  // ===== ATTACHMENTS =====
+  function removeAttachment(id) {
+    const updated = attachments.filter(a => a.id !== id)
+    handleSave({ attachments: updated })
+  }
 
+  function setCover(id) {
+    const updated = attachments.map(a => ({
+      ...a,
+      isCover: a.id === id,
+    }))
+    handleSave({ attachments: updated })
+  }
+
+  function formatAttachmentDate(ts) {
+    return new Date(ts).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }
+
+  // ===== CHECKLIST LOGIC =====
   function getChecklistProgress(list) {
     if (!list.items?.length) return 0
     const done = list.items.filter(i => i.done).length
@@ -136,8 +159,7 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
     })
   }
 
-  // ====== RENDER ======
-
+  // ===== RENDER =====
   return (
     <div
       className="task-details-overlay"
@@ -148,9 +170,14 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
           {icons.xButton}
         </button>
 
-        {task.attachment?.url && (
+        {/* COVER IMAGE */}
+        {attachments.some(a => a.isCover) && (
           <div className="task-cover">
-            <img src={task.attachment.url} alt="Task cover" className="task-cover-image" />
+            <img
+              src={attachments.find(a => a.isCover).url}
+              alt="Cover"
+              className="task-cover-image"
+            />
           </div>
         )}
 
@@ -176,59 +203,137 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
 
             {/* ===== ACTION BUTTONS ===== */}
             <div className="action-buttons-row">
-              <button className="action-button" onClick={() => setActiveModal('checklist')}>
-                <span className="action-button-icon">{icons.checklistItem}</span> Checklist
-              </button>
+              {!task.checklists?.length && (
+                <button className="action-button" onClick={() => setActiveModal('checklist')}>
+                  <span className="action-button-icon">{icons.checklistItem}</span> Checklist
+                </button>
+              )}
               <button className="action-button" onClick={() => setActiveModal('attachments')}>
                 <span className="action-button-icon">{icons.attachment}</span> Attachment
               </button>
-              <button className="action-button" onClick={() => setActiveModal('labels')}>
-                <span className="action-button-icon">{icons.labels}</span> Labels
-              </button>
-              <button className="action-button" onClick={() => setActiveModal('dates')}>
-                <span className="action-button-icon">{icons.clock}</span> Dates
-              </button>
-              <button className="action-button" onClick={() => setActiveModal('members')}>
-                <span className="action-button-icon">{icons.member}</span> Members
-              </button>
+              {!labels?.length && (
+                <button className="action-button" onClick={() => setActiveModal('labels')}>
+                  <span className="action-button-icon">{icons.labels}</span> Labels
+                </button>
+              )}
+              {!dueDate && (
+                <button className="action-button" onClick={() => setActiveModal('dates')}>
+                  <span className="action-button-icon">{icons.clock}</span> Dates
+                </button>
+              )}
+              {!members?.length && (
+                <button className="action-button" onClick={() => setActiveModal('members')}>
+                  <span className="action-button-icon">{icons.members}</span> Members
+                </button>
+              )}
             </div>
 
-            {/* ===== MEMBERS & LABELS ===== */}
             <div className="meta-row">
-              {members.length > 0 && (
-                <div className="members-inline">
-                  <div className="section-header tight">
+               {/* MEMBERS */}
+                {members.length > 0 && 
+                ( <div className="members-inline">
+                   <div className="section-header tight"> 
                     <h3 className="section-title">Members</h3>
-                  </div>
-                  <div className="members-inline-list">
-                    {selectedMemberObjects.map(member => (
-                      <span key={member.id} className="avatar sm" style={{ backgroundColor: member.color }}>
-                        {member.initials}
-                      </span>
-                    ))}
-                    <button className="add-member-inline" onClick={() => setActiveModal('members')}>
-                      {icons.plus}
-                    </button>
-                  </div>
-                </div>
-              )}
+                </div> 
+                     <div className="members-inline-list">
+                       {selectedMemberObjects.map(member => ( <span key={member.id}
+                        className="avatar sm" style={{ backgroundColor: member.color }}> 
+                        {member.initials} </span> ))} 
+                        <button className="add-member-inline" 
+                        onClick={() => setActiveModal('members')}> {icons.plus}
+                           </button> 
+                 </div> 
+               </div> )}
 
-              {labels?.length > 0 && (
-                <div className="labels-inline">
-                  <div className="section-header tight">
-                    <h3 className="section-title">Labels</h3>
-                  </div>
-                  <div className="labels-inline-list">
-                    {labels.map(labelId => (
-                      <span key={labelId} className="label-chip-fat" style={{ backgroundColor: labelPalette[labelId] }} />
-                    ))}
-                    <button className="add-label-inline" onClick={() => setActiveModal('labels')}>
-                      {icons.plus}
-                    </button>
-                  </div>
+            {/* ===== LABELS ===== */}
+            {labels?.length > 0 && (
+
+              <div className="labels-inline">
+                <div className="section-header tight">
+                  <h3 className="section-title">Labels</h3>
                 </div>
-              )}
-            </div>
+                <div className="labels-inline-list">
+                  {labels.map(labelId => (
+                    <span
+                    key={labelId}
+                      className="label-chip-fat"
+                      style={{ backgroundColor: labelPalette[labelId] }}
+                    />
+                  ))}
+                  <button className="add-label-inline" onClick={() => setActiveModal('labels')}>
+                    {icons.plus}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ===== DUE DATE ===== */}
+            {dueDate && (
+              <div className="dates-inline">
+                <div className="section-header tight">
+                  <h3 className="section-title">Due date</h3>
+                </div>
+                <div className="due-inline-controls">
+                  <button className="due-pill" onClick={() => setActiveModal('dates')}>
+                    {formattedDate}
+                    <span className={`due-badge ${getDueClass(dueDate)}`}>
+                      {getDueClass(dueDate)}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            )}
+           </div>
+
+            {/* ===== ATTACHMENTS ===== */}
+            {attachments.length > 0 && (
+              <div className="attachments-section">
+                <div className="details-title">
+                  {icons.attachment}
+                  <h3 className="details-title">Attachments</h3>
+                  <button className="add-btn" onClick={() => setActiveModal('attachments')}>
+                    Add
+                  </button>
+                </div>
+
+                <div className="attachments-list">
+                  {attachments.map(att => (
+                    <div key={att.id} className="attachment-row">
+                      <img src={att.url} alt={att.name} className="attachment-thumb" />
+                      <div className="attachment-info">
+                        <div className="file-name">{att.name || 'Unnamed file'}</div>
+                        <div className="file-meta">
+                          Added {formatAttachmentDate(att.createdAt)}
+                          {att.isCover && (
+                            <span className="file-meta-cover">
+                              • {icons.image} Cover
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="attachment-actions">
+                        <button
+                          className="btn-save"
+                          onClick={() => setCover(att.id)}
+                          title="Set as cover"
+                        >
+                          {icons.image} Cover
+                        </button>
+
+                        <button
+                          className="btn-save"
+                          onClick={() => removeAttachment(att.id)}
+                          title="Delete attachment"
+                        >
+                          {icons.trash} Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* ===== DESCRIPTION ===== */}
             <div className="task-section description-section">
@@ -271,12 +376,10 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
 
                   <div className="checklist-items">
                     {checklist.items.map(item => {
-                      const isEditing = activeEditor?.type === 'edit' && activeEditor.id === item.id
+                      const isEditing =
+                        activeEditor?.type === 'edit' && activeEditor.id === item.id
                       return (
-                        <div
-                          key={item.id}
-                          className={`checklist-item ${isEditing ? 'editing' : ''}`}
-                        >
+                        <div key={item.id} className={`checklist-item ${isEditing ? 'editing' : ''}`}>
                           <input
                             type="checkbox"
                             checked={item.done}
@@ -290,18 +393,31 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
                                   type="text"
                                   className="edit-item-input"
                                   value={activeEditor.text}
-                                  onChange={e => setActiveEditor({ ...activeEditor, text: e.target.value })}
+                                  onChange={e =>
+                                    setActiveEditor({ ...activeEditor, text: e.target.value })
+                                  }
                                   autoFocus
                                 />
-                                <button className="remove-item-btn in-edit" onClick={() => removeChecklistItem(checklist.id, item.id)}>
+                                <button
+                                  className="remove-item-btn in-edit"
+                                  onClick={() => removeChecklistItem(checklist.id, item.id)}
+                                >
                                   {icons.xButton}
                                 </button>
                               </div>
                               <div className="edit-actions">
-                                <button className="btn-save" onClick={() => saveEditedItem(checklist.id, item.id, activeEditor.text)}>
+                                <button
+                                  className="btn-save"
+                                  onClick={() =>
+                                    saveEditedItem(checklist.id, item.id, activeEditor.text)
+                                  }
+                                >
                                   Save
                                 </button>
-                                <button className="btn-cancel" onClick={() => setActiveEditor(null)}>
+                                <button
+                                  className="btn-cancel"
+                                  onClick={() => setActiveEditor(null)}
+                                >
                                   Cancel
                                 </button>
                               </div>
@@ -310,11 +426,20 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
                             <>
                               <span
                                 className="checklist-item-text"
-                                onClick={() => setActiveEditor({ type: 'edit', id: item.id, text: item.text })}
+                                onClick={() =>
+                                  setActiveEditor({
+                                    type: 'edit',
+                                    id: item.id,
+                                    text: item.text,
+                                  })
+                                }
                               >
                                 {item.text}
                               </span>
-                              <button className="remove-item-btn" onClick={() => removeChecklistItem(checklist.id, item.id)}>
+                              <button
+                                className="remove-item-btn"
+                                onClick={() => removeChecklistItem(checklist.id, item.id)}
+                              >
                                 {icons.xButton}
                               </button>
                             </>
@@ -329,14 +454,25 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
                           className="modal-input"
                           placeholder="Add an item"
                           value={newItemText[checklist.id] || ''}
-                          onChange={ev => setNewItemText({ ...newItemText, [checklist.id]: ev.target.value })}
+                          onChange={ev =>
+                            setNewItemText({
+                              ...newItemText,
+                              [checklist.id]: ev.target.value,
+                            })
+                          }
                           onKeyDown={ev => {
-                            if (ev.key === 'Enter') addChecklistItem(checklist.id, newItemText[checklist.id])
+                            if (ev.key === 'Enter')
+                              addChecklistItem(checklist.id, newItemText[checklist.id])
                           }}
                           autoFocus
                         />
                         <div className="add-item-actions">
-                          <button className="btn-save" onClick={() => addChecklistItem(checklist.id, newItemText[checklist.id])}>
+                          <button
+                            className="btn-save"
+                            onClick={() =>
+                              addChecklistItem(checklist.id, newItemText[checklist.id])
+                            }
+                          >
                             Add
                           </button>
                           <button className="btn-cancel" onClick={() => setActiveEditor(null)}>
@@ -345,7 +481,10 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
                         </div>
                       </div>
                     ) : (
-                      <button className="add-item-btn" onClick={() => setActiveEditor({ type: 'add', id: checklist.id })}>
+                      <button
+                        className="add-item-btn"
+                        onClick={() => setActiveEditor({ type: 'add', id: checklist.id })}
+                      >
                         Add an item
                       </button>
                     )}
@@ -368,7 +507,6 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
           </div>
         </div>
 
-        {/* ===== DYNAMIC MODALS ===== */}
         {activeModal && (
           <TaskDynamicModal
             type={activeModal}
