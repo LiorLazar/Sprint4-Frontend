@@ -74,34 +74,41 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
   }
 
   // ====== ATTACHMENT ======
-  function attachImage() {
-    if (!link.trim()) return
-    const newAttachment = {
-      id: utilService.makeId(),
-      url: link.trim(),
-      createdAt: Date.now(),
-    }
-    updateFields({ attachment: newAttachment })
-    onClose()
+function attachImage() {
+  if (!link.trim()) return
+  const existing = Array.isArray(task.attachments) ? task.attachments : []
+  const newAttachment = {
+    id: utilService.makeId(),
+    url: link.trim(),
+    name: link.split('/').pop(),
+    createdAt: Date.now(),
+    isCover: existing.length === 0 // הופכת לקאבר אוטומטית אם זו הראשונה
   }
 
-  function handleFileUpload(ev) {
-    const file = ev.target.files[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = e => {
-      const attachment = {
-        id:utilService.makeId(),
-        url: e.target.result,
-        name: file.name,
-        createdAt: Date.now(),
-      }
-      setPreviewUrl(e.target.result)
-      updateFields({ attachment })
-      onClose()
+  updateFields({ attachments: [...existing, newAttachment] })
+  onClose()
+}
+
+function handleFileUpload(ev) {
+  const file = ev.target.files[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = e => {
+    const existing = Array.isArray(task.attachments) ? task.attachments : []
+    const newAttachment = {
+      id: utilService.makeId(),
+      url: e.target.result,
+      name: file.name,
+      createdAt: Date.now(),
+      isCover: existing.length === 0 
     }
-    reader.readAsDataURL(file)
+    updateFields({ attachments: [...existing, newAttachment] })
+    onClose()
   }
+  reader.readAsDataURL(file)
+}
+
+
 
   function getHeaderText() {
     switch (type) {
@@ -193,7 +200,6 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
             </div>
             <div className="smart-modal-footer">
               <button className="primary" onClick={saveChecklist}>Add</button>
-              <button className="secondary" onClick={onClose}>Cancel</button>
             </div>
           </>
         )}
@@ -220,8 +226,8 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
               )}
             </div>
             <div className="smart-modal-footer">
-              <button className="primary" onClick={attachImage}>Attach</button>
               <button className="secondary" onClick={onClose}>Cancel</button>
+              <button className="primary" onClick={attachImage}>Insert</button>
             </div>
           </>
         )}
