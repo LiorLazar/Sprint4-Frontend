@@ -8,6 +8,12 @@ export function TaskPreview({ task, onTaskClick }) {
     return boardMembers.find(member => member.id === memberId)
   }
 
+  // ======== COVER IMAGE ========
+  const coverImage =
+    task.attachments?.find(att => att.isCover)?.url ||
+    task.attachments?.[0]?.url ||
+    task.attachment?.url // fallback ישן
+
   // ======== DATE ========
   function parseDate(value) {
     if (!value && value !== 0) return null
@@ -65,16 +71,18 @@ export function TaskPreview({ task, onTaskClick }) {
       onClick={() => onTaskClick(task)}
       style={{ backgroundColor }}
     >
-      {task.attachment?.url && (
+      {/* ===== COVER IMAGE ===== */}
+      {coverImage && (
         <div className="task-cover-preview">
           <img
-            src={task.attachment.url}
+            src={coverImage}
             alt="Task cover"
             className="task-cover-image"
           />
         </div>
       )}
 
+      {/* ===== LABELS BAR ===== */}
       {task.labels?.length > 0 && (
         <div className="preview-labels-bar">
           {task.labels.map(labelId => (
@@ -87,6 +95,7 @@ export function TaskPreview({ task, onTaskClick }) {
         </div>
       )}
 
+      {/* ===== CONTENT ===== */}
       <div className="task-content">
         <span className="task-title">{task.title}</span>
 
