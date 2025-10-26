@@ -1,11 +1,23 @@
 import { icons } from "../SvgIcons.jsx"
 import { boardMembers, labelPalette } from '../../services/data.js'
 
-export function TaskPreview({ task, onTaskClick }) {
+export function TaskPreview({ task, board, onTaskClick }) {
   const backgroundColor = task.style?.backgroundColor || "#fff"
 
   function getMemberDetails(memberId) {
     return boardMembers.find(member => member.id === memberId)
+  }
+
+  function getLabelColor(labelId) {
+    // First check board labels
+    const boardLabel = board?.labels?.find(l => l.id === labelId)
+    if (boardLabel) {
+      return boardLabel.color
+    }
+    
+    // Fallback to labelPalette
+    const labelData = labelPalette[labelId]
+    return typeof labelData === 'string' ? labelData : labelData?.color || '#gray'
   }
 
   // ======== COVER IMAGE ========
@@ -85,13 +97,17 @@ export function TaskPreview({ task, onTaskClick }) {
       {/* ===== LABELS BAR ===== */}
       {task.labels?.length > 0 && (
         <div className="preview-labels-bar">
-          {task.labels.map(labelId => (
-            <span
-              key={labelId}
-              className="preview-label-bar"
-              style={{ backgroundColor: labelPalette[labelId] }}
-            />
-          ))}
+          {task.labels.map(labelId => {
+            const color = getLabelColor(labelId)
+            
+            return (
+              <span
+                key={labelId}
+                className="preview-label-bar"
+                style={{ backgroundColor: color }}
+              />
+            )
+          })}
         </div>
       )}
 
