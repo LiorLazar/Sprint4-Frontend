@@ -29,6 +29,9 @@
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+
     >a {
         >svg {
             border-radius: 0.25rem;

@@ -2,44 +2,42 @@ import { useEffect, useRef, useState } from "react"
 import { icons } from "../SvgIcons.jsx"
 import { TaskPreview } from "./TaskPreview.jsx"
 
-export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList, onTaskClick }) {
+export function TaskList({ list, board, onAddCard, onCancelEmptyList, onRenameList, onTaskClick }) {
   const [isAdding, setIsAdding] = useState(false)
   const [newTitle, setNewTitle] = useState("")
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [titleEdit, setTitleEdit] = useState(list.title || "")
   const listRef = useRef(null)
+  const inputRef = useRef(null)
   const addFormRef = useRef(null)
 
   useEffect(() => {
     function onDocMouseDown(ev) {
       if (!listRef.current) return
-      if (listRef.current.contains(ev.target)) return
-      if (isAdding) {
+      const clickedInsideList = listRef.current.contains(ev.target)
+      const clickedInsideInput = inputRef.current?.contains(ev.target)
+
+      if (isAdding && !clickedInsideList) {
         setIsAdding(false)
         setNewTitle("")
       }
-      if (isEditingTitle) {
-        const trimmed = titleEdit.trim()
-        if (!trimmed && (list.tasks || []).length === 0) {
-          onCancelEmptyList?.(list.id)
-        }
-        setIsEditingTitle(false)
-        setTitleEdit(list.title || "")
+
+      if (isEditingTitle && !clickedInsideInput) {
+        handleSaveTitle()
       }
     }
+
     document.addEventListener("mousedown", onDocMouseDown, true)
     return () => document.removeEventListener("mousedown", onDocMouseDown, true)
-  }, [isAdding, isEditingTitle, list.id, (list.tasks || []).length, titleEdit, onCancelEmptyList, list.title])
+  }, [isAdding, isEditingTitle, titleEdit])
 
+  // ===== ADD CARD =====
   function handleAddCard() {
     const t = newTitle.trim()
     if (!t) return
     onAddCard(list.id, t)
     setNewTitle("")
-
-    setTimeout(() => {
-      addFormRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
-    }, 50)
+    setTimeout(() => addFormRef.current?.scrollIntoView({ behavior: "smooth" }), 50)
   }
 
   function handleCancelCard() {
@@ -57,46 +55,49 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList, onT
     setIsEditingTitle(false)
   }
 
+  useEffect(() => {
+    if (isEditingTitle && inputRef.current) {
+      inputRef.current.focus()
+      inputRef.current.select()
+    }
+  }, [isEditingTitle])
+
   const listBg = list.style?.backgroundColor || "#f1f2f4"
 
   return (
-    <div
-      className="tasks-list"
-      ref={listRef}
-      style={{ backgroundColor: listBg }}
-    >
-      {isEditingTitle ? (
-        <div className="list-title-editor">
-          <input
-            type="text"
-            className="list-title-input"
-            placeholder="Enter list name..."
-            value={titleEdit}
-            onChange={(e) => setTitleEdit(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSaveTitle()}
-            autoFocus
-          />
-        </div>
-      ) : (
-        <h3 onClick={() => setIsEditingTitle(true)} title="Click to edit">
-          {list.title}
-          <button className="list-actions-btn" title="List actions">
-            {icons.listActions}
-          </button>
-        </h3>
-      )}
+    <div className="tasks-list" ref={listRef} style={{ backgroundColor: listBg }}>
+      <div className="list-header">
+        <input
+          ref={inputRef}
+          type="text"
+          className={`list-title-input ${isEditingTitle ? "editing" : "readonly"}`}
+          value={titleEdit}
+          readOnly={!isEditingTitle}
+          onClick={() => setIsEditingTitle(true)}
+          onChange={(e) => setTitleEdit(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSaveTitle()}
+        />
+        <button
+          className={`list-actions-btn ${isEditingTitle ? "is-disabled" : ""}`}
+          title="List actions"
+          aria-disabled={isEditingTitle}
+        >
+          {icons.listActions}
+        </button>
+      </div>
 
       <div className="task-list">
         {(list.tasks || []).map((task, idx) => (
-          <TaskPreview 
-            key={task.id || `t_${idx}`} 
-            task={task} 
-            onTaskClick={onTaskClick || (() => console.warn('onTaskClick not provided to TaskList'))} 
+          <TaskPreview
+            key={task.id || `t_${idx}`}
+            task={task}
+            board={board}
+            onTaskClick={onTaskClick}
           />
         ))}
 
         {isAdding && (
-          <div className="add-card-form" ref={addFormRef} tabIndex={-1}>
+          <div className="add-card-form" ref={addFormRef}>
             <input
               type="text"
               className="task-preview-add-input"
@@ -118,11 +119,13 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList, onT
         )}
       </div>
 
-      {!isAdding && !isEditingTitle && (
-        <button className="add-task-btn" onClick={() => setIsAdding(true)}>
-          {icons.addCard} Add a card
-        </button>
-      )}
+      <div className="add-task-container">
+        {!isAdding && (
+          <button className="add-task-btn" onClick={() => setIsAdding(true)}>
+            {icons.addCard} Add a card
+          </button>
+        )}
+      </div>
     </div>
   )
 }

@@ -5,12 +5,14 @@ body { margin: 0; background: #838c91; }
     box-sizing: border-box;
 }
    
-body {
+ body {
     margin: 0 auto;
   font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui",
     "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;  
       color:#838c91;
 }
+
+
 
 
 
