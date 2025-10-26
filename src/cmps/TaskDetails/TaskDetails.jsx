@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react'
 import { icons } from '../SvgIcons.jsx'
 import { TaskDynamicModal } from './TaskDynamicModal.jsx'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 import { boardMembers, labelPalette } from '../../services/data.js'
 import './TaskModals.css'
 
-export function TaskDetails({ task, isOpen, onClose, onSave }) {
+export function TaskDetails({ task, isOpen, onClose, onSave, listTitle }) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [isEditingDescription, setIsEditingDescription] = useState(false)
+  const [editedDescription, setEditedDescription] = useState('')
   const [dueDate, setDueDate] = useState(null)
   const [labels, setLabels] = useState([])
   const [members, setMembers] = useState([])
@@ -32,13 +36,24 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
     const updatedTask = {
       ...task,
       title: title.trim(),
-      description: description.trim(),
+      description: description,
       dueDate,
       labels,
       members,
       ...updated,
     }
     onSave(updatedTask)
+  }
+
+    function saveDescription() {
+    setDescription(editedDescription)
+    handleSave({ description: editedDescription })
+    setIsEditingDescription(false)
+  }
+
+  function cancelDescriptionEdit() {
+    setEditedDescription(description)
+    setIsEditingDescription(false)
   }
 
   function getFormattedDate(dateValue) {
@@ -184,7 +199,7 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
         <div className="task-details-grid">
           <div className="grid-header">
             <div className="task-location">
-              in list <span className="list-name">Client Backlog</span>
+              in list <span className="list-name">{listTitle}</span>
             </div>
           </div>
 
@@ -229,43 +244,61 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
             </div>
 
             <div className="meta-row">
-               {/* MEMBERS */}
-                {members.length > 0 && 
-                ( <div className="members-inline">
-                   <div className="section-header tight"> 
-                    <h3 className="section-title">Members</h3>
-                </div> 
-                     <div className="members-inline-list">
-                       {selectedMemberObjects.map(member => ( <span key={member.id}
-                        className="avatar sm" style={{ backgroundColor: member.color }}> 
-                        {member.initials} </span> ))} 
-                        <button className="add-member-inline" 
-                        onClick={() => setActiveModal('members')}> {icons.plus}
-                           </button> 
-                 </div> 
-               </div> )}
+      {/* MEMBERS */}
+{members.length > 0 && (
+  <div className="members-inline">
+    <div className="section-header tight">
+      <h3 className="section-title">Members</h3>
+    </div>
 
-            {/* ===== LABELS ===== */}
-            {labels?.length > 0 && (
+    <div className="members-inline-list">
+      {selectedMemberObjects.map(member => (
+        <span
+          key={member.id}
+          className="avatar sm"
+          style={{ backgroundColor: member.color }}
+        >
+          {member.initials}
+        </span>
+      ))}
 
-              <div className="labels-inline">
-                <div className="section-header tight">
-                  <h3 className="section-title">Labels</h3>
-                </div>
-                <div className="labels-inline-list">
-                  {labels.map(labelId => (
-                    <span
-                    key={labelId}
-                      className="label-chip-fat"
-                      style={{ backgroundColor: labelPalette[labelId] }}
-                    />
-                  ))}
-                  <button className="add-label-inline" onClick={() => setActiveModal('labels')}>
-                    {icons.plus}
-                  </button>
-                </div>
-              </div>
-            )}
+      <button
+        className="add-member-inline"
+        onClick={() => setActiveModal('members')}
+      >
+        <span className="icon-plus">{icons.plus}</span>
+      </button>
+    </div>
+  </div>
+)}
+
+
+{/* ===== LABELS ===== */}
+{labels?.length > 0 && (
+  <div className="labels-inline">
+    <div className="section-header tight">
+      <h3 className="section-title">Labels</h3>
+    </div>
+
+    <div className="labels-inline-list">
+      {labels.map(labelId => (
+        <span
+          key={labelId}
+          className="label-chip-fat"
+          style={{ backgroundColor: labelPalette[labelId] }}
+        />
+      ))}
+
+      <button
+        className="add-label-inline"
+        onClick={() => setActiveModal('labels')}
+      >
+        <span className="icon-plus">{icons.plus}</span>
+      </button>
+    </div>
+  </div>
+)}
+
 
             {/* ===== DUE DATE ===== */}
             {dueDate && (
@@ -335,20 +368,60 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
               </div>
             )}
 
-            {/* ===== DESCRIPTION ===== */}
-            <div className="task-section description-section">
-              <div className="details-title">
-                <div>{icons.cardDescriptions}</div>
-                <h3 className="details-title">Description</h3>
-              </div>
-              <textarea
-                className="description-textarea"
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                onBlur={() => handleSave()}
-                placeholder="Add a more detailed description..."
-              />
-            </div>
+           {/* ===== DESCRIPTION ===== */}
+<div className="task-section description-section">
+  <div className="details-title">
+    <div>{icons.cardDescriptions}</div>
+    <h3 className="details-title">Description</h3>
+    {!isEditingDescription && (
+      <button
+        className="delete-btn"
+        onClick={() => {
+          setEditedDescription(description)
+          setIsEditingDescription(true)
+        }}
+      >
+        Edit
+      </button>
+    )}
+  </div>
+
+  {!isEditingDescription ? (
+    <div
+      className={`description-display ${!description ? 'empty' : ''}`}
+      onClick={() => setIsEditingDescription(true)}
+    >
+      {description ? (
+        <div
+          className="description-content"
+          dangerouslySetInnerHTML={{ __html: description }}
+        />
+      ) : (
+        <span className="placeholder-text">
+          Add a more detailed description...
+        </span>
+      )}
+    </div>
+  ) : (
+    <div className="description-editor-wrapper">
+      <ReactQuill
+        className="description-editor"
+        theme="snow"
+        value={editedDescription}
+        onChange={setEditedDescription}
+        placeholder="Add a more detailed description..."
+      />
+      <div className="description-actions">
+        <button className="btn-save" onClick={saveDescription}>
+          Save
+        </button>
+        <button className="btn-cancel" onClick={cancelDescriptionEdit}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  )}
+</div>
 
             {/* ===== CHECKLISTS ===== */}
             {task.checklists?.map(checklist => {
@@ -399,7 +472,7 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
                                   autoFocus
                                 />
                                 <button
-                                  className="remove-item-btn in-edit"
+                                  className="x-btn in-edit"
                                   onClick={() => removeChecklistItem(checklist.id, item.id)}
                                 >
                                   {icons.xButton}
