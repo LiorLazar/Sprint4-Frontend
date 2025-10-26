@@ -3,7 +3,7 @@ import { icons } from '../SvgIcons.jsx'
 import { boardMembers, labelPalette } from '../../services/data.js'
 import { utilService } from '../../services/util.service.js'
 
-export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
+export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave }) {
   const [localTask, setLocalTask] = useState(structuredClone(task))
   const [date, setDate] = useState(task?.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : '')
   const [reminder, setReminder] = useState(task?.dueReminder || '1d')
@@ -11,9 +11,29 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
   const [link, setLink] = useState('')
   const [previewUrl, setPreviewUrl] = useState(null)
   const [position, setPosition] = useState({ top: 100, left: 100 })
+  const [editingLabel, setEditingLabel] = useState(null)
+  const [labelTitle, setLabelTitle] = useState('')
+  const [selectedColor, setSelectedColor] = useState('')
   const boxRef = useRef(null)
 
   useEffect(() => setLocalTask(structuredClone(task)), [task])
+
+  useEffect(() => {
+    if (!labelPalette || Object.keys(labelPalette).length === 0) {
+      const savedPalette = localStorage.getItem('labelPalette')
+      if (savedPalette) {
+        try {
+          const parsed = JSON.parse(savedPalette)
+          setLabelPalette(parsed)
+        } catch (e) {
+          console.error('Failed to parse saved palette:', e)
+          setLabelPalette(originalLabelPalette)
+        }
+      } else {
+        setLabelPalette(originalLabelPalette)
+      }
+    }
+  }, [labelPalette])
 
   useEffect(() => {
     if (!anchor) return
@@ -26,11 +46,17 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
 
   useEffect(() => {
     function handleEscape(e) {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        if (editingLabel) {
+          setEditingLabel(null)
+        } else {
+          onClose()
+        }
+      }
     }
     window.addEventListener('keydown', handleEscape)
     return () => window.removeEventListener('keydown', handleEscape)
-  }, [onClose])
+  }, [onClose, editingLabel])
 
   // ====== UPDATE TASK FIELDS ======
   function updateFields(fields) {
@@ -47,7 +73,116 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
     updateFields({ labels: updatedLabels })
   }
 
-  // ====== MEMBERS ======
+  function openEditLabel(labelId, ev) {
+    ev.stopPropagation()
+    setEditingLabel(labelId)
+    
+    const boardLabel = board?.labels?.find(l => l.id === labelId)
+    if (boardLabel) {
+      setLabelTitle(boardLabel.title || '')
+      setSelectedColor(boardLabel.color || '')
+    } else {
+      const labelData = labelPalette[labelId]
+      if (labelData) {
+        const name = typeof labelData === 'object' ? labelData.name : ''
+        const color = typeof labelData === 'string' ? labelData : labelData.color
+        setLabelTitle(name)
+        setSelectedColor(color)
+      } else {
+        setLabelTitle('')
+        const firstColor = Object.values(labelPalette)[0]
+        const defaultColor = typeof firstColor === 'string' ? firstColor : firstColor.color
+        setSelectedColor(defaultColor)
+      }
+    }
+  }
+
+  function saveEditLabel() {
+    if (!editingLabel || !board) return
+    
+    const existingLabelIndex = board.labels?.findIndex(l => l.id === editingLabel)
+    
+    let updatedLabels
+    if (existingLabelIndex >= 0) {
+      updatedLabels = [...board.labels]
+      updatedLabels[existingLabelIndex] = {
+        ...updatedLabels[existingLabelIndex],
+        title: labelTitle,
+        color: selectedColor
+      }
+    } else {
+      const newLabel = {
+        id: editingLabel,
+        title: labelTitle,
+        color: selectedColor
+      }
+      updatedLabels = [...(board.labels || []), newLabel]
+    }
+    
+    if (onSave) {
+      onSave({ boardLabels: updatedLabels })
+    }
+    
+    console.log('Label saved to board successfully!')
+    setEditingLabel(null)
+    setLabelTitle('')
+    setSelectedColor('')
+  }
+
+  function deleteLabelHandler() {
+    if (!editingLabel || !board) return
+    
+    const updatedLabels = localTask.labels?.filter(id => id !== editingLabel) || []
+    updateFields({ labels: updatedLabels })
+    
+    const updatedBoardLabels = board.labels?.filter(l => l.id !== editingLabel) || []
+    
+    if (onSave) {
+      onSave({ boardLabels: updatedBoardLabels })
+    }
+    
+    console.log('Label deleted from board successfully!')
+    
+    setEditingLabel(null)
+    setLabelTitle('')
+    setSelectedColor('')
+  }
+
+  function createNewLabel() {
+    const newLabelId = utilService.makeId()
+    const firstColor = Object.values(labelPalette)[0]
+    const defaultColor = typeof firstColor === 'string' ? firstColor : firstColor.color
+    
+    setEditingLabel(newLabelId)
+    setLabelTitle('')
+    setSelectedColor(defaultColor)
+  }
+
+  function getLabelData(labelId) {
+    const boardLabel = board?.labels?.find(l => l.id === labelId)
+    if (boardLabel) {
+      return { color: boardLabel.color || '#gray', name: boardLabel.title || '' }
+    }
+    
+    const labelData = labelPalette[labelId]
+    if (typeof labelData === 'string') {
+      return { color: labelData, name: '' }
+    }
+    return labelData || { color: '#gray', name: '' }
+  }
+
+  function getBoardLabels() {
+    // Only return labels that exist on the board
+    if (!board?.labels || board.labels.length === 0) {
+      return []
+    }
+    
+    return board.labels.map(label => ({
+      id: label.id,
+      color: label.color,
+      name: label.title || ''
+    }))
+  }  // ====== MEMBERS ======
   function toggleMember(memberId) {
     const updatedMembers = localTask.members?.includes(memberId)
       ? localTask.members.filter(id => id !== memberId)
@@ -74,43 +209,42 @@ export function TaskDynamicModal({ type, task, anchor, onClose, onSave }) {
   }
 
   // ====== ATTACHMENT ======
-function attachImage() {
-  if (!link.trim()) return
-  const existing = Array.isArray(task.attachments) ? task.attachments : []
-  const newAttachment = {
-    id: utilService.makeId(),
-    url: link.trim(),
-    name: link.split('/').pop(),
-    createdAt: Date.now(),
-    isCover: existing.length === 0 // הופכת לקאבר אוטומטית אם זו הראשונה
-  }
-
-  updateFields({ attachments: [...existing, newAttachment] })
-  onClose()
-}
-
-function handleFileUpload(ev) {
-  const file = ev.target.files[0]
-  if (!file) return
-  const reader = new FileReader()
-  reader.onload = e => {
+  function attachImage() {
+    if (!link.trim()) return
     const existing = Array.isArray(task.attachments) ? task.attachments : []
     const newAttachment = {
       id: utilService.makeId(),
-      url: e.target.result,
-      name: file.name,
+      url: link.trim(),
+      name: link.split('/').pop(),
       createdAt: Date.now(),
-      isCover: existing.length === 0 
+      isCover: existing.length === 0
     }
+
     updateFields({ attachments: [...existing, newAttachment] })
     onClose()
   }
-  reader.readAsDataURL(file)
-}
 
-
+  function handleFileUpload(ev) {
+    const file = ev.target.files[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = e => {
+      const existing = Array.isArray(task.attachments) ? task.attachments : []
+      const newAttachment = {
+        id: utilService.makeId(),
+        url: e.target.result,
+        name: file.name,
+        createdAt: Date.now(),
+        isCover: existing.length === 0
+      }
+      updateFields({ attachments: [...existing, newAttachment] })
+      onClose()
+    }
+    reader.readAsDataURL(file)
+  }
 
   function getHeaderText() {
+    if (editingLabel) return 'Edit label'
     switch (type) {
       case 'labels': return 'Labels'
       case 'checklist': return 'Add checklist'
@@ -131,29 +265,93 @@ function handleFileUpload(ev) {
       <div ref={boxRef} className="smart-modal" style={{ position: 'fixed', ...position }}>
         <div className="smart-modal-header">
           <h2>{getHeaderText()}</h2>
+          {editingLabel && (
+            <button className="back-btn" onClick={() => setEditingLabel(null)}>
+              {icons.arrowLeft}
+            </button>
+          )}
           <button className="close-btn" onClick={onClose}>{icons.xButton}</button>
         </div>
 
+        {/* EDIT LABEL MODAL */}
+        {editingLabel && (
+          <>
+            <div className="smart-modal-body">
+              <div className="label-preview-top">
+                <div
+                  className="label-preview-bar"
+                  style={{ backgroundColor: selectedColor || '#e2e4e9' }}
+                >
+                  {labelTitle && <span className="preview-text">{labelTitle}</span>}
+                </div>
+              </div>
+
+              <label className="field-label">Title</label>
+              <input
+                className="modal-input"
+                value={labelTitle}
+                onChange={e => setLabelTitle(e.target.value)}
+                placeholder=""
+              />
+
+              <label className="field-label">Select a color</label>
+              <div className="color-grid">
+                {Object.entries(labelPalette).map(([colorId, labelData]) => {
+                  const color = typeof labelData === 'string' ? labelData : labelData.color
+                  return (
+                    <div
+                      key={colorId}
+                      className={`color-option ${color === selectedColor ? 'selected' : ''}`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => setSelectedColor(color)}
+                    />
+                  )
+                })}
+              </div>
+
+              <button className="remove-color-btn" onClick={() => setSelectedColor('')}>
+                {icons.xButton} Remove color
+              </button>
+            </div>
+            <div className="smart-modal-footer label-footer">
+              <button className="btn-save-label" onClick={saveEditLabel}>Save</button>
+              <button className="btn-delete-label" onClick={deleteLabelHandler}>Delete</button>
+            </div>
+          </>
+        )}
+
         {/* LABELS */}
-        {type === 'labels' && (
+        {type === 'labels' && !editingLabel && (
           <div className="smart-modal-body">
             <input className="modal-input" placeholder="Search labels..." />
             <div className="labels-list">
-              {Object.entries(labelPalette).map(([labelId, color]) => {
-                const isSelected = localTask.labels?.includes(labelId)
+              {getBoardLabels().map(label => {
+                const isSelected = localTask.labels?.includes(label.id)
+
                 return (
                   <div
-                    key={labelId}
+                    key={label.id}
                     className={`label-row ${isSelected ? 'selected' : ''}`}
-                    onClick={() => toggleLabel(labelId)}
+                    onClick={() => toggleLabel(label.id)}
                   >
                     <input type="checkbox" checked={isSelected} readOnly className="label-checkbox" />
-                    <div className="label-long" style={{ backgroundColor: color }}></div>
-                    <button className="label-edit">{icons.editLabel}</button>
+                    <div className="label-long" style={{ backgroundColor: label.color }}>
+                      {label.name && <span className="label-name">{label.name}</span>}
+                    </div>
+                    <button
+                      className="label-edit"
+                      onClick={(ev) => openEditLabel(label.id, ev)}
+                    >
+                      {icons.editLabel}
+                    </button>
                   </div>
                 )
               })}
             </div>
+
+            <button className="create-label-btn" onClick={createNewLabel}>
+              Create a new label
+            </button>
           </div>
         )}
 

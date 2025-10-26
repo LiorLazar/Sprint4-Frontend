@@ -78,10 +78,16 @@ export function BoardDetails() {
   }
 
   // ===== SAVE / DELETE TASK =====
-  async function handleSaveTask(updatedTask) {
+  async function handleSaveTask(updatedTask, updatedBoard = null) {
     if (!localBoard) return
 
-    const updatedBoard = {
+    if (updatedBoard) {
+      setLocalBoard(updatedBoard)
+      await updateBoard(updatedBoard)
+      return
+    }
+
+    const updatedBoardWithTask = {
       ...localBoard,
       lists: localBoard.lists.map(list => ({
         ...list,
@@ -91,8 +97,8 @@ export function BoardDetails() {
       }))
     }
 
-    setLocalBoard(updatedBoard)
-    await updateBoard(updatedBoard)
+    setLocalBoard(updatedBoardWithTask)
+    await updateBoard(updatedBoardWithTask)
   }
 
   async function handleDeleteTask(taskIdToDelete) {
@@ -212,6 +218,7 @@ export function BoardDetails() {
           <TaskList
             key={list.id}
             list={list}
+            board={localBoard}
             onCancelEmptyList={handleCancelEmptyList}
             onRenameList={handleRenameList}
             onAddCard={handleAddCard}
@@ -248,6 +255,7 @@ export function BoardDetails() {
 
       <TaskDetails
         task={selectedTask}
+        board={localBoard}
         isOpen={isTaskDetailsOpen}
         onClose={handleCloseTaskDetails}
         onSave={handleSaveTask}

@@ -225,10 +225,18 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  padding: 0 12px;
 }
 .label-long:hover {
   opacity: 0.8;
   cursor: pointer;
+}
+
+.label-name {
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .label-edit {
@@ -398,6 +406,195 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
   height: 24px;
   display: grid;
   place-items: center;
+}
+
+/* ========== COLOR PALETTE GRID ========== */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  padding: 8px 0;
+}
+
+.color-option {
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.color-option:hover {
+  transform: scale(1.08);
+  opacity: 0.9;
+}
+
+.color-option.selected {
+  border: 3px solid #0c66e4;
+  transform: scale(1.05);
+}
+
+/* ========== LABEL PREVIEW AT TOP ========== */
+.label-preview-top {
+  margin-bottom: 16px;
+}
+
+.label-preview-bar {
+  width: 100%;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  min-height: 32px;
+}
+
+.preview-text {
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* ========== FIELD LABELS ========== */
+.field-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #44546f;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* ========== REMOVE COLOR BUTTON ========== */
+.remove-color-btn {
+  width: 100%;
+  padding: 6px 12px;
+  background-color: #091e420a;
+  color: #172b4d;
+  border: none;
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.remove-color-btn:hover {
+  background-color: #091e4214;
+}
+
+.remove-color-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ========== LABEL FOOTER BUTTONS ========== */
+.label-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  border-top: 1px solid #091e4224;
+}
+
+.btn-save-label {
+  background-color: #0c66e4;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-width: 60px;
+}
+
+.btn-save-label:hover {
+  background-color: #0055cc;
+}
+
+.btn-delete-label {
+  background-color: #ca3521;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-width: 60px;
+}
+
+.btn-delete-label:hover {
+  background-color: #ae2a19;
+}
+
+/* ========== CREATE LABEL BUTTON ========== */
+.create-label-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: #f0f1f3;
+  color: #172b4d;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 8px;
+}
+
+.create-label-btn:hover {
+  background-color: #e1e2e5;
+}
+
+/* ========== BACK BUTTON ========== */
+.back-btn {
+  position: absolute;
+  left: 12px;
+  background: none;
+  border: none;
+  color: #6b778c;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.back-btn:hover {
+  background-color: #e1e2e5;
+}
+
+.back-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ========== DANGER BUTTON ========== */
+.smart-modal-footer .danger {
+  background-color: #ca3521;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.smart-modal-footer .danger:hover {
+  background-color: #ae2a19;
 }
 
 /* ========== MEMBERS MODAL ========== */

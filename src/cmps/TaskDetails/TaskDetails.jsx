@@ -4,7 +4,7 @@ import { TaskDynamicModal } from './TaskDynamicModal.jsx'
 import { boardMembers, labelPalette } from '../../services/data.js'
 import './TaskModals.css'
 
-export function TaskDetails({ task, isOpen, onClose, onSave }) {
+export function TaskDetails({ task, board, isOpen, onClose, onSave }) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [dueDate, setDueDate] = useState(null)
@@ -28,7 +28,28 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
 
   if (!isOpen || !task) return null
 
+  function getLabelData(labelId) {
+    const boardLabel = board?.labels?.find(l => l.id === labelId)
+    if (boardLabel) {
+      return { color: boardLabel.color, name: boardLabel.title || '' }
+    }
+    
+    const labelData = labelPalette[labelId]
+    if (typeof labelData === 'string') {
+      return { color: labelData, name: '' }
+    }
+    return { color: labelData?.color || '#gray', name: labelData?.name || '' }
+  }
+
   function handleSave(updated = {}) {
+    if (updated.boardLabels) {
+      const updatedBoard = { ...board, labels: updated.boardLabels }
+      if (onSave) {
+        onSave({ ...task }, updatedBoard)
+      }
+      return
+    }
+    
     const updatedTask = {
       ...task,
       title: title.trim(),
@@ -101,11 +122,11 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
     const updated = task.checklists.map(list =>
       list.id === checklistId
         ? {
-            ...list,
-            items: list.items.map(i =>
-              i.id === itemId ? { ...i, done: !i.done } : i
-            ),
-          }
+          ...list,
+          items: list.items.map(i =>
+            i.id === itemId ? { ...i, done: !i.done } : i
+          ),
+        }
         : list
     )
     handleSave({ checklists: updated })
@@ -117,9 +138,9 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
     const updated = task.checklists.map(list =>
       list.id === checklistId
         ? {
-            ...list,
-            items: [...list.items, { id: crypto.randomUUID(), text: txt, done: false }],
-          }
+          ...list,
+          items: [...list.items, { id: crypto.randomUUID(), text: txt, done: false }],
+        }
         : list
     )
     handleSave({ checklists: updated })
@@ -133,11 +154,11 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
     const updated = task.checklists.map(list =>
       list.id === checklistId
         ? {
-            ...list,
-            items: list.items.map(i =>
-              i.id === itemId ? { ...i, text: txt } : i
-            ),
-          }
+          ...list,
+          items: list.items.map(i =>
+            i.id === itemId ? { ...i, text: txt } : i
+          ),
+        }
         : list
     )
     handleSave({ checklists: updated })
@@ -229,61 +250,68 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
             </div>
 
             <div className="meta-row">
-               {/* MEMBERS */}
-                {members.length > 0 && 
-                ( <div className="members-inline">
-                   <div className="section-header tight"> 
+              {/* MEMBERS */}
+              {members.length > 0 &&
+                (<div className="members-inline">
+                  <div className="section-header tight">
                     <h3 className="section-title">Members</h3>
-                </div> 
-                     <div className="members-inline-list">
-                       {selectedMemberObjects.map(member => ( <span key={member.id}
-                        className="avatar sm" style={{ backgroundColor: member.color }}> 
-                        {member.initials} </span> ))} 
-                        <button className="add-member-inline" 
-                        onClick={() => setActiveModal('members')}> {icons.plus}
-                           </button> 
-                 </div> 
-               </div> )}
+                  </div>
+                  <div className="members-inline-list">
+                    {selectedMemberObjects.map(member => (<span key={member.id}
+                      className="avatar sm" style={{ backgroundColor: member.color }}>
+                      {member.initials} </span>))}
+                    <button className="add-member-inline"
+                      onClick={() => setActiveModal('members')}> {icons.plus}
+                    </button>
+                  </div>
+                </div>)}
 
-            {/* ===== LABELS ===== */}
-            {labels?.length > 0 && (
+              {/* ===== LABELS ===== */}
+              {labels?.length > 0 && (
 
-              <div className="labels-inline">
-                <div className="section-header tight">
-                  <h3 className="section-title">Labels</h3>
-                </div>
-                <div className="labels-inline-list">
-                  {labels.map(labelId => (
-                    <span
-                    key={labelId}
-                      className="label-chip-fat"
-                      style={{ backgroundColor: labelPalette[labelId] }}
-                    />
-                  ))}
-                  <button className="add-label-inline" onClick={() => setActiveModal('labels')}>
-                    {icons.plus}
-                  </button>
-                </div>
-              </div>
-            )}
+                <div className="labels-inline">
+                  <div className="section-header tight">
+                    <h3 className="section-title">Labels</h3>
+                  </div>
+                  <div className="labels-inline-list">
+                    {labels.map(labelId => {
+                      const { color, name } = getLabelData(labelId)
 
-            {/* ===== DUE DATE ===== */}
-            {dueDate && (
-              <div className="dates-inline">
-                <div className="section-header tight">
-                  <h3 className="section-title">Due date</h3>
+                      return (
+                        <span
+                          key={labelId}
+                          className="label-chip-fat"
+                          style={{ backgroundColor: color }}
+                          title={name}
+                        >
+                          {name}
+                        </span>
+                      )
+                    })}
+                    <button className="add-label-inline" onClick={() => setActiveModal('labels')}>
+                      {icons.plus}
+                    </button>
+                  </div>
                 </div>
-                <div className="due-inline-controls">
-                  <button className="due-pill" onClick={() => setActiveModal('dates')}>
-                    {formattedDate}
-                    <span className={`due-badge ${getDueClass(dueDate)}`}>
-                      {getDueClass(dueDate)}
-                    </span>
-                  </button>
+              )}
+
+              {/* ===== DUE DATE ===== */}
+              {dueDate && (
+                <div className="dates-inline">
+                  <div className="section-header tight">
+                    <h3 className="section-title">Due date</h3>
+                  </div>
+                  <div className="due-inline-controls">
+                    <button className="due-pill" onClick={() => setActiveModal('dates')}>
+                      {formattedDate}
+                      <span className={`due-badge ${getDueClass(dueDate)}`}>
+                        {getDueClass(dueDate)}
+                      </span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-           </div>
+              )}
+            </div>
 
             {/* ===== ATTACHMENTS ===== */}
             {attachments.length > 0 && (
@@ -511,6 +539,7 @@ export function TaskDetails({ task, isOpen, onClose, onSave }) {
           <TaskDynamicModal
             type={activeModal}
             task={{ ...task, labels, members, dueDate }}
+            board={board}
             onClose={() => setActiveModal(null)}
             onSave={fields => handleSave(fields)}
           />

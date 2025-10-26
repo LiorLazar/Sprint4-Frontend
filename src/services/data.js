@@ -9,12 +9,47 @@ export const boardMembers = [
 ]
 
 export const labelPalette = {
-    green: '#61bd4f',
-    yellow: '#f2d600',
-    orange: '#ff9f1a',
-    red: '#eb5a46',
-    purple: '#c377e0',
-    blue: '#0079bf',
+    // Row 1 - Light colors
+    'green-light': { color: '#4bce97', name: '' },
+    'yellow-light': { color: '#f5cd47', name: '' },
+    'orange-light': { color: '#fea362', name: '' },
+    'red-light': { color: '#f87168', name: '' },
+    'purple-light': { color: '#9f8fef', name: '' },
+    
+    // Row 2 - Medium colors
+    'green': { color: '#1f845a', name: '' },
+    'yellow': { color: '#946f00', name: '' },
+    'orange': { color: '#c25100', name: '' },
+    'red': { color: '#ca3521', name: '' },
+    'purple': { color: '#6e5dc6', name: '' },
+    
+    // Row 3 - Dark colors
+    'green-dark': { color: '#164b35', name: '' },
+    'yellow-dark': { color: '#7f5f01', name: '' },
+    'orange-dark': { color: '#a54800', name: '' },
+    'red-dark': { color: '#ae2a19', name: '' },
+    'purple-dark': { color: '#5e4db2', name: '' },
+    
+    // Row 4 - Light pastels
+    'blue-light': { color: '#579dff', name: '' },
+    'sky-light': { color: '#6cc3e0', name: '' },
+    'lime-light': { color: '#94c748', name: '' },
+    'pink-light': { color: '#e774bb', name: '' },
+    'gray-light': { color: '#8590a2', name: '' },
+    
+    // Row 5 - Medium blues and greens
+    'blue': { color: '#0c66e4', name: '' },
+    'sky': { color: '#227d9b', name: '' },
+    'lime': { color: '#5b7f24', name: '' },
+    'pink': { color: '#ae4787', name: '' },
+    'gray': { color: '#626f86', name: '' },
+    
+    // Row 6 - Dark blues and greens
+    'blue-dark': { color: '#09326c', name: '' },
+    'sky-dark': { color: '#206a83', name: '' },
+    'lime-dark': { color: '#4c6b1f', name: '' },
+    'pink-dark': { color: '#943d73', name: '' },
+    'gray-dark': { color: '#44546f', name: '' },
 }
 
 export const demoBoard = {

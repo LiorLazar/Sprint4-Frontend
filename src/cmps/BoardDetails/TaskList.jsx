@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { icons } from "../SvgIcons.jsx"
 import { TaskPreview } from "./TaskPreview.jsx"
 
-export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList, onTaskClick }) {
+export function TaskList({ list, board, onAddCard, onCancelEmptyList, onRenameList, onTaskClick }) {
   const [isAdding, setIsAdding] = useState(false)
   const [newTitle, setNewTitle] = useState("")
   const [isEditingTitle, setIsEditingTitle] = useState(false)
@@ -91,6 +91,7 @@ export function TaskList({ list, onAddCard, onCancelEmptyList, onRenameList, onT
           <TaskPreview
             key={task.id || `t_${idx}`}
             task={task}
+            board={board}
             onTaskClick={onTaskClick}
           />
         ))}
