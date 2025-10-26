@@ -185,7 +185,3 @@
     padding: 0 !important;
     margin: 0 !important;
 }
-
-/* Remove the old hover effect */
-.board-preview.create-new:hover .create-new-content {
-}
