@@ -188,7 +188,7 @@
   opacity: 1;
 }
 .edit-task-btn:hover {
-  background: rgba(0, 0, 0, 0.053);
+  background: rgb(235, 235, 235)
 }
 .edit-task-btn svg {
   width: 14px;

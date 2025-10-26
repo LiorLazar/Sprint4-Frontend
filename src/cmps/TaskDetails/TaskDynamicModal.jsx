@@ -270,7 +270,7 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
               {icons.arrowLeft}
             </button>
           )}
-          <button className="close-btn" onClick={onClose}>{icons.xButton}</button>
+          <button className="x-btn" onClick={onClose}>{icons.xButton}</button>
         </div>
 
         {/* EDIT LABEL MODAL */}
