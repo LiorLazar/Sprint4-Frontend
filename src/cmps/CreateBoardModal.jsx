@@ -126,7 +126,7 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
         >
             <div className="modal-header">
                 <h3>Create board</h3>
-                <button className="close-btn" onClick={handleClose}>
+                <button className="x-btn" onClick={handleClose}>
                     {icons.xButton}
                 </button>
             </div>

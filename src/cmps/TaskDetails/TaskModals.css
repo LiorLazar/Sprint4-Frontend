@@ -147,7 +147,7 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
   height: 32px;
   border: none;
   border-radius: 50%;
-  background: #e4e6ea;
+  background: #f0f1f3;
   color: #5e6c84;
   display: flex;
   align-items: center;
@@ -155,6 +155,13 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
   cursor: pointer;
   line-height: 1;
 }
+
+.add-member-inline .icon-plus svg {
+  width: 16px;
+  height: 16px;
+  color: #292A2E;
+}
+
 .add-member-inline:hover {
   background: #d4d7db;
 }
@@ -166,6 +173,12 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
   gap: 6px;
   cursor: pointer;
   flex-wrap: wrap;
+}
+
+.add-label-inline .icon-plus svg {
+  width: 16px;
+  height: 16px;
+  color: #292A2E;
 }
 
 .label-chip-fat {
@@ -182,7 +195,7 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
   height: 32px;
   border: none;
   border-radius: 6px;
-  background: #f4f5f7;
+  background:#f0f1f3;
   color: #5e6c84;
   display: flex;
   align-items: center;
@@ -190,6 +203,10 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
   cursor: pointer;
   line-height: 1;
   transition: background 0.2s ease;
+}
+
+.add-label-inline:hover {
+  background: #e1e2e5;
 }
 
 
@@ -421,9 +438,18 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
   font-size: 14px;
   white-space: nowrap;
 }
-.remove-icon {
+.remove-icon  {
   color: #000;
-  margin-left: auto;
+  margin-left:auto;
+    display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.remove-icon svg {
+  color: #864848;
+  margin-left:auto;
+  height: 18px;
+  width: 18px;
 }
 
 /* ========== CHECKLIST SECTION ========== */
@@ -448,13 +474,13 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
 .checklist-items {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 .checklist-item {
   display: flex;
   align-items: flex-start; 
   gap: 8px;
+  padding: 6px;
   border-radius: 6px;
   transition: background 0.2s;
   align-items: center;
@@ -480,22 +506,38 @@ border-radius: 8px;
   font-size: 14px;
   color: #172b4d;
   word-break: break-word;
+  padding: 6px;
 }
 
 /* Remove button */
 .remove-item-btn {
-  background: none;
   border: none;
+  background: none;
   color: #6b778c;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
- 
+  padding: 6px;
+  border-radius: 6px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
+
+.checklist-item:hover .remove-item-btn {
+  display: inline-flex;
+}
+
 .remove-item-btn:hover {
-  background-color: rgba(9, 30, 66, 0.08);
+  background-color: rgba(9, 30, 66, 0.12);
   color: #172b4d;
 }
+
+.remove-item-btn svg {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
 
 
 
@@ -608,9 +650,7 @@ border-radius: 8px;
 }
 
 /* ========== ATTACHMENTS SECTION ========== */
-.attachments-section {
-  margin-top: 16px;
-}
+
 
 .upload-container {
   margin-top: 6px;
@@ -782,21 +822,17 @@ input[type="checkbox"].label-checkbox {
 .attachments-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   margin-top: 16px;
 }
 
-/* כותרת הסקשן זהה לצ'קליסט */
 .attachments-section .details-title {
   display: flex;
   align-items: center;
-  gap: 8px;
   font-weight: 600;
   color: #292a2e;
   font-size: 16px;
 }
 
-/* כפתור Add זהה לצ'קליסט */
 .attachments-section .add-btn {
   margin-left: auto;
   background-color: #f0f1f3;
@@ -813,7 +849,6 @@ input[type="checkbox"].label-checkbox {
   background-color: #dedddd;
 }
 
-/* רשימת קבצים */
 .attachments-list {
   display: flex;
   flex-direction: column;
@@ -841,7 +876,6 @@ input[type="checkbox"].label-checkbox {
   box-shadow: #0000001a 0px 1px 2px 0px, #00000018 0px 0px 0px 1px  ;
 }
 
-/* טקסטים */
 .attachment-info {
   display: flex;
   flex-direction: column;
@@ -865,11 +899,11 @@ input[type="checkbox"].label-checkbox {
   gap: 4px;
 }
 
-/* כפתורי פעולה (Set Cover / Delete) */
 .attachment-actions {
   display: flex;
   align-items: center;
   gap: 6px;
+
 }
 .attachment-actions button {
   background: none;
@@ -883,5 +917,40 @@ input[type="checkbox"].label-checkbox {
 .attachment-actions button:hover {
   background: #ebecf0;
   color: #172b4d;
+}
+
+/* Description Editor */
+.description-editor {
+  margin-top: 8px;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.description-editor .ql-toolbar {
+  border-radius: 6px 6px 0 0;
+  border: 1px solid #dfe1e6;
+}
+
+.description-editor .ql-container {
+  min-height: 140px;
+  border: 1px solid #dfe1e6;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  font-size: 14px;
+  color: #172b4d;
+}
+
+.description-editor .ql-editor {
+  min-height: 100px;
+  padding: 10px 12px;
+}
+
+.description-editor .ql-editor.ql-blank::before {
+  color: #0f0f10;
+  font-style: normal;
+}
+
+.description-content{
+overflow: hidden;
 }
 

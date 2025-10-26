@@ -131,7 +131,7 @@ function handleFileUpload(ev) {
       <div ref={boxRef} className="smart-modal" style={{ position: 'fixed', ...position }}>
         <div className="smart-modal-header">
           <h2>{getHeaderText()}</h2>
-          <button className="close-btn" onClick={onClose}>{icons.xButton}</button>
+          <button className="x-btn" onClick={onClose}>{icons.xButton}</button>
         </div>
 
         {/* LABELS */}
