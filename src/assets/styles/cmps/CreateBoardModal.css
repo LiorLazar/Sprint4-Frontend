@@ -10,7 +10,7 @@
 }
 
 .create-board-modal {
-    position: absolute;
+    position: fixed;
     width: 288px;
     background: white;
     border-radius: 12px;
@@ -22,29 +22,12 @@
     overflow: visible;
 }
 
-/* Positioning classes for modal */
-.create-board-modal.position-right {
-    transform: translateX(8px);
-}
-
-.create-board-modal.position-left {
-    transform: translateX(-296px);
-}
-
-.create-board-modal.position-center {
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-}
-
 .modal-header {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 16px;
 }
-
-
 
 .close-btn {
     border-radius: 8px !important;
