@@ -118,3 +118,85 @@ span.more-options {
     align-items: center;
     justify-content: center;
 }
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .board-header-container {
+        grid-template-columns: auto 1fr auto;
+    }
+
+    .board-name {
+        font-size: 15px;
+        margin: 2px 8px;
+        padding: 0 0.5rem;
+    }
+}
+
+/* Small Tablet - hide some members */
+@media (max-width: 768px) {
+    .board-header-container {
+        padding: 0.5rem 8px;
+        gap: 8px;
+    }
+
+    .board-name {
+        font-size: 14px;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .members-inline-list .avatar:nth-child(n+4) {
+        display: none;
+        /* Hide members after 3rd */
+    }
+}
+
+/* Mobile - compact layout */
+@media (max-width: 640px) {
+    .board-header-container {
+        grid-template-columns: 1fr auto;
+        padding: 0.5rem 4px;
+        gap: 4px;
+    }
+
+    .board-name {
+        font-size: 14px;
+        max-width: 150px;
+        margin: 0;
+        padding: 0 0.5rem;
+    }
+
+    .board-header-items {
+        gap: 4px;
+    }
+
+    .members-inline-list .avatar:nth-child(n+3) {
+        display: none;
+        /* Show only 2 members on mobile */
+    }
+
+    .starred,
+    .not-starred {
+        margin-inline-start: 4px !important;
+    }
+}
+
+/* Extra small mobile */
+@media (max-width: 480px) {
+    .board-name {
+        font-size: 13px;
+        max-width: 120px;
+    }
+
+    .members-inline-list .avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+    }
+
+    .btn-options {
+        width: 28px;
+        height: 28px;
+    }
+}
