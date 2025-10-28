@@ -209,6 +209,11 @@ export function BoardDetails() {
 
   if (!localBoard) return <div>Loading board...</div>
 
+  const currentListTitle =
+    localBoard?.lists.find(list =>
+      list.tasks.some(t => t.id === selectedTask?.id)
+    )?.title || ''
+
   return (
     <section className="board-details">
       <BoardHeader />
@@ -256,6 +261,7 @@ export function BoardDetails() {
       <TaskDetails
         task={selectedTask}
         board={localBoard}
+        listTitle={currentListTitle}
         isOpen={isTaskDetailsOpen}
         onClose={handleCloseTaskDetails}
         onSave={handleSaveTask}

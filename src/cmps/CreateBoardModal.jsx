@@ -52,34 +52,53 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
         const modalHeight = 450
         const viewportWidth = window.innerWidth
         const viewportHeight = window.innerHeight
-        const scrollY = window.scrollY
-        const scrollX = window.scrollX
+        const padding = 8
         
-        const triggerAbsoluteTop = triggerRect.top + scrollY
-        
-        let left = triggerRect.right + scrollX
-        let top = triggerAbsoluteTop
+        let left = triggerRect.right + padding
+        let top = triggerRect.top + 5  // Move modal 5px below trigger (25px lower than previous -20px)
         let cssClass = 'position-right'
 
-        if (triggerRect.right + modalWidth + 8 > viewportWidth) {
-            left = triggerRect.left + scrollX
+        // Check if modal would overflow on the right
+        if (left + modalWidth > viewportWidth - padding) {
+            left = triggerRect.left - modalWidth - padding
             cssClass = 'position-left'
             
-            if (triggerRect.left - modalWidth - 8 < 0) {
-                left = Math.max(8 + scrollX, (viewportWidth - modalWidth) / 2 + scrollX)
+            // If it would overflow on the left too, center it
+            if (left < padding) {
+                left = Math.max(padding, (viewportWidth - modalWidth) / 2)
+                top = Math.max(padding, (viewportHeight - modalHeight) / 2)
                 cssClass = 'position-center'
             }
         }
 
-        const minTop = scrollY + (viewportHeight * 0.2)
-        const maxTop = scrollY + viewportHeight - modalHeight
+        // Better vertical positioning logic
+        if (cssClass !== 'position-center') {
+            // If modal would go above viewport, position it at the top edge
+            if (top < padding) {
+                top = padding
+            }
+            // If modal would go below viewport, try to position it above the trigger button
+            else if (top + modalHeight > viewportHeight - padding) {
+                const spaceAbove = triggerRect.top - padding
+                const spaceBelow = viewportHeight - triggerRect.bottom - padding
+                
+                if (spaceAbove >= modalHeight) {
+                    // Enough space above, position above the trigger
+                    top = triggerRect.top - modalHeight - padding
+                } else if (spaceBelow >= modalHeight) {
+                    // Enough space below, position below the trigger
+                    top = triggerRect.bottom + padding
+                } else {
+                    // Not enough space above or below, center vertically
+                    top = Math.max(padding, (viewportHeight - modalHeight) / 2)
+                }
+            }
+        }
 
-        if (top < minTop) top = minTop
-        if (top > maxTop) top = maxTop
-        if (top < scrollY) top = scrollY
-        if (left < scrollX + 8) left = scrollX + 8
-        if (left + modalWidth > scrollX + viewportWidth - 8) {
-            left = scrollX + viewportWidth - modalWidth - 8
+        // Ensure modal stays within viewport horizontally (final check)
+        if (left < padding) left = padding
+        if (left + modalWidth > viewportWidth - padding) {
+            left = viewportWidth - modalWidth - padding
         }
 
         setModalPosition({ left, top })
@@ -126,7 +145,7 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
         >
             <div className="modal-header">
                 <h3>Create board</h3>
-                <button className="close-btn" onClick={handleClose}>
+                <button className="x-btn" onClick={handleClose}>
                     {icons.xButton}
                 </button>
             </div>

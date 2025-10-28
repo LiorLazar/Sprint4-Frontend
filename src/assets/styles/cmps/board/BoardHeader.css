@@ -93,3 +93,28 @@
     white-space: nowrap;
     flex-shrink: 0;
 }
+
+.btn-options {
+    background: none;
+    border: none;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: #ffffff;
+}
+
+.btn-options:hover {
+    background-color: rgba(255, 255, 255, 0.135);
+}
+
+span.more-options {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

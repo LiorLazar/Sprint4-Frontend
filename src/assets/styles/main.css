@@ -24,9 +24,9 @@
 @import "cmps/board/BoardSidebar.css";
 @import "cmps/board/BoardHeader.css";
 @import "cmps/board/BoardDetails.css";
+@import "cmps/board/OptionsModal.css";
 @import 'cmps/board/TaskDetails.css';
 @import 'cmps/board/TaskPreview.css';
-
 
 @import "cmps/review/ReviewEdit";
 @import "cmps/review/ReviewList";
