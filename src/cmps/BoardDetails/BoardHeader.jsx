@@ -11,15 +11,24 @@ import { OptionsModal } from './OptionsModal.jsx'
 export function BoardHeader() {
     const { boardId } = useParams()
     const boards = useSelector(storeState => storeState.boardModule.boards)
-    const currentBoard = boards.find(board => board._id === boardId)
+    const boardFromStore = useSelector(storeState => storeState.boardModule.board)
+    const currentBoard = boardFromStore || boards.find(board => board._id === boardId)
     const starred = currentBoard?.isStarred || false
-    const [optionsModalOpen, setOptionsModalOpen] = useState(false);
+    const [optionsModalOpen, setOptionsModalOpen] = useState(false)
+    const [isEditingTitle, setIsEditingTitle] = useState(false)
+    const [titleValue, setTitleValue] = useState('')
 
     useEffect(() => {
         if (!boards || boards.length === 0) {
             loadBoards()
         }
     }, [boards])
+
+    useEffect(() => {
+        if (currentBoard) {
+            setTitleValue(currentBoard.title || '')
+        }
+    }, [currentBoard])
 
     const handleToggleStar = async () => {
         if (currentBoard) {
@@ -48,6 +57,39 @@ export function BoardHeader() {
         setOptionsModalOpen(false)
     }
 
+    const handleTitleClick = () => {
+        setIsEditingTitle(true)
+    }
+
+    const handleTitleChange = (e) => {
+        setTitleValue(e.target.value)
+    }
+
+    const handleTitleBlur = async () => {
+        setIsEditingTitle(false)
+        const trimmedTitle = titleValue.trim()
+
+        if (!trimmedTitle || trimmedTitle === currentBoard.title) {
+            setTitleValue(currentBoard.title) // Reset if empty or unchanged
+            return
+        }
+
+        const updatedBoard = {
+            ...currentBoard,
+            title: trimmedTitle
+        }
+        await updateBoard(updatedBoard)
+    }
+
+    const handleTitleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.target.blur() // Trigger blur to save
+        } else if (e.key === 'Escape') {
+            setTitleValue(currentBoard.title)
+            setIsEditingTitle(false)
+        }
+    }
+
     if (!currentBoard) {
         return (
             <section className="board-header-container">
@@ -60,7 +102,21 @@ export function BoardHeader() {
 
     return (
         <section className="board-header-container">
-            <span className="board-name">{currentBoard.title}</span>
+            {isEditingTitle ? (
+                <input
+                    type="text"
+                    className="board-name-input"
+                    value={titleValue}
+                    onChange={handleTitleChange}
+                    onBlur={handleTitleBlur}
+                    onKeyDown={handleTitleKeyDown}
+                    autoFocus
+                />
+            ) : (
+                <span className="board-name" onClick={handleTitleClick}>
+                    {currentBoard.title}
+                </span>
+            )}
             <div className='board-header-items'>
                 <div className='members-inline-list'>
                     {selectedMembersObjects.map(member => (
