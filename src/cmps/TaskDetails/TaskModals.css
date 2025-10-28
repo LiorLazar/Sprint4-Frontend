@@ -100,8 +100,7 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
   object-fit: contain;
   display: block;
   max-height: 160px;
-  background-color: #fff;
-  border-radius: 6px;
+  background-color: transparent;
 }
 
 
