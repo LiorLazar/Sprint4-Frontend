@@ -1,7 +1,7 @@
 .task-preview {
   position: relative;
   background: #fff;
-  padding: 8px 0.4rem 6px;
+  padding: 8px 6px;
   border: 2.5px solid transparent;
   border-radius: 10px;
   box-shadow: 0 1.5px 0 rgba(9, 30, 66, 0.187), 0 0 2px rgba(9, 30, 66, 0.2);
@@ -44,7 +44,7 @@
 .meta-left {
   display: flex;
   align-items: center;
-  gap:10px;
+  gap: 10px;
   flex-wrap: wrap;
   justify-content: flex-start;
   flex: 1 1 auto;
@@ -92,16 +92,16 @@
   gap: 2px;
   font-size: 12px;
   color: #5e6c84;
-  line-height: 1; 
+  line-height: 1;
 }
 
 .task-checklist-inline svg {
   width: 14px;
   height: 14px;
   flex-shrink: 0;
-  display: block; 
+  display: block;
   position: relative;
-  top: 0.5px; 
+  top: 0.5px;
 }
 
 .task-checklist-inline.completed {
@@ -140,7 +140,7 @@
 }
 
 .task-members-inline > * {
-  margin-top: 2px; 
+  margin-top: 2px;
 }
 
 .task-members-below {
@@ -183,12 +183,13 @@
   padding: 0;
   opacity: 0;
   z-index: 1;
+  background: rgb(235, 235, 235);
 }
 .task-preview:hover .edit-task-btn {
   opacity: 1;
 }
 .edit-task-btn:hover {
-  background: rgb(235, 235, 235)
+  background: rgb(218, 217, 217);
 }
 .edit-task-btn svg {
   width: 14px;
@@ -196,4 +197,57 @@
   fill: currentColor;
   display: block;
   pointer-events: none;
+}
+
+/* ===== TITLE ROW ===== */
+.task-title-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden; 
+}
+
+/* ===== COMPLETE CIRCLE BUTTON ===== */
+.task-complete-btn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-150%, -50%) scale(0.9);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #454648;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.25s ease;
+  padding: 0;
+  line-height: 0;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.task-complete-btn:hover {
+  background: #29a008;    
+  border:none;
+}
+
+.task-complete-btn:hover .circle-icon {
+  background: #74b327;
+}
+
+.task-preview:hover .task-complete-btn {
+  opacity: 1;
+  transform: translate(0, -50%) scale(1);
+}
+
+.task-title {
+  transition: transform 0.50s ease;
+}
+
+.task-preview:hover .task-title {
+  transform: translateX(26px);
 }
