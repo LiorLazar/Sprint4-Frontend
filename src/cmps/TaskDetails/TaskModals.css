@@ -55,6 +55,7 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
   align-items: center;
   font-size: 16px;
   color:#292A2E;
+  justify-content: ;
 }
 
 .details-title svg {
@@ -84,21 +85,25 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
 /* ========== COVER IMAGE ========== */
 .task-cover-preview {
   width: 100%;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
+  overflow: hidden;
+  background-color: #fff;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 6px;
 }
 
 .task-cover-image {
   width: 100%;
   height: auto;
-  max-height: 188px;
   object-fit: contain;
-  background: #fff;
-  margin-bottom: 4px;
+  display: block;
+  max-height: 160px;
+  background-color: #fff;
+  border-radius: 6px;
 }
+
 
 /* ========== HEADER & ICONS ========== */
 .task-icon {
@@ -183,11 +188,13 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
 
 .label-chip-fat {
   height: 32px;
-  width: 48px;
+  min-width: 48px;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
+    padding: 0 10px;
+
 }
 
 .add-label-inline {
@@ -380,7 +387,6 @@ body, button, input, textarea, select, .task-details-modal, .task-details-modal 
   width: 40%;
   gap: 8px;
   padding: 12px 16px;
-  border-top: 1px solid #dfe1e6;
 }
 .smart-modal-footer .primary {
   flex: 1;
@@ -735,10 +741,6 @@ border-radius: 8px;
   pointer-events: none;
 }
 
-
-
-
-
 .checklist-item.editing {
   display: grid;
   grid-template-columns: 26px 1fr;    
@@ -780,7 +782,6 @@ border-radius: 8px;
   line-height: 1.4;
 }
 
-
 .edit-actions {
   grid-area: actions;
   display: flex;
@@ -820,6 +821,7 @@ border-radius: 8px;
   cursor: pointer;
   width: fit-content;
   margin-left: 34px; 
+  margin-top: 8px;
 }
 .add-item-btn:hover { background-color: #dedddd; }
 
@@ -918,6 +920,7 @@ border-radius: 8px;
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 6px;
+  margin-top: 4px;
 }
 .preview-label-bar {
   border-radius: 3px;
@@ -945,7 +948,6 @@ border-radius: 8px;
   color: #6b778c;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.2s ease;
 }
 .task-preview:hover .edit-task-btn {
   opacity: 1;
@@ -1061,7 +1063,6 @@ input[type="checkbox"].label-checkbox {
   transition: background 0.2s ease;
 }
 
-
 .attachment-thumb {
   width: 64px;
   height: 48px;
@@ -1087,6 +1088,7 @@ input[type="checkbox"].label-checkbox {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .file-meta {
   font-size: 12px;
   color: #6b778c;
@@ -1140,6 +1142,7 @@ input[type="checkbox"].label-checkbox {
 .description-editor .ql-editor {
   min-height: 100px;
   padding: 10px 12px;
+  font-weight: 400;
 }
 
 .description-editor .ql-editor.ql-blank::before {
@@ -1149,5 +1152,147 @@ input[type="checkbox"].label-checkbox {
 
 .description-content{
 overflow: hidden;
+cursor: pointer;
+}
+
+/* ===== PLACEHOLDER TEXT ===== */
+.placeholder-text {
+  display: block;
+  width: 90%;
+  min-height: 60px;
+  border: 1px solid #70747f;
+  border-radius: 4px;
+  padding: 12px 14px;
+  color: #5e6c84;
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: text;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  align-items: center;
+}
+
+.placeholder-text:hover {
+  background-color: #ebecf0;
+  cursor: pointer;
+}
+
+.placeholder-text:focus-within {
+  border-color: #0079bf;
+  background-color: #fff;
+}
+
+.description-actions {
+  padding: 8px;
+}
+
+/* ====== DATE SECTION ONLY ====== */
+
+.calendar-inline {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.calendar-inline .react-datepicker {
+  border: none;
+  box-shadow: none;
+  font-size: 13px;
+  width: auto;
+  margin: 0 auto;
+}
+
+.calendar-inline .react-datepicker__header {
+  background-color: #fff;
+  border-bottom: 1px solid #dfe1e6;
+  padding-top: 6px;
+  text-align: center;
+}
+
+.calendar-inline .react-datepicker__current-month {
+  font-size: 13px;
+  font-weight: 600;
+  color: #172b4d;
+}
+
+.calendar-inline .react-datepicker__month-container {
+  margin: 0 auto;
+}
+
+.calendar-inline .react-datepicker__month {
+  margin: 0 auto;
+}
+
+.calendar-inline .react-datepicker__day {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  margin: 1px;
+  border-radius: 4px;
+  font-weight: 500;
+  color: #172b4d;
+  text-align: center;
+}
+
+.calendar-inline .react-datepicker__day--selected {
+  background-color: #0c66e4;
+  color: #fff;
+}
+
+.calendar-inline .react-datepicker__day--keyboard-selected {
+  background-color: #0c66e4;
+  color: #fff;
+}
+
+.calendar-inline .react-datepicker__day:hover {
+  background-color: #ebecf0;
+  color: #172b4d;
+}
+
+.react-datepicker__time-container {
+  display: none !important;
+}
+
+.dates-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  width: 100%;
+  align-items: center;
+}
+
+.dates-fields label {
+  font-size: 13px;
+  color: #172b4d;
+  display: flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.row-2 {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.row-2 .modal-input {
+  flex: 1;
+  border: 1px solid #dfe1e6;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+  color: #172b4d;
+  text-align: center;
+  background-color: #fff;
+}
+
+.row-2 .modal-input:focus {
+  outline: none;
+  border-color: #0c66e4;
+  box-shadow: 0 0 0 2px rgba(9, 30, 66, 0.1);
 }
 
