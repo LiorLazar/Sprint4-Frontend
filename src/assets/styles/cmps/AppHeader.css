@@ -15,19 +15,6 @@
     align-items: center;
 }
 
-
-.application-switcher-icon {
-    >svg {
-        display: inline-block;
-        box-sizing: content-box;
-        font-size: 14px;
-        line-height: 14px;
-        width: 24px;
-        height: 32px;
-        color: white;
-    }
-}
-
 .logo {
     display: flex;
     align-items: center;
