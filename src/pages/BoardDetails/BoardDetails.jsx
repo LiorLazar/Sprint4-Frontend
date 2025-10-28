@@ -10,6 +10,21 @@ import { utilService } from '../../services/util.service.js'
 import { icons } from '../../cmps/SvgIcons.jsx'
 import { loadBoard, updateBoard } from '../../store/actions/board.actions.js'
 
+function adjustColorBrightness(hex, percent) {
+  if (!hex) return '#838c91'
+  const num = parseInt(hex.replace('#', ''), 16)
+  const amt = Math.round(2.55 * percent)
+  const R = (num >> 16) + amt
+  const G = (num >> 8 & 0x00FF) + amt
+  const B = (num & 0x0000FF) + amt
+  return '#' + (
+    0x1000000 +
+    (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+    (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+    (B < 255 ? (B < 1 ? 0 : B) : 255)
+  ).toString(16).slice(1)
+}
+
 export function BoardDetails() {
   const { boardId, taskId } = useParams()
   const navigate = useNavigate()
@@ -31,6 +46,30 @@ export function BoardDetails() {
   useEffect(() => {
     if (boardFromStore) setLocalBoard(boardFromStore)
   }, [boardFromStore])
+
+  // ===== SET BODY & HEADERS COLORS =====
+  useEffect(() => {
+    const bg = localBoard?.style?.backgroundColor || '#838c91'
+    document.body.style.backgroundColor = bg
+
+    const boardHeaderBg = adjustColorBrightness(bg, -12) 
+    const appHeaderBg = adjustColorBrightness(bg, -25)  
+    const headerText = adjustColorBrightness(bg, 60)     
+
+    document.documentElement.style.setProperty('--app-header-backgrd-clr1', appHeaderBg)
+    document.documentElement.style.setProperty('--app-header-text-clr1', headerText)
+
+    document.documentElement.style.setProperty('--header-bckgrd-clr1', boardHeaderBg)
+    document.documentElement.style.setProperty('--header-text-clr1', headerText)
+
+    return () => {
+      document.body.style.backgroundColor = '#838c91'
+      document.documentElement.style.removeProperty('--app-header-backgrd-clr1')
+      document.documentElement.style.removeProperty('--app-header-text-clr1')
+      document.documentElement.style.removeProperty('--header-bckgrd-clr1')
+      document.documentElement.style.removeProperty('--header-text-clr1')
+    }
+  }, [localBoard?.style?.backgroundColor])
 
   // ===== HANDLE SELECTED TASK =====
   useEffect(() => {

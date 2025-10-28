@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import { icons } from '../SvgIcons.jsx'
-import { TaskDynamicModal } from './TaskDynamicModal.jsx'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { TaskDynamicModal } from './TaskDynamicModal.jsx'
 import { boardMembers, labelPalette } from '../../services/data.js'
 import './TaskModals.css'
 
 export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle }) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [isEditingDescription, setIsEditingDescription] = useState(false)
+    const [isEditingDescription, setIsEditingDescription] = useState(false)
   const [editedDescription, setEditedDescription] = useState('')
   const [dueDate, setDueDate] = useState(null)
   const [labels, setLabels] = useState([])
@@ -22,6 +22,7 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
     if (isOpen && task) {
       setTitle(task.title || '')
       setDescription(task.description || '')
+      setEditedDescription(task.description || '')
       setDueDate(task.dueDate || null)
       setLabels(task.labels || [])
       setMembers(task.members || [])
@@ -45,6 +46,17 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
     return { color: labelData?.color || '#gray', name: labelData?.name || '' }
   }
 
+    function saveDescription() {
+    setDescription(editedDescription)
+    handleSave({ description: editedDescription })
+    setIsEditingDescription(false)
+  }
+
+  function cancelDescriptionEdit() {
+    setEditedDescription(description)
+    setIsEditingDescription(false)
+  }
+
   function handleSave(updated = {}) {
     if (updated.boardLabels) {
       const updatedBoard = { ...board, labels: updated.boardLabels }
@@ -64,17 +76,6 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
       ...updated,
     }
     onSave(updatedTask)
-  }
-
-    function saveDescription() {
-    setDescription(editedDescription)
-    handleSave({ description: editedDescription })
-    setIsEditingDescription(false)
-  }
-
-  function cancelDescriptionEdit() {
-    setEditedDescription(description)
-    setIsEditingDescription(false)
   }
 
   function getFormattedDate(dateValue) {
@@ -265,21 +266,21 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
             </div>
 
             <div className="meta-row">
-               {/* MEMBERS */}
-                {members.length > 0 && 
-                ( <div className="members-inline">
-                   <div className="section-header tight"> 
+              {/* MEMBERS */}
+              {members.length > 0 &&
+                (<div className="members-inline">
+                  <div className="section-header tight">
                     <h3 className="section-title">Members</h3>
-                </div> 
-                     <div className="members-inline-list">
-                       {selectedMemberObjects.map(member => ( <span key={member.id}
-                        className="avatar sm" style={{ backgroundColor: member.color }}> 
-                        {member.initials} </span> ))} 
-                        <button className="add-member-inline" 
-                        onClick={() => setActiveModal('members')}> {icons.plus}
-                           </button> 
-                 </div> 
-               </div> )}
+                  </div>
+                  <div className="members-inline-list">
+                    {selectedMemberObjects.map(member => (<span key={member.id}
+                      className="avatar sm" style={{ backgroundColor: member.color }}>
+                      {member.initials} </span>))}
+                    <button className="add-member-inline"
+                      onClick={() => setActiveModal('members')}> {icons.plus}
+                    </button>
+                  </div>
+                </div>)}
 
               {/* ===== LABELS ===== */}
               {labels?.length > 0 && (
@@ -378,18 +379,18 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
               </div>
             )}
 
-           {/* ===== DESCRIPTION ===== */}
+{/* ===== DESCRIPTION ===== */}
 <div className="task-section description-section">
   <div className="details-title">
-    <div>{icons.cardDescriptions}</div>
-    <h3 className="details-title">Description</h3>
+    <div className="details-title-left">
+      {icons.cardDescriptions}
+      <h3 className="details-title">Description</h3>
+    </div>
+
     {!isEditingDescription && (
       <button
         className="delete-btn"
-        onClick={() => {
-          setEditedDescription(description)
-          setIsEditingDescription(true)
-        }}
+        onClick={() => setIsEditingDescription(true)}
       >
         Edit
       </button>
@@ -482,7 +483,7 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
                                   autoFocus
                                 />
                                 <button
-                                  className="x-btn in-edit"
+                                  className="remove-item-btn in-edit"
                                   onClick={() => removeChecklistItem(checklist.id, item.id)}
                                 >
                                   {icons.xButton}

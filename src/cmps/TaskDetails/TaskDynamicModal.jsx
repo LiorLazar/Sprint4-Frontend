@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 import { icons } from '../SvgIcons.jsx'
 import { boardMembers, labelPalette } from '../../services/data.js'
 import { utilService } from '../../services/util.service.js'
 
 export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave }) {
   const [localTask, setLocalTask] = useState(structuredClone(task))
-  const [date, setDate] = useState(task?.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : '')
+  const [date, setDate] = useState(task?.dueDate ? new Date(task.dueDate) : new Date())
   const [reminder, setReminder] = useState(task?.dueReminder || '1d')
   const [checklistTitle, setChecklistTitle] = useState('Checklist')
   const [link, setLink] = useState('')
@@ -14,6 +16,7 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
   const [editingLabel, setEditingLabel] = useState(null)
   const [labelTitle, setLabelTitle] = useState('')
   const [selectedColor, setSelectedColor] = useState('')
+  const [isDueActive, setIsDueActive] = useState(!!task?.dueDate)
   const boxRef = useRef(null)
 
   useEffect(() => setLocalTask(structuredClone(task)), [task])
@@ -123,7 +126,6 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
       onSave({ boardLabels: updatedLabels })
     }
     
-    console.log('Label saved to board successfully!')
     setEditingLabel(null)
     setLabelTitle('')
     setSelectedColor('')
@@ -140,8 +142,6 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
     if (onSave) {
       onSave({ boardLabels: updatedBoardLabels })
     }
-    
-    console.log('Label deleted from board successfully!')
     
     setEditingLabel(null)
     setLabelTitle('')
@@ -172,17 +172,15 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
   }
 
   function getBoardLabels() {
-    // Only return labels that exist on the board
-    if (!board?.labels || board.labels.length === 0) {
-      return []
-    }
-    
+    if (!board?.labels || board.labels.length === 0) return []
     return board.labels.map(label => ({
       id: label.id,
       color: label.color,
       name: label.title || ''
     }))
-  }  // ====== MEMBERS ======
+  }
+
+  // ====== MEMBERS ======
   function toggleMember(memberId) {
     const updatedMembers = localTask.members?.includes(memberId)
       ? localTask.members.filter(id => id !== memberId)
@@ -192,8 +190,17 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
 
   // ====== DATES ======
   function saveDates() {
-    if (!date) updateFields({ dueDate: null, dueReminder: null })
-    else updateFields({ dueDate: new Date(date).toISOString(), dueReminder: reminder })
+    if (!isDueActive) {
+      updateFields({ dueDate: null, dueReminder: null })
+      onClose()
+      return
+    }
+    updateFields({ dueDate: date.toISOString(), dueReminder: reminder })
+    onClose()
+  }
+
+  function handleRemoveDates() {
+    updateFields({ dueDate: null, dueReminder: null })
     onClose()
   }
 
@@ -219,7 +226,6 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
       createdAt: Date.now(),
       isCover: existing.length === 0
     }
-
     updateFields({ attachments: [...existing, newAttachment] })
     onClose()
   }
@@ -258,104 +264,150 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
   const unselectedMembers = boardMembers.filter(m => !localTask.members?.includes(m.id))
 
   return (
-    <div
-      className="submodal-overlay"
-      onClick={e => e.target === e.currentTarget && onClose()}
-    >
+    <div className="submodal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div ref={boxRef} className="smart-modal" style={{ position: 'fixed', ...position }}>
         <div className="smart-modal-header">
           <h2>{getHeaderText()}</h2>
-          {editingLabel && (
-            <button className="back-btn" onClick={() => setEditingLabel(null)}>
-              {icons.arrowLeft}
-            </button>
-          )}
           <button className="x-btn" onClick={onClose}>{icons.xButton}</button>
         </div>
 
-        {/* EDIT LABEL MODAL */}
-        {editingLabel && (
+        {/* ===== DATES ===== */}
+        {(type === 'dates' || !type) && (
           <>
             <div className="smart-modal-body">
-              <div className="label-preview-top">
-                <div
-                  className="label-preview-bar"
-                  style={{ backgroundColor: selectedColor || '#e2e4e9' }}
-                >
-                  {labelTitle && <span className="preview-text">{labelTitle}</span>}
+              <div className="calendar-inline">
+         <DatePicker
+  selected={date ? new Date(date) : new Date()}
+  onChange={setDate}
+  inline
+  dateFormat="MM/dd/yyyy"
+  calendarStartDay={0}
+/>
+              </div>
+
+              <div className="dates-fields">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={isDueActive}
+                    onChange={() => setIsDueActive(!isDueActive)}
+                  />
+                  Due date
+                </label>
+                <div className="row-2">
+                  <input
+                    type="text"
+                    className="modal-input"
+                    value={date.toLocaleDateString()}
+                    readOnly
+                  />
+                  <input
+                    type="text"
+                    className="modal-input"
+                    value={date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    readOnly
+                  />
                 </div>
               </div>
-
-              <label className="field-label">Title</label>
-              <input
-                className="modal-input"
-                value={labelTitle}
-                onChange={e => setLabelTitle(e.target.value)}
-                placeholder=""
-              />
-
-              <label className="field-label">Select a color</label>
-              <div className="color-grid">
-                {Object.entries(labelPalette).map(([colorId, labelData]) => {
-                  const color = typeof labelData === 'string' ? labelData : labelData.color
-                  return (
-                    <div
-                      key={colorId}
-                      className={`color-option ${color === selectedColor ? 'selected' : ''}`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => setSelectedColor(color)}
-                    />
-                  )
-                })}
-              </div>
-
-              <button className="remove-color-btn" onClick={() => setSelectedColor('')}>
-                {icons.xButton} Remove color
-              </button>
             </div>
-            <div className="smart-modal-footer label-footer">
-              <button className="btn-save-label" onClick={saveEditLabel}>Save</button>
-              <button className="btn-delete-label" onClick={deleteLabelHandler}>Delete</button>
+
+            <div className="smart-modal-footer">
+              <button className="secondary" onClick={handleRemoveDates}>Remove</button>
+              <button className="primary" onClick={saveDates}>Save</button>
             </div>
           </>
         )}
 
-        {/* LABELS */}
-        {type === 'labels' && !editingLabel && (
-          <div className="smart-modal-body">
-            <input className="modal-input" placeholder="Search labels..." />
-            <div className="labels-list">
-              {getBoardLabels().map(label => {
-                const isSelected = localTask.labels?.includes(label.id)
+{/* ===== LABELS ===== */}
+{type === 'labels' && (
+  <>
+    {/* מצב רגיל – רשימת לייבלים */}
+    {!editingLabel && (
+      <div className="smart-modal-body">
+        <input className="modal-input" placeholder="Search labels..." />
+        <div className="labels-list">
+          {getBoardLabels().map(label => {
+            const isSelected = localTask.labels?.includes(label.id)
+            return (
+              <div
+                key={label.id}
+                className={`label-row ${isSelected ? 'selected' : ''}`}
+                onClick={() => toggleLabel(label.id)}
+              >
+                <input
+                  type="checkbox"
+                  checked={isSelected}
+                  readOnly
+                  className="label-checkbox"
+                />
+                <div
+                  className="label-long"
+                  style={{ backgroundColor: label.color }}
+                >
+                  {label.name && (
+                    <span className="label-name">{label.name}</span>
+                  )}
+                </div>
+                <button
+                  className="label-edit"
+                  onClick={ev => openEditLabel(label.id, ev)}
+                >
+                  {icons.editLabel}
+                </button>
+              </div>
+            )
+          })}
+        </div>
 
-                return (
-                  <div
-                    key={label.id}
-                    className={`label-row ${isSelected ? 'selected' : ''}`}
-                    onClick={() => toggleLabel(label.id)}
-                  >
-                    <input type="checkbox" checked={isSelected} readOnly className="label-checkbox" />
-                    <div className="label-long" style={{ backgroundColor: label.color }}>
-                      {label.name && <span className="label-name">{label.name}</span>}
-                    </div>
-                    <button
-                      className="label-edit"
-                      onClick={(ev) => openEditLabel(label.id, ev)}
-                    >
-                      {icons.editLabel}
-                    </button>
-                  </div>
-                )
-              })}
-            </div>
+        <button className="create-label-btn" onClick={createNewLabel}>
+          Create a new label
+        </button>
+      </div>
+    )}
 
-            <button className="create-label-btn" onClick={createNewLabel}>
-              Create a new label
-            </button>
-          </div>
-        )}
+    {editingLabel && (
+      <div className="smart-modal-body">
+        <label className="field-label">Title</label>
+        <input
+          className="modal-input"
+          value={labelTitle}
+          onChange={e => setLabelTitle(e.target.value)}
+          placeholder=""
+        />
 
-        {/* MEMBERS */}
+        <label className="field-label">Select a color</label>
+        <div className="color-grid">
+          {Object.entries(labelPalette).map(([colorId, labelData]) => {
+            const color =
+              typeof labelData === 'string' ? labelData : labelData.color
+            return (
+              <div
+                key={colorId}
+                className={`color-option ${
+                  color === selectedColor ? 'selected' : ''
+                }`}
+                style={{ backgroundColor: color }}
+                onClick={() => setSelectedColor(color)}
+              />
+            )
+          })}
+        </div>
+
+        <div className="label-footer">
+          <button className="btn-delete-label" onClick={deleteLabelHandler}>
+            Delete
+          </button>
+          <button className="btn-save-label" onClick={saveEditLabel}>
+            Save
+          </button>
+        </div>
+      </div>
+    )}
+  </>
+)}
+
+
+        {/* ===== MEMBERS ===== */}
         {type === 'members' && (
           <div className="smart-modal-body">
             <input className="modal-input" placeholder="Search members" />
@@ -385,7 +437,7 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
           </div>
         )}
 
-        {/* CHECKLIST */}
+        {/* ===== CHECKLIST ===== */}
         {type === 'checklist' && (
           <>
             <div className="smart-modal-body">
@@ -402,7 +454,7 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
           </>
         )}
 
-        {/* ATTACHMENTS */}
+        {/* ===== ATTACHMENTS ===== */}
         {type === 'attachments' && (
           <>
             <div className="smart-modal-body">
@@ -426,39 +478,6 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
             <div className="smart-modal-footer">
               <button className="secondary" onClick={onClose}>Cancel</button>
               <button className="primary" onClick={attachImage}>Insert</button>
-            </div>
-          </>
-        )}
-
-        {/* DATES */}
-        {(type === 'dates' || !type) && (
-          <>
-            <div className="smart-modal-body">
-              <label>Due date</label>
-              <div className="row-2">
-                <input
-                  type="date"
-                  className="modal-input"
-                  value={date ? date.slice(0, 10) : ''}
-                  onChange={e => {
-                    const timePart = date?.slice(11) || '12:00'
-                    setDate(`${e.target.value}T${timePart}`)
-                  }}
-                />
-                <input
-                  type="time"
-                  className="modal-input"
-                  value={date ? date.slice(11) : ''}
-                  onChange={e => {
-                    const datePart = date ? date.slice(0, 10) : new Date().toISOString().slice(0, 10)
-                    setDate(`${datePart}T${e.target.value}`)
-                  }}
-                />
-              </div>
-            </div>
-            <div className="smart-modal-footer">
-              <button className="primary" onClick={saveDates}>Save</button>
-              <button className="secondary" onClick={onClose}>Cancel</button>
             </div>
           </>
         )}
