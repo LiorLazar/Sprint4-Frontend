@@ -9,13 +9,8 @@ export function TaskPreview({ task, board, onTaskClick }) {
   }
 
   function getLabelColor(labelId) {
-    // First check board labels
     const boardLabel = board?.labels?.find(l => l.id === labelId)
-    if (boardLabel) {
-      return boardLabel.color
-    }
-    
-    // Fallback to labelPalette
+    if (boardLabel) return boardLabel.color
     const labelData = labelPalette[labelId]
     return typeof labelData === 'string' ? labelData : labelData?.color || '#gray'
   }
@@ -24,9 +19,8 @@ export function TaskPreview({ task, board, onTaskClick }) {
   const coverImage =
     task.attachments?.find(att => att.isCover)?.url ||
     task.attachments?.[0]?.url ||
-    task.attachment?.url // fallback ישן
+    task.attachment?.url
 
-  // ======== DATE ========
   function parseDate(value) {
     if (!value && value !== 0) return null
     const dateObj = typeof value === "number" ? new Date(value) : new Date(String(value))
@@ -49,7 +43,6 @@ export function TaskPreview({ task, board, onTaskClick }) {
     return "upcoming"
   }
 
-  // ======== CHECKLIST ========
   function getChecklistSummary(task) {
     if (!task.checklists || !task.checklists.length) return null
     let done = 0
@@ -67,15 +60,18 @@ export function TaskPreview({ task, board, onTaskClick }) {
   const checklistSummary = getChecklistSummary(task)
   const hasChecklist = checklistSummary !== null
 
-  // ======== MEMBERS ========
   const allMembers = task?.members?.map(getMemberDetails).filter(Boolean) || []
   const isManyMembers = allMembers.length > 2
   const visibleMembers = allMembers.slice(0, 3)
   const hiddenCount = allMembers.length - visibleMembers.length
 
-  // ======== DUE DATE ========
   const dueLabel = formatDueDate(task?.dueDate)
   const dueClass = getDueClass(task?.dueDate)
+
+  function onCircleClick(ev) {
+    ev.stopPropagation()
+    console.log('Circle clicked (mark complete coming soon)')
+  }
 
   return (
     <div
@@ -86,11 +82,7 @@ export function TaskPreview({ task, board, onTaskClick }) {
       {/* ===== COVER IMAGE ===== */}
       {coverImage && (
         <div className="task-cover-preview">
-          <img
-            src={coverImage}
-            alt="Task cover"
-            className="task-cover-image"
-          />
+          <img src={coverImage} alt="Task cover" className="task-cover-image" />
         </div>
       )}
 
@@ -99,13 +91,8 @@ export function TaskPreview({ task, board, onTaskClick }) {
         <div className="preview-labels-bar">
           {task.labels.map(labelId => {
             const color = getLabelColor(labelId)
-            
             return (
-              <span
-                key={labelId}
-                className="preview-label-bar"
-                style={{ backgroundColor: color }}
-              />
+              <span key={labelId} className="preview-label-bar" style={{ backgroundColor: color }} />
             )
           })}
         </div>
@@ -113,7 +100,16 @@ export function TaskPreview({ task, board, onTaskClick }) {
 
       {/* ===== CONTENT ===== */}
       <div className="task-content">
-        <span className="task-title">{task.title}</span>
+        <div className="task-title-row">
+          <button
+            className="task-complete-btn"
+            onClick={onCircleClick}
+            title="Mark complete"
+          >
+            <span className="circle-icon" />
+          </button>
+          <span className="task-title">{task.title}</span>
+        </div>
 
         <button
           className="edit-task-btn"
@@ -129,10 +125,7 @@ export function TaskPreview({ task, board, onTaskClick }) {
         {(dueLabel || hasChecklist || task.description || allMembers.length > 0) && (
           <div className={`task-meta-below ${isManyMembers ? "multi-line" : ""}`}>
             <div className="meta-top-row">
-
-              {/* LEFT SIDE META GROUP */}
               <div className="meta-left">
-                {/* DUE DATE */}
                 {dueLabel && (
                   <div className={`task-due-container ${dueClass}`}>
                     <span className="task-due-icon">{icons.clock}</span>
@@ -140,7 +133,6 @@ export function TaskPreview({ task, board, onTaskClick }) {
                   </div>
                 )}
 
-                {/* CHECKLIST */}
                 {hasChecklist && (
                   <div
                     className={`task-checklist-inline ${
@@ -154,7 +146,6 @@ export function TaskPreview({ task, board, onTaskClick }) {
                   </div>
                 )}
 
-                {/* DESCRIPTION ICON */}
                 {task.description && task.description.trim() && (
                   <div className="task-desc-icon" title="Has description">
                     {icons.cardDescriptions}
@@ -162,7 +153,6 @@ export function TaskPreview({ task, board, onTaskClick }) {
                 )}
               </div>
 
-              {/* RIGHT SIDE MEMBERS */}
               {!isManyMembers && allMembers.length > 0 && (
                 <div className="task-members-inline">
                   {visibleMembers.map(member => (
@@ -182,7 +172,6 @@ export function TaskPreview({ task, board, onTaskClick }) {
               )}
             </div>
 
-            {/* MEMBERS BELOW */}
             {isManyMembers && (
               <div className="task-members-below">
                 {visibleMembers.map(member => (

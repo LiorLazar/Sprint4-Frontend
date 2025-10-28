@@ -30,10 +30,6 @@
 }
 
 .close-btn {
-    border-radius: 8px !important;
-    padding: 4px;
-    transition: background-color 0.2s;
-justify-content: center;
 }
 
 .close-btn:hover {
