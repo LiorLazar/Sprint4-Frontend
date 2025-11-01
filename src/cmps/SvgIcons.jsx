@@ -31,7 +31,24 @@ export const icons = {
 }
 
 export const appHeaderIcons = {
-    appLogo: <svg className="st-current" data-label="svg"><symbol id="logo-glyph"><defs><mask id="neutral-logo-mask"><path d="M0 5C0 2.23858 2.23858 0 5 0H19C21.7614 0 24 2.23858 24 5V19C24 21.7614 21.7614 24 19 24H5C2.23858 24 0 21.7614 0 19V5Z" fill="white"></path><rect x="4.43101" y="4.43101" width="5.90729" height="13.803" rx="0.947869" ry="0.947869" fill="black"></rect><rect x="13.6617" y="4.43101" width="5.90729" height="8.3366" rx="0.947869" ry="0.947869" fill="black"></rect></mask></defs><path d="M0 5C0 2.23858 2.23858 0 5 0H19C21.7614 0 24 2.23858 24 5V19C24 21.7614 21.7614 24 19 24H5C2.23858 24 0 21.7614 0 19V5Z" fill="var(--dynamic-text, #FFFFFF)" mask="url(#neutral-logo-mask)"></path></symbol><symbol id="logo-text"><text x="28" y="15" fontSize="12" fontFamily="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" fontWeight="600" fill="var(--dynamic-text, #FFFFFF)">TaskRail</text></symbol><symbol id="logo-glyph-only" viewBox="0 0 24 24" width="24" height="24"><use href="#logo-glyph"></use></symbol><symbol id="logo-glyph-and-text" viewBox="0 0 85 24" width="85" height="24"><use href="#logo-glyph"></use><use href="#logo-text"></use></symbol><use href="#logo-glyph-only" className="dW1ZzMRfhGzk3G" data-testid="team25-header-logo-glyph"></use><use href="#logo-glyph-and-text" className="cgeOlHBq0PVTSl" data-testid="team25-header-logo-glyph-and-text"></use></svg>,
+appLogo: <svg className="st-current" data-label="svg">
+  <symbol id="logo-glyph">
+    <defs>
+      <mask id="neutral-logo-mask">
+        <path d="M0 5C0 2.23858 2.23858 0 5 0H19C21.7614 0 24 2.23858 24 5V19C24 21.7614 21.7614 24 19 24H5C2.23858 24 0 21.7614 0 19V5Z" fill="white"></path>
+        <rect x="4.43101" y="4.43101" width="5.90729" height="13.803" rx="0.947869" ry="0.947869" fill="black"></rect>
+        <rect x="13.6617" y="4.43101" width="5.90729" height="8.3366" rx="0.947869" ry="0.947869" fill="black"></rect>
+      </mask>
+    </defs>
+    <path d="M0 5C0 2.23858 2.23858 0 5 0H19C21.7614 0 24 2.23858 24 5V19C24 21.7614 21.7614 24 19 24H5C2.23858 24 0 21.7614 0 19V5Z" fill="var(--dynamic-text, #FFFFFF)" mask="url(#neutral-logo-mask)"></path>
+  </symbol>
+
+  <symbol id="logo-glyph-only" viewBox="0 0 24 24" width="24" height="24">
+    <use href="#logo-glyph"></use>
+  </symbol>
+
+  <use href="#logo-glyph-only" className="dW1ZzMRfhGzk3G" data-testid="team25-header-logo-glyph"></use>
+</svg>,
     searchIcon: <svg className='search-icon' width="16" height="16" viewBox="0 0 24 24" role="presentation"><path fill="currentcolor" fillRule="evenodd" d="m16.436 15.085 3.94 4.01a1 1 0 0 1-1.425 1.402l-3.938-4.006a7.5 7.5 0 1 1 1.423-1.406M10.5 16a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11"></path></svg>
 }
 
