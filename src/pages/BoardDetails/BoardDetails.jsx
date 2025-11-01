@@ -53,9 +53,9 @@ async function getAverageColor(imageUrl) {
         const b = data[i + 2]
         const a = data[i + 3]
 
-        if (a < 150) continue 
-        if (r > 240 && g > 240 && b > 240) continue 
-        if (r < 20 && g < 20 && b < 20) continue 
+        if (a < 150) continue
+        if (r > 240 && g > 240 && b > 240) continue
+        if (r < 20 && g < 20 && b < 20) continue
 
         const key = `${Math.round(r / 20) * 20},${Math.round(g / 20) * 20},${Math.round(b / 20) * 20}`
         colorMap[key] = (colorMap[key] || 0) + 1
@@ -72,8 +72,6 @@ async function getAverageColor(imageUrl) {
     img.onerror = () => resolve('#838c91')
   })
 }
-
-
 
 export function BoardDetails() {
   const { boardId, taskId } = useParams()
@@ -110,18 +108,16 @@ export function BoardDetails() {
       document.body.style.backgroundRepeat = 'no-repeat'
       document.body.style.backgroundColor = 'transparent'
 
-      // 🎨 Calculate average color from the image
-getAverageColor(bgImage).then(avgColor => {
-  const darker = adjustColorBrightness(avgColor, -15)
-  const textColor = adjustColorBrightness(avgColor, 100)
+      getAverageColor(bgImage).then(avgColor => {
+        const darker = adjustColorBrightness(avgColor, -15)
+        const textColor = adjustColorBrightness(avgColor, 100)
 
-  document.documentElement.style.setProperty('--app-header-backgrd-clr1', darker)
-  document.documentElement.style.setProperty('--app-header-text-clr1', textColor)
-  document.documentElement.style.setProperty('--header-bckgrd-clr1', 'transparent')
-  document.documentElement.style.setProperty('--header-text-clr1', '#fff')
-  document.documentElement.style.setProperty('--header-backdrop-blur', '18px')
-})
-
+        document.documentElement.style.setProperty('--app-header-backgrd-clr1', darker)
+        document.documentElement.style.setProperty('--app-header-text-clr1', textColor)
+        document.documentElement.style.setProperty('--header-bckgrd-clr1', 'transparent')
+        document.documentElement.style.setProperty('--header-text-clr1', '#fff')
+        document.documentElement.style.setProperty('--header-backdrop-blur', '18px')
+      })
     } else {
       document.body.style.backgroundImage = 'none'
       document.body.style.backgroundColor = bgColor
@@ -168,7 +164,7 @@ getAverageColor(bgImage).then(avgColor => {
     }
   }, [localBoard, taskId, boardId, navigate])
 
-  // ===== HANDLE CLICK OUTSIDE ADD-LIST FORM =====
+  // ===== CLICK OUTSIDE ADD-LIST =====
   useEffect(() => {
     function handleClickOutside(event) {
       if (!isAddingList) return
@@ -192,6 +188,33 @@ getAverageColor(bgImage).then(avgColor => {
     setSelectedTask(null)
     setIsTaskDetailsOpen(false)
     navigate(`/board/${boardId}`)
+  }
+
+  // ===== MOVE TASK (DnD Core) =====
+  async function handleMoveTask(taskId, fromListId, toListId, targetIndex) {
+    if (!localBoard) return
+
+    const boardCopy = structuredClone(localBoard)
+
+    const fromList = boardCopy.lists.find(list => list.id === fromListId)
+    const toList = boardCopy.lists.find(list => list.id === toListId)
+    if (!fromList || !toList) return
+
+    const task = fromList.tasks.find(t => t.id === taskId)
+    if (!task) return
+
+    // Remove from source
+    fromList.tasks = fromList.tasks.filter(t => t.id !== taskId)
+
+    // Insert into target
+    if (targetIndex == null || targetIndex >= toList.tasks.length) {
+      toList.tasks.push(task)
+    } else {
+      toList.tasks.splice(targetIndex, 0, task)
+    }
+
+    setLocalBoard(boardCopy)
+    await updateBoard(boardCopy)
   }
 
   // ===== SAVE / DELETE TASK =====
@@ -231,7 +254,7 @@ getAverageColor(bgImage).then(avgColor => {
     handleCloseTaskDetails()
   }
 
-  // ===== ADD / RENAME LIST =====
+  // ===== ADD / RENAME / CANCEL LIST =====
   async function handleAddListConfirm() {
     const title = newListTitle.trim()
     if (!title) {
@@ -245,7 +268,6 @@ getAverageColor(bgImage).then(avgColor => {
 
     setLocalBoard(updatedBoard)
     await updateBoard(updatedBoard)
-
     setNewListTitle('')
     setIsAddingList(true)
     focusOnNewList()
@@ -348,6 +370,7 @@ getAverageColor(bgImage).then(avgColor => {
             onAddCard={handleAddCard}
             onTaskClick={handleTaskClick}
             onSaveTask={handleSaveTask}
+            onMoveTask={handleMoveTask}
           />
         ))}
 

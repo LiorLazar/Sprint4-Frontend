@@ -2,15 +2,19 @@ import { useEffect, useRef, useState } from "react"
 import { icons } from "../SvgIcons.jsx"
 import { TaskPreview } from "./TaskPreview.jsx"
 
-export function TaskList({ list, board, onAddCard, onCancelEmptyList, onRenameList, onTaskClick, onSaveTask }) {
+export function TaskList({ list, board, onAddCard, onCancelEmptyList, onRenameList, onTaskClick, onSaveTask, onMoveTask }) {
   const [isAdding, setIsAdding] = useState(false)
   const [newTitle, setNewTitle] = useState("")
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [titleEdit, setTitleEdit] = useState(list.title || "")
+  const [dragOverIndex, setDragOverIndex] = useState(null)
+  const [draggedTaskId, setDraggedTaskId] = useState(null)
+
   const listRef = useRef(null)
   const inputRef = useRef(null)
   const addFormRef = useRef(null)
 
+  // ===== CLICK OUTSIDE =====
   useEffect(() => {
     function onDocMouseDown(ev) {
       if (!listRef.current) return
@@ -21,10 +25,7 @@ export function TaskList({ list, board, onAddCard, onCancelEmptyList, onRenameLi
         setIsAdding(false)
         setNewTitle("")
       }
-
-      if (isEditingTitle && !clickedInsideInput) {
-        handleSaveTitle()
-      }
+      if (isEditingTitle && !clickedInsideInput) handleSaveTitle()
     }
 
     document.addEventListener("mousedown", onDocMouseDown, true)
@@ -45,6 +46,7 @@ export function TaskList({ list, board, onAddCard, onCancelEmptyList, onRenameLi
     setIsAdding(false)
   }
 
+  // ===== SAVE TITLE =====
   function handleSaveTitle() {
     const trimmed = titleEdit.trim()
     if (!trimmed) {
@@ -62,10 +64,75 @@ export function TaskList({ list, board, onAddCard, onCancelEmptyList, onRenameLi
     }
   }, [isEditingTitle])
 
+  // ===== DRAG & DROP LOGIC =====
+  function handleDragStart(e, taskId) {
+    setDraggedTaskId(taskId)
+    e.dataTransfer.effectAllowed = "move"
+    e.dataTransfer.setData("taskId", taskId)
+    e.dataTransfer.setData("fromListId", list.id)
+    requestAnimationFrame(() => e.currentTarget.classList.add("dragging"))
+  }
+
+  function handleDragEnd(e) {
+    e.currentTarget.classList.remove("dragging")
+    setDraggedTaskId(null)
+    setDragOverIndex(null)
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault()
+    const taskElements = Array.from(e.currentTarget.querySelectorAll(".task-draggable:not(.dragging)"))
+    const mouseY = e.clientY
+    let closestIndex = null
+    let closestOffset = Number.POSITIVE_INFINITY
+
+    taskElements.forEach((el, index) => {
+      const box = el.getBoundingClientRect()
+      const offset = Math.abs(mouseY - (box.top + box.height / 2))
+      if (offset < closestOffset) {
+        closestOffset = offset
+        closestIndex = index
+      }
+    })
+    setDragOverIndex(closestIndex)
+  }
+
+  function handleDragLeave(e) {
+    // ננקה placeholder רק אם באמת יצאנו מאזור הרשימה
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setDragOverIndex(null)
+    }
+  }
+
+  function handleDrop(e) {
+    e.preventDefault()
+    const taskId = e.dataTransfer.getData("taskId")
+    const fromListId = e.dataTransfer.getData("fromListId")
+    if (!taskId) return
+
+    onMoveTask?.(taskId, fromListId, list.id, dragOverIndex)
+
+    // ✨ איפוס מוחלט של placeholder והדגשה
+    setDragOverIndex(null)
+    setDraggedTaskId(null)
+
+    // הסרת class dragging מכל הכרטיסים
+    const allDragged = document.querySelectorAll(".task-draggable.dragging")
+    allDragged.forEach(el => el.classList.remove("dragging"))
+  }
+
   const listBg = list.style?.backgroundColor || "#f1f2f4"
 
   return (
-    <div className="tasks-list" ref={listRef} style={{ backgroundColor: listBg }}>
+    <div
+      className="tasks-list"
+      ref={listRef}
+      style={{ backgroundColor: listBg }}
+      data-list-id={list.id}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      onDragLeave={handleDragLeave} // 🧩 מוסיף ניקוי פלייסהולדר כשלא מרחפים
+    >
       <div className="list-header">
         <input
           ref={inputRef}
@@ -87,15 +154,32 @@ export function TaskList({ list, board, onAddCard, onCancelEmptyList, onRenameLi
       </div>
 
       <div className="task-list">
-        {(list.tasks || []).map((task, idx) => (
-          <TaskPreview
-            key={task.id || `t_${idx}`}
-            task={task}
-            board={board}
-            onTaskClick={onTaskClick}
-            onSave={onSaveTask} 
-          />
-        ))}
+        {(list.tasks || []).map((task, idx) => {
+          const isDragged = task.id === draggedTaskId
+          const showPlaceholder = dragOverIndex === idx
+
+          return (
+            <div key={task.id} className="task-slot">
+              {showPlaceholder && <div className="task-placeholder"></div>}
+
+              <div
+                className={`task-draggable ${isDragged ? "dragging" : ""}`}
+                draggable
+                onDragStart={(e) => handleDragStart(e, task.id)}
+                onDragEnd={handleDragEnd}
+              >
+                <TaskPreview
+                  task={task}
+                  board={board}
+                  onTaskClick={onTaskClick}
+                  onSave={onSaveTask}
+                />
+              </div>
+            </div>
+          )
+        })}
+
+        {dragOverIndex === list.tasks.length && <div className="task-placeholder"></div>}
 
         {isAdding && (
           <div className="add-card-form" ref={addFormRef}>

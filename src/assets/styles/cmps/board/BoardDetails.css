@@ -287,3 +287,27 @@ align-self: center;
 .remove-bg-btn:hover {
   text-decoration: underline;
 }
+
+.task-draggable.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg) scale(1.02);
+  box-shadow: 0 8px 20px rgba(9, 30, 66, 0.25);
+  cursor: grabbing;
+  z-index: 1000;
+}
+
+
+
+.task-placeholder {
+  background-color: rgba(9, 30, 66, 0.08);
+  border-radius: 8px;
+  height: 48px;
+  margin: 4px 0;
+  transition: background-color 0.15s ease;
+}
+
+.task-slot {
+  position: relative;
+  margin-bottom: 4px;
+}
+
