@@ -12,7 +12,7 @@
   gap: 1rem;
   align-items: flex-start;
   overflow-x: auto;
-  padding: 1rem;
+  padding:10px 18px;
 }
 
 .lists-container::-webkit-scrollbar {
@@ -97,7 +97,6 @@ border: 2.5px solid #2c81d6e7;}
 .task-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
   flex-grow: 1;
   overflow-y: auto;
   max-height: 480px;
@@ -175,7 +174,8 @@ border: 2.5px solid #2c81d6e7;}
 
 .cancel-btn {
   background: transparent;
-  border: none;
+display: flex;
+align-self: center;
   color: #123064;
   cursor: pointer;
   padding: 4px 6px;
@@ -241,4 +241,49 @@ border: 2.5px solid #2c81d6e7;}
 
 .board-title {
   color: var(--header-color);
+}
+
+.image-upload-section {
+  margin-top: 10px;
+}
+
+.upload-btn {
+  display: inline-block;
+  background-color: #f0f1f3;
+  color: #172b4d;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+.upload-btn:hover {
+  background-color: #e2e4e9;
+}
+
+.current-bg-preview {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.current-bg-preview img {
+  width: 100%;
+  max-height: 120px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.remove-bg-btn {
+  color: #b04632;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+.remove-bg-btn:hover {
+  text-decoration: underline;
 }

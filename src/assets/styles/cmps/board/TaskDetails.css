@@ -84,10 +84,11 @@ body.modal-open > *:not(.task-details-overlay) {
 .task-details-grid {
   display: grid;
   grid-template-columns: 2fr 1.5fr;
-  grid-template-rows: 57px 1fr;
+  grid-template-rows: 1fr;
   flex: 1;
   overflow: hidden;
 }
+
 
 .grid-header {
   grid-column: 1 / -1;
@@ -95,6 +96,7 @@ body.modal-open > *:not(.task-details-overlay) {
   border-bottom: 1px solid #e4e6ea;
   display: flex;
   align-items: center;
+  height: 116px;
 }
 
 .grid-main {
@@ -122,6 +124,14 @@ body.modal-open > *:not(.task-details-overlay) {
   gap: 8px;
 }
 
+.task-location{
+  color:#292A2E;
+  margin-bottom: 60px;
+  background-color: #c5c9ce;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
 .task-icon {
   width: 18px;
   height: 18px;
@@ -133,7 +143,7 @@ body.modal-open > *:not(.task-details-overlay) {
 
 .task-title-input {
   flex: 1;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 600;
   border: none;
   outline: none;
@@ -261,5 +271,7 @@ body.modal-open > *:not(.task-details-overlay) {
     padding-top: 16px;
   }
 }
-
+.details-title-left{
+  display: flex; align-items: center; gap: 8px;
+}
 /* ========== DUE DATE ========== */ .due-inline-controls { display: flex; align-items: center; gap: 8px; } .due-pill { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 10px; border-radius: 6px; font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif; font-size: 14px; font-weight: 500; border: none; cursor: pointer; line-height: 1; background: #f0f1f3; color: #292a2e; transition: background 0.2s ease; } .due-pill:hover { background: #e1e2e5; } .due-badge.overdue { color: #ae2e24; background-color: #f0f1f3; border-radius: 2px; padding: 2px; font-weight: 500; } .due-badge.due-soon { background-color: #f9cb23; border-radius: 2px; padding: 2px; font-weight: 500; } .due-badge { margin-left: 6px; font-weight: 400; font-size: 12px; }

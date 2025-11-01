@@ -5,87 +5,68 @@
     position: relative;
     flex-wrap: nowrap;
     align-items: center;
-    justify-content: space-between;
     height: auto;
     padding: 0.75rem 12px;
-                font-weight: 500;
-
+    font-weight: 500;
     font-size: 14px;
     line-height: 20px;
     color: var(--app-header-text-clr1);
     background-color: var(--header-bckgrd-clr1);
-    gap: 12px;
-
-    >.board-header-items {
-        grid-column: -1;
-        display: flex;
-        
-        align-items: center;
-        align-items: space-between;
-
-        >svg {
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 14px;
-            width: 16px;
-            height: 16px;
-            margin-right: 10px;
-        }
-
-        >.starred,
-        >.not-starred {
-            display: inline-block;
-            color: #fbc827;
-            font-size: 14px;
-            line-height: 14px;
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
-            margin-inline-start: 10px;
-        }
-
-    }
-
+    transition: background 0.3s ease, backdrop-filter 0.3s ease;
+    z-index: 5;
 }
 
-/* .board-header-container {
-    display: flex;
+/* ===== BLUR EFFECT WHEN BACKGROUND IMAGE EXISTS ===== */
+.board-header-container.with-image {
     position: relative;
-    flex-wrap: nowrap;
+    color: #fff;
+    background-color: transparent;
+}
+
+/* שכבה פנימית שיוצרת את הזכוכית המטושטשת */
+.board-header-container.with-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(8px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    z-index: -1;
+}
+
+/* === HEADER ITEMS === */
+.board-header-container > .board-header-items {
+    grid-column: -1;
+    display: flex;
+    gap: 4px;
     align-items: center;
     justify-content: space-between;
-    height: auto;
-    padding: 0.75rem 12px;
+}
+
+.board-header-container > .board-header-items > svg {
     font-size: 14px;
-    line-height: 20px;
-    color: var(--app-header-text-clr1);
-    background-color: var(--header-bckgrd-clr1);
-    gap: 12px;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+}
 
-    >svg {
-        font-size: 14px;
-        line-height: 14px;
-        width: 16px;
-        height: 16px;
-        margin-right: 10px;
-    }
+.board-header-container > .board-header-items > .starred,
+.board-header-container > .board-header-items > .not-starred {
+    display: inline-block;
+    color: #fbc827;
+    width: 16px;
+    height: 16px;
+    margin-left: 4px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
 
-    >.collaborators {
-        flex-shrink: 0;
-        margin-inline-start: calc(95rem - 10px);
-    }
+.board-header-container > .board-header-items > .starred:hover,
+.board-header-container > .board-header-items > .not-starred:hover {
+    filter: brightness(1.2);
+}
 
-    >.starred,
-    >.not-starred {
-        color: #fbc827;
-        font-size: 14px;
-        line-height: 14px;
-        width: 16px;
-        height: 16px;
-        flex-shrink: 0;
-    }
-} */
-
+/* === BOARD NAME === */
 .board-name {
     font-size: 16px;
     line-height: 32px;
@@ -107,6 +88,7 @@
     background-color: rgba(255, 255, 255, 0.2);
 }
 
+/* === EDIT MODE === */
 .board-name-input {
     font-size: 16px;
     line-height: 32px;
@@ -119,7 +101,8 @@
     border: 2px solid #388bff;
     border-radius: 4px;
     outline: none;
-    font-family: "Atlassian Sans", ui-sans-serif, -apple-system, system-ui, "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
+    font-family: "Atlassian Sans", ui-sans-serif, -apple-system, system-ui,
+        "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
     flex-shrink: 0;
 }
 
@@ -127,6 +110,7 @@
     background-color: rgba(255, 255, 255, 0.3);
 }
 
+/* === OPTIONS BUTTON === */
 .btn-options {
     background: none;
     border: none;
@@ -138,6 +122,7 @@
     width: 32px;
     height: 32px;
     color: #ffffff;
+    transition: background-color 0.2s ease;
 }
 
 .btn-options:hover {
@@ -152,7 +137,7 @@ span.more-options {
     justify-content: center;
 }
 
-/* Tablet */
+/* === RESPONSIVE === */
 @media (max-width: 1024px) {
     .board-header-container {
         grid-template-columns: auto 1fr auto;
@@ -165,7 +150,6 @@ span.more-options {
     }
 }
 
-/* Small Tablet - hide some members */
 @media (max-width: 768px) {
     .board-header-container {
         padding: 0.5rem 8px;
@@ -181,11 +165,9 @@ span.more-options {
 
     .members-inline-list .avatar:nth-child(n+4) {
         display: none;
-        /* Hide members after 3rd */
     }
 }
 
-/* Mobile - compact layout */
 @media (max-width: 640px) {
     .board-header-container {
         grid-template-columns: 1fr auto;
@@ -206,16 +188,14 @@ span.more-options {
 
     .members-inline-list .avatar:nth-child(n+3) {
         display: none;
-        /* Show only 2 members on mobile */
     }
 
     .starred,
     .not-starred {
-        margin-inline-start: 4px !important;
+        gap: 4px;
     }
 }
 
-/* Extra small mobile */
 @media (max-width: 480px) {
     .board-name {
         font-size: 13px;
@@ -231,5 +211,6 @@ span.more-options {
     .btn-options {
         width: 28px;
         height: 28px;
+        gap: 4px;
     }
 }
