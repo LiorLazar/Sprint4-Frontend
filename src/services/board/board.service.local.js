@@ -1,6 +1,7 @@
 import { utilService } from '../util.service.js'
 import { storageService } from '../async-storage.service.js'
-import { demoBoard } from '../data.js'
+
+import { demoBoards } from '../data.js'
 
 const STORAGE_KEY = 'board'
 
@@ -13,22 +14,33 @@ export const boardService = {
     updateTask,
     getEmptyBoard,
     getEmptyList,
+    removeTask,
     getEmptyTask,
-    createDemoBoard,
+    createDemoBoards,
     _createRandomBoard,
 }
 
 window.cs = boardService
 
+// ========== LOAD BOARDS ==========
 async function query() {
     let boards = await storageService.query(STORAGE_KEY)
+
+    // אם אין לוחות בכלל – צור את כל הדמו־דאטה
     if (!boards?.length) {
-        const demo = createDemoBoard()
-        const saved = await storageService.post(STORAGE_KEY, demo)
-        boards = [saved]
+        const demoData = createDemoBoards()
+        const savedBoards = []
+        for (const board of demoData) {
+            const saved = await storageService.post(STORAGE_KEY, board)
+            savedBoards.push(saved)
+        }
+        boards = savedBoards
     }
+
     return boards
 }
+
+// ========== CRUD ==========
 
 function getById(boardId) {
     return storageService.get(STORAGE_KEY, boardId)
@@ -44,13 +56,14 @@ function remove(boardId) {
     return storageService.remove(STORAGE_KEY, boardId)
 }
 
+// ========== HELPERS ==========
+
 async function updateRecentlyViewed(boardId) {
     const board = await getById(boardId)
     if (!board) throw new Error('Board not found')
     board.recentlyViewed = new Date().toISOString()
     return save(board)
 }
-
 
 async function updateTask(boardId, updatedTask) {
     const board = await getById(boardId)
@@ -105,9 +118,32 @@ function getEmptyTask() {
         createdAt: Date.now(),
     }
 }
+function removeTask(boardId, taskId) {
+    const boards = loadFromStorage(STORAGE_KEY)
+    const boardIdx = boards.findIndex(b => b._id === boardId)
+    if (boardIdx === -1) return Promise.reject('Board not found')
 
-function createDemoBoard() {
-    return structuredClone(demoBoard)
+    const board = boards[boardIdx]
+    let isRemoved = false
+
+    board.lists = board.lists.map(list => ({
+        ...list,
+        tasks: list.tasks.filter(task => {
+            if (task.id === taskId) isRemoved = true
+            return task.id !== taskId
+        })
+    }))
+
+    if (!isRemoved) return Promise.reject('Task not found')
+
+    boards[boardIdx] = board
+    saveToStorage(STORAGE_KEY, boards)
+    return Promise.resolve()
+}
+
+// ========== CREATE DEMO BOARDS ==========
+function createDemoBoards() {
+    return demoBoards.map(board => structuredClone(board))
 }
 
 async function _createRandomBoard() {
