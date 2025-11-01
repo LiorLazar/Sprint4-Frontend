@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { icons } from '../SvgIcons.jsx'
 
-
-export function TaskActionsMenu({ anchor, onClose, onAction }) {
+export function TaskActionsMenu({ anchor, onClose, onAction, onDeleteTask }) {
   const menuRef = useRef(null)
   const [position, setPosition] = useState({ top: 0, left: 0 })
 
+  // ===== Close menu when clicking outside =====
   useEffect(() => {
     function handleClickOutside(e) {
       if (menuRef.current && !menuRef.current.contains(e.target)) onClose()
@@ -14,6 +14,7 @@ export function TaskActionsMenu({ anchor, onClose, onAction }) {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [onClose])
 
+  // ===== Calculate dynamic position =====
   useEffect(() => {
     if (!anchor) return
     const menuWidth = 220
@@ -26,7 +27,6 @@ export function TaskActionsMenu({ anchor, onClose, onAction }) {
     if (left + menuWidth > window.innerWidth - padding) {
       left = window.innerWidth - menuWidth - padding
     }
-
     if (top + menuHeight > window.innerHeight - padding) {
       top = anchor.top - menuHeight - padding
     }
@@ -51,7 +51,6 @@ export function TaskActionsMenu({ anchor, onClose, onAction }) {
         style={{ top: position.top, left: position.left }}
         onClick={ev => ev.stopPropagation()}
       >
-     
         <div className="menu-body">
           {actions.map(action => (
             <button
@@ -59,6 +58,11 @@ export function TaskActionsMenu({ anchor, onClose, onAction }) {
               className="action-btn"
               onClick={ev => {
                 ev.stopPropagation()
+                if (action.type === 'archive') {
+                  onDeleteTask?.() // ✅ מוחק מהלוקאלי ומהשרת דרך BoardDetails
+                  onClose()
+                  return
+                }
                 onAction(action.type, ev)
               }}
             >

@@ -3,7 +3,6 @@ import { icons } from "../SvgIcons.jsx"
 import { TaskActionsMenu } from "./TaskActionsMenu.jsx"
 import { TaskDynamicModal } from "../TaskDetails/TaskDynamicModal.jsx"
 import { boardMembers, labelPalette } from '../../services/data.js'
-import { boardService } from '../../services/board/board.service.local.js'
 
 export function TaskPreview({ task, board, onTaskClick, onSave }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -37,7 +36,7 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
   const hasColorCover = !hasImageCover && bgMode === 'cover' && !!task.style?.backgroundColor
   const hasAnyCover = hasImageCover || hasColorCover
 
-  // ===== DATE =====
+  // ===== DATE HELPERS =====
   function parseDate(value) {
     if (!value && value !== 0) return null
     const dateObj = typeof value === "number" ? new Date(value) : new Date(String(value))
@@ -83,7 +82,6 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
   const visibleMembers = allMembers.slice(0, 5)
   const hiddenCount = allMembers.length - visibleMembers.length
 
-  // --- dynamic wrap detection ---
   useEffect(() => {
     if (!membersRef.current) return
     const container = membersRef.current
@@ -95,15 +93,8 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
     setShouldWrap(wrapped)
   }, [task.members])
 
-  // ===== DUE =====
   const dueLabel = formatDueDate(task?.dueDate)
   const dueClass = getDueClass(task?.dueDate)
-
-  // ===== circle click =====
-  function onCircleClick(ev) {
-    ev.stopPropagation()
-    console.log('Circle clicked (mark complete coming soon)')
-  }
 
   // ===== MENU =====
   function openMenu(ev) {
@@ -118,16 +109,20 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
     setIsMenuOpen(true)
   }
 
-  function onArchiveTask(task) {
-    if (!board?._id) return
-    boardService.removeTask(board._id, task.id)
-      .then(() => {
-        console.log('Task removed successfully')
-        if (onSave) onSave()
-      })
-      .catch(err => console.error('Error removing task:', err))
+  // ✅ מחיקת טסק אחת (Archive)
+  async function handleDeleteTask() {
+    if (!board) return
+    const updatedBoard = {
+      ...board,
+      lists: board.lists.map(list => ({
+        ...list,
+        tasks: list.tasks.filter(t => t.id !== task.id)
+      }))
+    }
+    await onSave(task, updatedBoard)
   }
 
+  // ===== ACTION HANDLER =====
   function handleAction(type, ev) {
     ev.stopPropagation()
     setIsMenuOpen(false)
@@ -138,21 +133,13 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
     } else if (['labels', 'members', 'dates', 'attachments', 'cover', 'checklist'].includes(type)) {
       setActiveModal({
         type,
-        anchor: {
-          top: rect.top,
-          bottom: rect.bottom,
-          left: rect.left,
-          right: rect.right
-        }
+        anchor: { top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right }
       })
     } else if (type === 'archive') {
-      onArchiveTask(task)
-    } else {
-      console.log(`Action: ${type} clicked`)
+      handleDeleteTask()
     }
   }
 
-  // ===== RENDER =====
   const isFullMode = bgMode === 'full' && !!bgColor
 
   return (
@@ -160,70 +147,42 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
       className={`task-preview ${hasAnyCover ? 'has-cover' : 'no-cover'} ${isFullMode ? 'full-bg-mode' : ''}`}
       onClick={() => onTaskClick(task)}
     >
-      {/* ===== EDIT BUTTON ===== */}
-      <button
-        ref={btnRef}
-        className="edit-task-btn"
-        onClick={openMenu}
-        title="Task actions"
-      >
+      <button ref={btnRef} className="edit-task-btn" onClick={openMenu} title="Task actions">
         {icons.editCard}
       </button>
 
-      {/* ===== COVER AREA ===== */}
       {hasImageCover ? (
         <div className="task-cover">
           <img src={coverImage} alt="Task cover" className="task-cover-img" />
         </div>
       ) : bgMode === 'cover' ? (
-        <div
-          className="task-cover task-cover-color"
-          style={{ backgroundColor: bgColor }}
-          aria-hidden="true"
-        />
+        <div className="task-cover task-cover-color" style={{ backgroundColor: bgColor }} />
       ) : null}
 
-      {/* ===== BODY ===== */}
       <div
         className={`task-body ${hasImageCover || bgMode === 'cover' ? 'with-cover' : ''}`}
         style={isFullMode ? { backgroundColor: bgColor } : undefined}
       >
-        {/* ===== FULL MODE ===== */}
         {isFullMode ? (
           <div className="task-title-row full-mode">
-            <button className="task-complete-btn" onClick={onCircleClick} title="Mark complete">
-              <span className="circle-icon" />
-            </button>
             <span className="task-title strong">{task.title}</span>
           </div>
         ) : (
           <>
-            {/* LABELS BAR */}
             {task.labels?.length > 0 && (
               <div className="preview-labels-bar">
                 {task.labels.map(labelId => {
                   const color = getLabelColor(labelId)
-                  return (
-                    <span
-                      key={labelId}
-                      className="preview-label-bar"
-                      style={{ backgroundColor: color }}
-                    />
-                  )
+                  return <span key={labelId} className="preview-label-bar" style={{ backgroundColor: color }} />
                 })}
               </div>
             )}
 
-            {/* TITLE ROW */}
             <div className="task-title-row">
-              <button className="task-complete-btn" onClick={onCircleClick} title="Mark complete">
-                <span className="circle-icon" />
-              </button>
               <span className="task-title">{task.title}</span>
             </div>
 
-            {/* META INFO */}
-            {(dueLabel || hasChecklist || task.description || allMembers.length > 0) && (
+            {(dueLabel || hasChecklist || allMembers.length > 0) && (
               <div className={`task-meta-below ${shouldWrap ? 'multi-line' : ''}`}>
                 <div className="meta-top-row">
                   <div className="meta-left">
@@ -233,32 +192,22 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
                         <span>{dueLabel}</span>
                       </div>
                     )}
-
                     {hasChecklist && (
                       <div
                         className={`task-checklist-inline ${
                           checklistSummary.done === checklistSummary.total
-                            ? "completed"
-                            : "in-progress"
+                            ? 'completed'
+                            : 'in-progress'
                         }`}
                       >
                         <span className="icon">{icons.checklistItem}</span>
                         <span>{`${checklistSummary.done}/${checklistSummary.total}`}</span>
                       </div>
                     )}
-
-                    {task.description && task.description.trim() && (
-                      <div className="task-desc-icon" title="Has description">
-                        {icons.cardDescriptions}
-                      </div>
-                    )}
                   </div>
 
                   {allMembers.length > 0 && (
-                    <div
-                      ref={membersRef}
-                      className={`task-members-inline ${shouldWrap ? 'multi-line' : ''}`}
-                    >
+                    <div ref={membersRef} className={`task-members-inline ${shouldWrap ? 'multi-line' : ''}`}>
                       {visibleMembers.map(member => (
                         <span
                           key={member.id}
@@ -269,9 +218,7 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
                           {member.initials}
                         </span>
                       ))}
-                      {hiddenCount > 0 && (
-                        <span className="member-avatar more">{`+${hiddenCount}`}</span>
-                      )}
+                      {hiddenCount > 0 && <span className="member-avatar more">{`+${hiddenCount}`}</span>}
                     </div>
                   )}
                 </div>
@@ -281,16 +228,15 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
         )}
       </div>
 
-      {/* ===== ACTION MENU ===== */}
       {isMenuOpen && (
         <TaskActionsMenu
           anchor={menuAnchor}
           onClose={() => setIsMenuOpen(false)}
           onAction={handleAction}
+          onDeleteTask={handleDeleteTask}
         />
       )}
 
-      {/* ===== DYNAMIC MODAL ===== */}
       {activeModal && (
         <TaskDynamicModal
           type={activeModal.type}

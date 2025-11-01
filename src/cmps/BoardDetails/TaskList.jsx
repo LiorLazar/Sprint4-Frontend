@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { icons } from "../SvgIcons.jsx"
 import { TaskPreview } from "./TaskPreview.jsx"
 
-export function TaskList({ list, board, onAddCard, onCancelEmptyList, onRenameList, onTaskClick, onSaveTask, onMoveTask }) {
+export function TaskList({ list, board, onAddCard, onCancelEmptyList, onRenameList, onTaskClick, onSaveTask, onMoveTask, onDeleteTask }) {
   const [isAdding, setIsAdding] = useState(false)
   const [newTitle, setNewTitle] = useState("")
   const [isEditingTitle, setIsEditingTitle] = useState(false)
@@ -173,6 +173,8 @@ export function TaskList({ list, board, onAddCard, onCancelEmptyList, onRenameLi
                   board={board}
                   onTaskClick={onTaskClick}
                   onSave={onSaveTask}
+                    onDeleteTask={onDeleteTask}
+
                 />
               </div>
             </div>

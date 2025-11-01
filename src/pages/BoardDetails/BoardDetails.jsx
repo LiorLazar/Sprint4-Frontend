@@ -371,6 +371,8 @@ export function BoardDetails() {
             onTaskClick={handleTaskClick}
             onSaveTask={handleSaveTask}
             onMoveTask={handleMoveTask}
+              onDeleteTask={handleDeleteTask}
+
           />
         ))}
 
