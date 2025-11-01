@@ -207,24 +207,38 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
           {icons.xButton}
         </button>
 
-        {/* COVER IMAGE */}
-        {attachments.some(a => a.isCover) && (
-          <div className="task-cover">
-            <img
-              src={attachments.find(a => a.isCover).url}
-              alt="Cover"
-              className="task-cover-image"
-            />
-          </div>
-        )}
+{/* ===== COVER OR COLOR BAR WITH HEADER ===== */}
+{(() => {
+  const coverAttachment = attachments.find(a => a.isCover)
+  const bgColor = task.style?.backgroundColor || '#f4f5f7'
+
+  return (
+    <div
+      className="task-cover-wrapper"
+      style={{
+        backgroundColor: coverAttachment ? 'transparent' : bgColor,
+      }}
+    >
+      {coverAttachment && (
+        <img
+          src={coverAttachment.url}
+          alt="Cover"
+          className="task-cover-image"
+        />
+      )}
+
+      {/* HEADER OVERLAY */}
+      <div className="grid-header">
+        <div className="task-location">
+           <span className="list-name">{listTitle}</span>
+        </div>
+      </div>
+    </div>
+  )
+})()}
+
 
         <div className="task-details-grid">
-          <div className="grid-header">
-            <div className="task-location">
-              in list <span className="list-name">{listTitle}</span>
-            </div>
-          </div>
-
           <div className="grid-main">
             {/* ===== TITLE ===== */}
             <div className="task-title-section">
