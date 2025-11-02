@@ -9,7 +9,7 @@ import './TaskModals.css'
 export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle }) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-    const [isEditingDescription, setIsEditingDescription] = useState(false)
+  const [isEditingDescription, setIsEditingDescription] = useState(false)
   const [editedDescription, setEditedDescription] = useState('')
   const [dueDate, setDueDate] = useState(null)
   const [labels, setLabels] = useState([])
@@ -17,6 +17,7 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
   const [activeModal, setActiveModal] = useState(null)
   const [activeEditor, setActiveEditor] = useState(null)
   const [newItemText, setNewItemText] = useState({})
+  const [modalAnchor, setModalAnchor] = useState(null)
 
   useEffect(() => {
     if (isOpen && task) {
@@ -55,6 +56,25 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
   function cancelDescriptionEdit() {
     setEditedDescription(description)
     setIsEditingDescription(false)
+  }
+
+    function openModal(type, ev) {
+    ev.stopPropagation()
+    const rect = ev.currentTarget.getBoundingClientRect()
+    setModalAnchor({
+      top: rect.top,
+      bottom: rect.bottom,
+      left: rect.left,
+      right: rect.right,
+      width: rect.width,
+      height: rect.height
+    })
+    setActiveModal(type)
+  }
+
+  function closeModal() {
+    setActiveModal(null)
+    setModalAnchor(null)
   }
 
   function handleSave(updated = {}) {
@@ -207,7 +227,6 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
           {icons.xButton}
         </button>
 
-{/* ===== COVER OR COLOR BAR WITH HEADER ===== */}
 {(() => {
   const coverAttachment = attachments.find(a => a.isCover)
   const bgColor = task.style?.backgroundColor || '#f4f5f7'
@@ -227,15 +246,21 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
         />
       )}
 
+      {/* ===== CLOSE BUTTON ON COVER ===== */}
+      <button className="cover-close-btn" onClick={onClose} title="Close">
+        {icons.xButton}
+      </button>
+
       {/* HEADER OVERLAY */}
       <div className="grid-header">
         <div className="task-location">
-           <span className="list-name">{listTitle}</span>
+          <span className="list-name">{listTitle}</span>
         </div>
       </div>
     </div>
   )
 })()}
+
 
 
         <div className="task-details-grid">
@@ -253,31 +278,36 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
             </div>
 
             {/* ===== ACTION BUTTONS ===== */}
-            <div className="action-buttons-row">
-              {!task.checklists?.length && (
-                <button className="action-button" onClick={() => setActiveModal('checklist')}>
-                  <span className="action-button-icon">{icons.checklistItem}</span> Checklist
-                </button>
-              )}
-              <button className="action-button" onClick={() => setActiveModal('attachments')}>
-                <span className="action-button-icon">{icons.attachment}</span> Attachment
-              </button>
-              {!labels?.length && (
-                <button className="action-button" onClick={() => setActiveModal('labels')}>
-                  <span className="action-button-icon">{icons.labels}</span> Labels
-                </button>
-              )}
-              {!dueDate && (
-                <button className="action-button" onClick={() => setActiveModal('dates')}>
-                  <span className="action-button-icon">{icons.clock}</span> Dates
-                </button>
-              )}
-              {!members?.length && (
-                <button className="action-button" onClick={() => setActiveModal('members')}>
-                  <span className="action-button-icon">{icons.members}</span> Members
-                </button>
-              )}
-            </div>
+<div className="action-buttons-row">
+  {!task.checklists?.length && (
+    <button className="action-button" onClick={(ev) => openModal('checklist', ev)}>
+      <span className="action-button-icon">{icons.checklistItem}</span> Checklist
+    </button>
+  )}
+
+  <button className="action-button" onClick={(ev) => openModal('attachments', ev)}>
+    <span className="action-button-icon">{icons.attachment}</span> Attachment
+  </button>
+
+  {!labels?.length && (
+    <button className="action-button" onClick={(ev) => openModal('labels', ev)}>
+      <span className="action-button-icon">{icons.labels}</span> Labels
+    </button>
+  )}
+
+  {!dueDate && (
+    <button className="action-button" onClick={(ev) => openModal('dates', ev)}>
+      <span className="action-button-icon">{icons.clock}</span> Dates
+    </button>
+  )}
+
+  {!members?.length && (
+    <button className="action-button" onClick={(ev) => openModal('members', ev)}>
+      <span className="action-button-icon">{icons.members}</span> Members
+    </button>
+  )}
+</div>
+
 
             <div className="meta-row">
               {/* MEMBERS */}
@@ -610,6 +640,7 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
             type={activeModal}
             task={{ ...task, labels, members, dueDate }}
             board={board}
+            anchor={modalAnchor}
             onClose={() => setActiveModal(null)}
             onSave={fields => handleSave(fields)}
           />
