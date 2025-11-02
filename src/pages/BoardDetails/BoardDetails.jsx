@@ -27,27 +27,35 @@ export function BoardDetails() {
 
   // ===== LOAD BOARD =====
   useEffect(() => {
+    console.log('🔍 Loading board with ID:', boardId)
     if (boardId) loadBoard(boardId)
   }, [boardId])
 
   useEffect(() => {
+    console.log('📦 Board from store updated:', boardFromStore)
     if (boardFromStore) setLocalBoard(boardFromStore)
   }, [boardFromStore])
 
   // ===== SET BACKGROUND COLOR OR IMAGE =====
   useEffect(() => {
+    console.log('🎨 localBoard:', localBoard)
+    console.log('🎨 Board style data:', localBoard?.style)
     const bgColor = localBoard?.style?.backgroundColor || '#838c91'
     const bgImage = localBoard?.style?.backgroundImage || null
+    console.log('🎨 bgColor:', bgColor, 'bgImage:', bgImage)
 
     if (bgImage) {
-      document.body.style.backgroundImage = `url(${bgImage})`
+      // bgImage is already in the format "url(...)" so use it directly
+      document.body.style.backgroundImage = bgImage
       document.body.style.backgroundSize = 'cover'
       document.body.style.backgroundPosition = 'center center'
       document.body.style.backgroundAttachment = 'fixed'
       document.body.style.backgroundRepeat = 'no-repeat'
       document.body.style.backgroundColor = 'transparent'
 
-      getAverageColor(bgImage).then(avgColor => {
+      // Extract the URL from "url(...)" format for getAverageColor
+      const imageUrl = bgImage.replace(/^url\(['"]?(.+?)['"]?\)$/, '$1')
+      getAverageColor(imageUrl).then(avgColor => {
         const darker = adjustColorBrightness(avgColor, -15)
         const textColor = adjustColorBrightness(avgColor, 100)
 

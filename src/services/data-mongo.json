@@ -1,0 +1,880 @@
+[ 
+    {
+        "title": "Team Collaboration Board",
+        "isStarred": true,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#7a8287",
+            "backgroundImage": "url(https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1500&q=80)"
+        },
+        "labels": [
+            {
+                "id": "l101",
+                "title": "Design",
+                "color": "#0079bf"
+            },
+            {
+                "id": "l102",
+                "title": "Backend",
+                "color": "#00c2e0"
+            },
+            {
+                "id": "l103",
+                "title": "Frontend",
+                "color": "#ff9f1a"
+            },
+            {
+                "id": "l104",
+                "title": "QA",
+                "color": "#eb5a46"
+            },
+            {
+                "id": "l105",
+                "title": "Research",
+                "color": "#c377e0"
+            },
+            {
+                "id": "l106",
+                "title": "Priority",
+                "color": "#61bd4f"
+            }
+        ],
+        "members": [
+            {
+                "_id": "u101",
+                "fullname": "Eden Avgi",
+                "imgUrl": "https://i.pravatar.cc/150?img=3"
+            },
+            {
+                "_id": "u102",
+                "fullname": "Golan Asraf",
+                "imgUrl": "https://i.pravatar.cc/150?img=5"
+            },
+            {
+                "_id": "u103",
+                "fullname": "Lior Lazer",
+                "imgUrl": "https://i.pravatar.cc/150?img=7"
+            },
+            {
+                "_id": "u104",
+                "fullname": "Liran Tal",
+                "imgUrl": "https://i.pravatar.cc/150?img=8"
+            },
+            {
+                "_id": "u105",
+                "fullname": "Shira Azulay",
+                "imgUrl": "https://i.pravatar.cc/150?img=9"
+            }
+        ],
+        "lists": [
+            {
+                "id": "lst101",
+                "title": "Quick Tasks",
+                "style": {
+                    "backgroundColor": "#bbc9ff"
+                },
+                "tasks": [
+                    {
+                        "id": "t101a",
+                        "title": "Reply to client email"
+                    },
+                    {
+                        "id": "t101b",
+                        "title": "Fix layout padding on board header",
+                        "style": {
+                            "backgroundColor": "#ffb74d"
+                        }
+                    },
+                    {
+                        "id": "t101c",
+                        "title": "Rename CSS variables for clarity"
+                    },
+                    {
+                        "id": "t101d",
+                        "title": "Review pull request #24",
+                        "style": {
+                            "backgroundColor": "#a29bfe"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "lst102",
+                "title": "Research & Planning",
+                "style": {
+                    "backgroundColor": "#ffeaa7"
+                },
+                "tasks": [
+                    {
+                        "id": "t102a",
+                        "title": "Define MVP goals and priorities"
+                    },
+                    {
+                        "id": "t102b",
+                        "title": "Research drag-and-drop libraries for React",
+                        "style": {
+                            "backgroundColor": "#fab1a0"
+                        }
+                    },
+                    {
+                        "id": "t102c",
+                        "title": "Benchmark Trello's performance with large boards"
+                    },
+                    {
+                        "id": "t102d",
+                        "title": "Document data flow between components",
+                        "style": {
+                            "backgroundColor": "#55efc4"
+                        }
+                    },
+                    {
+                        "id": "t102e",
+                        "title": "Prepare architecture diagram for final presentation"
+                    },
+                    {
+                        "id": "t102f",
+                        "title": "List user pain points found in interviews"
+                    }
+                ]
+            },
+            {
+                "id": "lst103",
+                "title": "Design Phase",
+                "tasks": [
+                    {
+                        "id": "t103a",
+                        "title": "Set up design system in Figma",
+                        "style": {
+                            "backgroundColor": "#74b9ff"
+                        }
+                    },
+                    {
+                        "id": "t103b",
+                        "title": "Redesign login screen – compact layout"
+                    },
+                    {
+                        "id": "t103c",
+                        "title": "Design interactive hover state for task cards",
+                        "style": {
+                            "backgroundColor": "#25ed4d"
+                        }
+                    },
+                    {
+                        "id": "t103d",
+                        "title": "Create reusable icon component"
+                    },
+                    {
+                        "id": "t103e",
+                        "title": "Define color tokens and spacing units",
+                        "style": {
+                            "backgroundColor": "#fdcb6e"
+                        }
+                    },
+                    {
+                        "id": "t103f",
+                        "title": "Test dark mode contrast on mobile"
+                    },
+                    {
+                        "id": "t103g",
+                        "title": "Export illustrations for landing page",
+                        "style": {
+                            "backgroundColor": "#fab1a0"
+                        }
+                    },
+                    {
+                        "id": "t103h",
+                        "title": "Prototype board scroll animation"
+                    }
+                ]
+            },
+            {
+                "id": "lst104",
+                "title": "Frontend Development",
+                "style": {
+                    "backgroundColor": "#ff8a53"
+                },
+                "tasks": [
+                    {
+                        "id": "t104a",
+                        "title": "Build <BoardDetails> layout and toolbar"
+                    },
+                    {
+                        "id": "t104b",
+                        "title": "Implement <TaskList> with task add and cancel behavior",
+                        "style": {
+                            "backgroundColor": "#ffeaa7"
+                        }
+                    },
+                    {
+                        "id": "t104c",
+                        "title": "Handle click outside to close add task form"
+                    },
+                    {
+                        "id": "t104d",
+                        "title": "Integrate utilService for id generation",
+                        "style": {
+                            "backgroundColor": "#fab1a0"
+                        }
+                    },
+                    {
+                        "id": "t104e",
+                        "title": "Add smooth transitions between board states"
+                    },
+                    {
+                        "id": "t104f",
+                        "title": "Implement keyboard shortcuts for adding lists"
+                    },
+                    {
+                        "id": "t104g",
+                        "title": "Create <TaskPreview> component with edit button"
+                    },
+                    {
+                        "id": "t104h",
+                        "title": "Refactor boardService for consistency"
+                    },
+                    {
+                        "id": "t104i",
+                        "title": "Optimize rerenders using React.memo",
+                        "style": {
+                            "backgroundColor": "#81ecec"
+                        }
+                    },
+                    {
+                        "id": "t104j",
+                        "title": "Fix scrollbar overflow in lists container"
+                    }
+                ]
+            },
+            {
+                "id": "lst105",
+                "title": "Backend & Storage",
+                "tasks": [
+                    {
+                        "id": "t105a",
+                        "title": "Implement boardService.query() with localStorage"
+                    },
+                    {
+                        "id": "t105b",
+                        "title": "Add createDemoBoard() on first app load",
+                        "style": {
+                            "backgroundColor": "#55efc4"
+                        }
+                    },
+                    {
+                        "id": "t105c",
+                        "title": "Ensure board.id persists after save"
+                    },
+                    {
+                        "id": "t105d",
+                        "title": "Set up Express server (future step)"
+                    },
+                    {
+                        "id": "t105e",
+                        "title": "Test async-storage post() and put() functions"
+                    },
+                    {
+                        "id": "t105f",
+                        "title": "Add filtering logic for board search"
+                    },
+                    {
+                        "id": "t105g",
+                        "title": "Handle board deletion properly",
+                        "style": {
+                            "backgroundColor": "#ff7675"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "lst106",
+                "title": "QA & Testing",
+                "style": {
+                    "backgroundColor": "#cbb0e8"
+                },
+                "tasks": [
+                    {
+                        "id": "t106a",
+                        "title": "Verify task addition and removal works",
+                        "style": {
+                            "backgroundColor": "#a3e635"
+                        }
+                    },
+                    {
+                        "id": "t106b",
+                        "title": "Test renaming lists and canceling empty titles"
+                    },
+                    {
+                        "id": "t106c",
+                        "title": "Check persistence after reload (localStorage)"
+                    },
+                    {
+                        "id": "t106d",
+                        "title": "Ensure board saves on every change"
+                    },
+                    {
+                        "id": "t106e",
+                        "title": "Validate hover effect on edit task button",
+                        "style": {
+                            "backgroundColor": "#74b9ff"
+                        }
+                    },
+                    {
+                        "id": "t106f",
+                        "title": "Run tests with multiple lists open simultaneously"
+                    },
+                    {
+                        "id": "t106g",
+                        "title": "Check performance with 100+ tasks"
+                    }
+                ]
+            },
+            {
+                "id": "lst107",
+                "title": "Deployment & Docs",
+                "tasks": [
+                    {
+                        "id": "t107a",
+                        "title": "Create GitHub repo and push project"
+                    },
+                    {
+                        "id": "t107b",
+                        "title": "Write detailed README with setup guide"
+                    },
+                    {
+                        "id": "t107c",
+                        "title": "Deploy on GitHub Pages",
+                        "style": {
+                            "backgroundColor": "#81ecec"
+                        }
+                    },
+                    {
+                        "id": "t107d",
+                        "title": "Test production build performance"
+                    },
+                    {
+                        "id": "t107e",
+                        "title": "Add preview screenshots and demo link"
+                    },
+                    {
+                        "id": "t107f",
+                        "title": "Plan backend integration phase"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Thailand Adventure 2025 🇹🇭",
+        "isStarred": true,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#f4b183",
+            "backgroundImage": "url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1500&q=80)"
+        },
+        "labels": [
+            {
+                "id": "l101",
+                "title": "Accommodation",
+                "color": "#00bcd4"
+            },
+            {
+                "id": "l102",
+                "title": "Transport",
+                "color": "#ffb74d"
+            },
+            {
+                "id": "l103",
+                "title": "Activities",
+                "color": "#81c784"
+            },
+            {
+                "id": "l104",
+                "title": "Food & Drinks",
+                "color": "#ff7043"
+            },
+            {
+                "id": "l105",
+                "title": "Culture",
+                "color": "#9575cd"
+            },
+            {
+                "id": "l106",
+                "title": "Essentials",
+                "color": "#e57373"
+            }
+        ],
+        "members": [
+            {
+                "_id": "u101",
+                "fullname": "Eden Avgi",
+                "imgUrl": "https://i.pravatar.cc/150?img=3"
+            },
+            {
+                "_id": "u102",
+                "fullname": "Golan Asraf",
+                "imgUrl": "https://i.pravatar.cc/150?img=5"
+            },
+            {
+                "_id": "u103",
+                "fullname": "Lior Lazer",
+                "imgUrl": "https://i.pravatar.cc/150?img=7"
+            },
+            {
+                "_id": "u104",
+                "fullname": "Liran Tal",
+                "imgUrl": "https://i.pravatar.cc/150?img=8"
+            },
+            {
+                "_id": "u105",
+                "fullname": "Shira Azulay",
+                "imgUrl": "https://i.pravatar.cc/150?img=9"
+            }
+        ],
+        "lists": [
+            {
+                "id": "lst201",
+                "title": "Before the Trip ",
+                "style": {
+                    "backgroundColor": "#ffe0b2"
+                },
+                "tasks": [
+                    {
+                        "id": "t201a",
+                        "title": "Book flights to Bangkok",
+                        "style": {
+                            "backgroundColor": "#ffb74d"
+                        }
+                    },
+                    {
+                        "id": "t201b",
+                        "title": "Apply for Thai eVisa"
+                    },
+                    {
+                        "id": "t201c",
+                        "title": "Buy travel insurance (includes diving coverage)"
+                    },
+                    {
+                        "id": "t201d",
+                        "title": "Check vaccination requirements",
+                        "style": {
+                            "backgroundColor": "#81c784"
+                        }
+                    },
+                    {
+                        "id": "t201e",
+                        "title": "Convert some cash to Thai Baht (THB)"
+                    },
+                    {
+                        "id": "t201f",
+                        "title": "Download offline maps and phrasebook app"
+                    }
+                ]
+            },
+            {
+                "id": "lst202",
+                "title": "Bangkok",
+                "style": {
+                    "backgroundColor": "#f8bbd0"
+                },
+                "tasks": [
+                    {
+                        "id": "t202a",
+                        "title": "Visit the Grand Palace & Wat Pho",
+                        "style": {
+                            "backgroundColor": "#9575cd"
+                        }
+                    },
+                    {
+                        "id": "t202b",
+                        "title": "Take a tuk-tuk ride through Chinatown"
+                    },
+                    {
+                        "id": "t202c",
+                        "title": "Rooftop dinner at Octave Sky Bar",
+                        "style": {
+                            "backgroundColor": "#ff7043"
+                        }
+                    },
+                    {
+                        "id": "t202d",
+                        "title": "Explore Chatuchak Weekend Market"
+                    },
+                    {
+                        "id": "t202e",
+                        "title": "Stay 3 nights at Siam@Siam Design Hotel",
+                        "style": {
+                            "backgroundColor": "#00bcd4"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "lst203",
+                "title": "Chiang Mai ",
+                "style": {
+                    "backgroundColor": "#c8e6c9"
+                },
+                "tasks": [
+                    {
+                        "id": "t203a",
+                        "title": "Fly Bangkok → Chiang Mai (AirAsia)"
+                    },
+                    {
+                        "id": "t203b",
+                        "title": "Elephant Nature Park full-day visit",
+                        "style": {
+                            "backgroundColor": "#81c784"
+                        }
+                    },
+                    {
+                        "id": "t203c",
+                        "title": "Explore old temples: Wat Chedi Luang, Wat Phra Singh"
+                    },
+                    {
+                        "id": "t203d",
+                        "title": "Book stay at Green Tiger House (eco-hotel)",
+                        "style": {
+                            "backgroundColor": "#00bcd4"
+                        }
+                    },
+                    {
+                        "id": "t203e",
+                        "title": "Take a Thai cooking class with locals"
+                    },
+                    {
+                        "id": "t203f",
+                        "title": "Night Bazaar & Sunday Walking Street Market",
+                        "style": {
+                            "backgroundColor": "#ff7043"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "lst204",
+                "title": "Koh Phangan ",
+                "style": {
+                    "backgroundColor": "#b3e5fc"
+                },
+                "tasks": [
+                    {
+                        "id": "t204a",
+                        "title": "Ferry from Surat Thani to Koh Phangan",
+                        "style": {
+                            "backgroundColor": "#ffb74d"
+                        }
+                    },
+                    {
+                        "id": "t204b",
+                        "title": "Book bungalow at Sunset Hill Resort"
+                    },
+                    {
+                        "id": "t204c",
+                        "title": "Attend Full Moon Party (Haad Rin Beach)"
+                    },
+                    {
+                        "id": "t204d",
+                        "title": "Take snorkeling trip to Koh Ma reef",
+                        "style": {
+                            "backgroundColor": "#81c784"
+                        }
+                    },
+                    {
+                        "id": "t204e",
+                        "title": "Yoga & meditation session at The Sanctuary"
+                    },
+                    {
+                        "id": "t204f",
+                        "title": "Rent a scooter for island exploration",
+                        "style": {
+                            "backgroundColor": "#ff7043"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "lst205",
+                "title": "Krabi & Islands ",
+                "style": {
+                    "backgroundColor": "#fff59d"
+                },
+                "tasks": [
+                    {
+                        "id": "t205a",
+                        "title": "Stay 3 nights in Ao Nang Cliff Resort",
+                        "style": {
+                            "backgroundColor": "#00bcd4"
+                        }
+                    },
+                    {
+                        "id": "t205b",
+                        "title": "4 Islands boat tour: Phra Nang, Tup, Chicken, Poda"
+                    },
+                    {
+                        "id": "t205c",
+                        "title": "Kayak through mangroves at Ao Thalane",
+                        "style": {
+                            "backgroundColor": "#81c784"
+                        }
+                    },
+                    {
+                        "id": "t205d",
+                        "title": "Dinner at The Hilltop overlooking the bay"
+                    },
+                    {
+                        "id": "t205e",
+                        "title": "Rock climbing at Railay Beach"
+                    },
+                    {
+                        "id": "t205f",
+                        "title": "Massage & spa evening before flight"
+                    }
+                ]
+            },
+            {
+                "id": "lst206",
+                "title": "Packing List ",
+                "style": {
+                    "backgroundColor": "#d1c4e9"
+                },
+                "tasks": [
+                    {
+                        "id": "t206a",
+                        "title": "Passport & printed eVisa",
+                        "style": {
+                            "backgroundColor": "#e57373"
+                        }
+                    },
+                    {
+                        "id": "t206b",
+                        "title": "Light cotton clothes + flip-flops"
+                    },
+                    {
+                        "id": "t206c",
+                        "title": "Mosquito repellent & sunscreen SPF 50",
+                        "style": {
+                            "backgroundColor": "#ffb74d"
+                        }
+                    },
+                    {
+                        "id": "t206d",
+                        "title": "GoPro + waterproof case"
+                    },
+                    {
+                        "id": "t206e",
+                        "title": "Travel adapter (Type A/B/C)",
+                        "style": {
+                            "backgroundColor": "#81c784"
+                        }
+                    },
+                    {
+                        "id": "t206f",
+                        "title": "Reusable bottle & eco straw set"
+                    }
+                ]
+            },
+            {
+                "id": "lst207",
+                "title": "Budget & Notes ",
+                "style": {
+                    "backgroundColor": "#cfd8dc"
+                },
+                "tasks": [
+                    {
+                        "id": "t207a",
+                        "title": "Total trip budget: ~3,500 USD"
+                    },
+                    {
+                        "id": "t207b",
+                        "title": "Accommodation average: $35/night"
+                    },
+                    {
+                        "id": "t207c",
+                        "title": "Daily expenses estimate: $40/day"
+                    },
+                    {
+                        "id": "t207d",
+                        "title": "Keep track of receipts via Splitwise",
+                        "style": {
+                            "backgroundColor": "#a5d6a7"
+                        }
+                    },
+                    {
+                        "id": "t207e",
+                        "title": "Set aside emergency fund: $200 cash"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Italy Trip 🇮🇹",
+        "isStarred": false,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#f5b971"
+        },
+        "labels": [],
+        "members": [],
+        "lists": []
+    },
+    {
+        "title": "Home Renovation 🏡",
+        "isStarred": false,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#cfd8dc"
+        },
+        "labels": [],
+        "members": [],
+        "lists": []
+    },
+    {
+        "title": "Music Production 🎧",
+        "isStarred": false,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#cba6f7"
+        },
+        "labels": [],
+        "members": [],
+        "lists": []
+    },
+    {
+        "title": "Design Portfolio 🎨",
+        "isStarred": false,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#f7d060"
+        },
+        "labels": [],
+        "members": [],
+        "lists": []
+    },
+    {
+        "title": "Startup Ideas 🚀",
+        "isStarred": false,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#80cbc4"
+        },
+        "labels": [],
+        "members": [],
+        "lists": []
+    },
+    {
+        "title": "Meal Planning 🍳",
+        "isStarred": false,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#ffcc80"
+        },
+        "labels": [],
+        "members": [],
+        "lists": []
+    },
+    {
+        "title": "Fitness Goals 💪",
+        "isStarred": false,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#aed581"
+        },
+        "labels": [],
+        "members": [],
+        "lists": []
+    },
+    {
+        "title": "Reading List 📚",
+        "isStarred": false,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#90caf9"
+        },
+        "labels": [],
+        "members": [],
+        "lists": []
+    },
+    {
+        "title": "Photography Projects 📸",
+        "isStarred": false,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#f48fb1"
+        },
+        "labels": [],
+        "members": [],
+        "lists": []
+    },
+    {
+        "title": "Shopping List 🛒",
+        "isStarred": false,
+        "createdAt": 1730505600000,
+        "createdBy": {
+            "_id": "u101",
+            "fullname": "Eden Avgi",
+            "imgUrl": "https://i.pravatar.cc/150?img=3"
+        },
+        "style": {
+            "backgroundColor": "#d7ccc8"
+        },
+        "labels": [],
+        "members": [],
+        "lists": []
+    }
+]

@@ -7,7 +7,7 @@ import {
     UPDATE_BOARD,
     ADD_BOARD_MSG
 } from '../reducers/board.reducer'
-import { boardService } from '../../services/board/board.service.local.js'
+import { boardService } from '../../services/board'
 
 export async function loadBoards(filterBy) {
     try {
@@ -22,7 +22,9 @@ export async function loadBoards(filterBy) {
 
 export async function loadBoard(boardId) {
     try {
+        console.log('🔄 Loading board from service, ID:', boardId)
         const board = await boardService.getById(boardId)
+        console.log('✅ Board loaded from service:', board)
         store.dispatch({ type: SET_BOARD, board })
         return board
     } catch (err) {
