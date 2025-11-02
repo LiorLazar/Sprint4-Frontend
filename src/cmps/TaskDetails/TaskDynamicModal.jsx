@@ -21,9 +21,9 @@ export function TaskDynamicModal({ type, task, board, anchor, onClose, onSave })
 
 useEffect(() => {
   if (!anchor) return
-  const modalWidth = 360
-  const modalHeight = 440
-  const gap = 8
+  const modalWidth = 380
+  const modalHeight = 400
+  const gap = 1
 
   let left = anchor.left
   let top = anchor.bottom + gap
