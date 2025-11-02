@@ -165,19 +165,27 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
       >
 {isFullMode ? (
   <div className="task-title-row full-mode">
-    <button
-      className="task-complete-btn"
-      onClick={(ev) => {
-        ev.stopPropagation()
-        console.log('Circle clicked (mark complete coming soon)')
-      }}
-      title="Mark complete"
+    <label
+      className="task-checkbox slide-in"
+      onClick={(ev) => ev.stopPropagation()}
     >
-      <span className="circle-icon" />
-    </button>
-    <span className="task-title strong">{task.title}</span>
+      <input
+        type="checkbox"
+        checked={!!task.isDone}
+        onChange={(ev) => {
+          ev.stopPropagation()
+          const updatedTask = { ...task, isDone: !task.isDone }
+          onSave(updatedTask)
+        }}
+      />
+    </label>
+
+    <span className={`task-title strong ${task.isDone ? 'completed' : ''}`}>
+      {task.title}
+    </span>
   </div>
 ) : (
+
           <>
             {task.labels?.length > 0 && (
               <div className="preview-labels-bar">
@@ -189,17 +197,25 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
             )}
 
      <div className="task-title-row">
-  <button
-    className="task-complete-btn"
-    onClick={(ev) => {
+<label
+  className="task-checkbox slide-in"
+  onClick={(ev) => ev.stopPropagation()}
+>
+  <input
+    type="checkbox"
+    checked={!!task.isDone}
+    onChange={(ev) => {
       ev.stopPropagation()
-      console.log('Circle clicked (mark complete coming soon)')
+      const updatedTask = { ...task, isDone: !task.isDone }
+      onSave(updatedTask)
     }}
-    title="Mark complete"
-  >
-    <span className="circle-icon" />
-  </button>
-  <span className="task-title">{task.title}</span>
+  />
+</label>
+
+<span className={`task-title ${task.isDone ? 'completed' : ''}`}>
+  {task.title}
+</span>
+
 </div>
 
 

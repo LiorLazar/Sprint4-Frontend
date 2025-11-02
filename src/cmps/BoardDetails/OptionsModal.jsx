@@ -92,7 +92,7 @@ export function OptionsModal({ board, onClose, onToggleStar, onChangeColor, onCh
 
                 {/* ===== IMAGE UPLOAD ===== */}
                 <div className="image-upload-section">
-                    <h4 className="color-section-title">UPLOAD IMAGE BACKGROUND</h4>
+                    <h4 className="color-section-title">UPLOAD IMAGE</h4>
                     <label className="upload-btn">
                         {icons.image} Choose Image
                         <input
@@ -106,7 +106,7 @@ export function OptionsModal({ board, onClose, onToggleStar, onChangeColor, onCh
                         <div className="current-bg-preview">
                             <img src={board.style.backgroundImage} alt="Background preview" />
                             <button
-                                className="remove-bg-btn"
+                                className="remove-btn"
                                 onClick={() => onChangeBackgroundImage(null)}
                             >
                                 Remove

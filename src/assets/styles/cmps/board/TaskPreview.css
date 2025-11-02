@@ -63,8 +63,7 @@
 .task-title-row {
   position: relative;
   display: flex;
-  align-items: center;
-  overflow: hidden;
+ align-items: flex-start;  overflow: hidden;
 }
 
 .task-title {
@@ -383,4 +382,84 @@ box-shadow: 0 1.5px 2px rgba(9, 30, 66, 0.2);
   height: 100%;
   object-fit: cover;
   display: block;
+}
+/* === SLIDE-IN CHECKBOX (עיגול שנכנס משמאל על hover) === */
+.task-checkbox {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-150%, -50%) scale(0.9);
+  opacity: 0;
+  transition: all 0.25s ease;
+  z-index: 2;
+}
+
+.task-preview:hover .task-checkbox {
+  opacity: 1;
+  transform: translate(0, -50%) scale(1);
+}
+
+/* === עיצוב הצ'קבוקס === */
+.task-checkbox input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #6b778c;
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* וי בפנים כשהמשימה מסומנת */
+.task-checkbox input:checked {
+  background-color: #61bd4f;
+  border-color: #61bd4f;
+  box-shadow: inset 0 0 0 2px #61bd4f;
+}
+
+.task-checkbox input:checked::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 8px;
+  border-right: 2.5px solid #fff;  
+  border-bottom: 2.5px solid #fff; 
+  transform: rotate(45deg);
+  top: 1.5px;
+  left: 4.5px;
+}
+
+
+.task-checkbox:hover input {
+  border-color: #4caf50;
+}
+
+.task-preview:hover .task-title {
+  transform: translateX(28px);
+  transition: transform 0.25s ease;
+}
+
+.task-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+  position: relative;
+}
+
+.task-title.completed {
+  color: #9fadbc;
+  font-weight: 400;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.task-title {
+  flex: 1;
+  color: #292A2E;
+  font-size: 14px;
+  transition: transform 0.25s ease;
+  min-width: 0;
+  margin-bottom: 4px;
 }

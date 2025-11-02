@@ -271,7 +271,50 @@ body.modal-open > *:not(.task-details-overlay) {
     padding-top: 16px;
   }
 }
+/* ===== COVER CLOSE BUTTON ===== */
+.cover-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #131313;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  z-index: 10;
+
+}
+
+.cover-close-btn:hover {
+  background: rgb(255, 255, 255);
+}
+
+.task-cover-wrapper {
+  position: relative; /* חשוב כדי שהכפתור ימוקם נכון */
+  overflow: hidden;
+}
+
+.task-cover-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
 .details-title-left{
   display: flex; align-items: center; gap: 8px;
 }
-/* ========== DUE DATE ========== */ .due-inline-controls { display: flex; align-items: center; gap: 8px; } .due-pill { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 10px; border-radius: 6px; font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif; font-size: 14px; font-weight: 500; border: none; cursor: pointer; line-height: 1; background: #f0f1f3; color: #292a2e; transition: background 0.2s ease; } .due-pill:hover { background: #e1e2e5; } .due-badge.overdue { color: #ae2e24; background-color: #f0f1f3; border-radius: 2px; padding: 2px; font-weight: 500; } .due-badge.due-soon { background-color: #f9cb23; border-radius: 2px; padding: 2px; font-weight: 500; } .due-badge { margin-left: 6px; font-weight: 400; font-size: 12px; }
+
+ .due-inline-controls { display: flex; align-items: center; gap: 8px; } 
+ .due-pill { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 10px; border-radius: 6px; font-family: "Atlassian Sans", ui-sans-serif, -apple-system, "system-ui", "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif; font-size: 14px; font-weight: 500; border: none; cursor: pointer; line-height: 1; background: #f0f1f3; color: #292a2e; transition: background 0.2s ease; }
+ .due-pill:hover { background: #e1e2e5; }
+ .due-badge.overdue { color: #ae2e24; background-color: #f0f1f3; border-radius: 2px; padding: 2px; font-weight: 500; }
+ .due-badge.due-soon { background-color: #f9cb23; border-radius: 2px; padding: 2px; font-weight: 500; }
+ .due-badge { margin-left: 6px; font-weight: 400; font-size: 12px; }
