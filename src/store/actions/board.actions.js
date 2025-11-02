@@ -7,7 +7,7 @@ import {
     UPDATE_BOARD,
     ADD_BOARD_MSG
 } from '../reducers/board.reducer'
-import { boardService } from '../../services/board/board.service.local.js'
+import { boardService } from '../../services/board'
 
 export async function loadBoards(filterBy) {
     try {

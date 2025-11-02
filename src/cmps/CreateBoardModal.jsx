@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { addBoard } from '../store/actions/board.actions.js'
-import { boardService } from '../services/board/board.service.local.js'
+import { boardService } from '../services/board'
 import { icons } from './SvgIcons.jsx'
 
 export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
@@ -13,7 +13,7 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
     const modalRef = useRef(null)
 
     const backgrounds = [
-        '#0079bf', '#d29034', '#519839', '#b04632', 
+        '#0079bf', '#d29034', '#519839', '#b04632',
         '#89609e', '#cd5a91', '#4bbf6b', '#00aecc'
     ]
 
@@ -21,19 +21,19 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
         if (isOpen && triggerRef?.current) {
             updateModalPosition()
             setIsPositioned(true)
-            
+
             const handleScroll = () => updateModalPosition()
             const handleClickOutside = (event) => {
-                if (modalRef.current && !modalRef.current.contains(event.target) && 
+                if (modalRef.current && !modalRef.current.contains(event.target) &&
                     triggerRef.current && !triggerRef.current.contains(event.target)) {
                     handleClose()
                 }
             }
-            
+
             window.addEventListener('scroll', handleScroll, { passive: true })
             window.addEventListener('resize', handleScroll, { passive: true })
             document.addEventListener('mousedown', handleClickOutside)
-            
+
             return () => {
                 window.removeEventListener('scroll', handleScroll)
                 window.removeEventListener('resize', handleScroll)
@@ -46,14 +46,14 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
 
     function updateModalPosition() {
         if (!triggerRef?.current) return
-        
+
         const triggerRect = triggerRef.current.getBoundingClientRect()
         const modalWidth = 288
         const modalHeight = 450
         const viewportWidth = window.innerWidth
         const viewportHeight = window.innerHeight
         const padding = 8
-        
+
         let left = triggerRect.right + padding
         let top = triggerRect.top + 5  // Move modal 5px below trigger (25px lower than previous -20px)
         let cssClass = 'position-right'
@@ -62,7 +62,7 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
         if (left + modalWidth > viewportWidth - padding) {
             left = triggerRect.left - modalWidth - padding
             cssClass = 'position-left'
-            
+
             // If it would overflow on the left too, center it
             if (left < padding) {
                 left = Math.max(padding, (viewportWidth - modalWidth) / 2)
@@ -81,7 +81,7 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
             else if (top + modalHeight > viewportHeight - padding) {
                 const spaceAbove = triggerRect.top - padding
                 const spaceBelow = viewportHeight - triggerRect.bottom - padding
-                
+
                 if (spaceAbove >= modalHeight) {
                     // Enough space above, position above the trigger
                     top = triggerRect.top - modalHeight - padding
@@ -107,7 +107,7 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
 
     async function handleCreateBoard(ev) {
         ev.preventDefault()
-        
+
         if (!title.trim()) {
             setShowTitleError(true)
             return
@@ -134,11 +134,11 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
     if (!isOpen) return null
 
     return (
-        <div 
+        <div
             ref={modalRef}
             className={`create-board-modal ${positionClass}`}
-            style={{ 
-                left: modalPosition.left, 
+            style={{
+                left: modalPosition.left,
                 top: modalPosition.top,
                 visibility: isPositioned ? 'visible' : 'hidden'
             }}
@@ -152,7 +152,7 @@ export function CreateBoardModal({ isOpen, onClose, triggerRef }) {
 
             <form onSubmit={handleCreateBoard}>
                 <div className="board-preview-section">
-                    <div 
+                    <div
                         className="board-preview-mock"
                         style={{ backgroundColor: selectedBackground }}
                     >

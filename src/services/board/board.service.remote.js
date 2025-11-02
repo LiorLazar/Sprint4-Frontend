@@ -5,31 +5,32 @@ export const boardService = {
     getById,
     save,
     remove,
-    addCarMsg
+    addBoardMsg
 }
 
 async function query(filterBy = { txt: '' }) {
     return httpService.get(`board`, filterBy)
 }
 
-function getById(board) {
-    return httpService.get(`board/${carId}`)
+function getById(boardId) {
+    return httpService.get(`board/${boardId}`)
 }
 
-async function remove(board) {
-    return httpService.delete(`board/${carId}`)
+async function remove(boardId) {
+    return httpService.delete(`board/${boardId}`)
 }
+
 async function save(board) {
     var savedBoard
     if (board._id) {
         savedBoard = await httpService.put(`board/${board._id}`, board)
     } else {
-        savedBoard = await httpService.post('board', car)
+        savedBoard = await httpService.post('board', board)
     }
     return savedBoard
 }
 
-async function addCarMsg(boardId, txt) {
+async function addBoardMsg(boardId, txt) {
     const savedMsg = await httpService.post(`board/${boardId}/msg`, { txt })
     return savedMsg
 }
