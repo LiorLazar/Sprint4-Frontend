@@ -35,10 +35,10 @@ export function TaskActionsMenu({ anchor, onClose, onAction, onDeleteTask }) {
   }, [anchor])
 
   const actions = [
-    { label: 'Open card', type: 'open', icon: icons.card },
-    { label: 'Edit labels', type: 'labels', icon: icons.tag },
+    { label: 'Open card', type: 'open', icon: icons.open },
+    { label: 'Edit labels', type: 'labels', icon: icons.labels },
     { label: 'Change members', type: 'members', icon: icons.members },
-    { label: 'Change cover', type: 'cover', icon: icons.image },
+    { label: 'Change cover', type: 'cover', icon: icons.cover },
     { label: 'Edit dates', type: 'dates', icon: icons.clock },
     { label: 'Archive', type: 'archive', icon: icons.archive },
   ]
@@ -59,7 +59,7 @@ export function TaskActionsMenu({ anchor, onClose, onAction, onDeleteTask }) {
               onClick={ev => {
                 ev.stopPropagation()
                 if (action.type === 'archive') {
-                  onDeleteTask?.() // ✅ מוחק מהלוקאלי ומהשרת דרך BoardDetails
+                  onDeleteTask?.() 
                   onClose()
                   return
                 }
