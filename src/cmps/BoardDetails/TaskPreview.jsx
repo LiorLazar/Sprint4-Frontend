@@ -159,67 +159,70 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
         <div className="task-cover task-cover-color" style={{ backgroundColor: bgColor }} />
       ) : null}
 
-      <div
+            <div
         className={`task-body ${hasImageCover || bgMode === 'cover' ? 'with-cover' : ''}`}
         style={isFullMode ? { backgroundColor: bgColor } : undefined}
       >
-{isFullMode ? (
-  <div className="task-title-row full-mode">
-    <label
-      className="task-checkbox slide-in"
-      onClick={(ev) => ev.stopPropagation()}
-    >
-      <input
-        type="checkbox"
-        checked={!!task.isDone}
-        onChange={(ev) => {
-          ev.stopPropagation()
-          const updatedTask = { ...task, isDone: !task.isDone }
-          onSave(updatedTask)
-        }}
-      />
-    </label>
+        {isFullMode ? (
+          <div className="task-title-row full-mode">
+            <label
+              className="task-checkbox slide-in"
+              onClick={(ev) => ev.stopPropagation()}
+            >
+              <input
+                type="checkbox"
+                checked={!!task.isDone}
+                onChange={(ev) => {
+                  ev.stopPropagation()
+                  const updatedTask = { ...task, isDone: !task.isDone }
+                  onSave(updatedTask)
+                }}
+              />
+            </label>
 
-    <span className={`task-title strong ${task.isDone ? 'completed' : ''}`}>
-      {task.title}
-    </span>
-  </div>
-) : (
-
+            <span className={`task-title strong ${task.isDone ? 'completed' : ''}`}>
+              {task.title}
+            </span>
+          </div>
+        ) : (
           <>
             {task.labels?.length > 0 && (
               <div className="preview-labels-bar">
                 {task.labels.map(labelId => {
                   const color = getLabelColor(labelId)
-                  return <span key={labelId} className="preview-label-bar" style={{ backgroundColor: color }} />
+                  return (
+                    <span
+                      key={labelId}
+                      className="preview-label-bar"
+                      style={{ backgroundColor: color }}
+                    />
+                  )
                 })}
               </div>
             )}
 
-     <div className="task-title-row">
-<label
-  className="task-checkbox slide-in"
-  onClick={(ev) => ev.stopPropagation()}
->
-  <input
-    type="checkbox"
-    checked={!!task.isDone}
-    onChange={(ev) => {
-      ev.stopPropagation()
-      const updatedTask = { ...task, isDone: !task.isDone }
-      onSave(updatedTask)
-    }}
-  />
-</label>
+            <div className="task-title-row">
+              <label
+                className="task-checkbox slide-in"
+                onClick={(ev) => ev.stopPropagation()}
+              >
+                <input
+                  type="checkbox"
+                  checked={!!task.isDone}
+                  onChange={(ev) => {
+                    ev.stopPropagation()
+                    const updatedTask = { ...task, isDone: !task.isDone }
+                    onSave(updatedTask)
+                  }}
+                />
+              </label>
 
-<span className={`task-title ${task.isDone ? 'completed' : ''}`}>
-  {task.title}
-</span>
+              <span className={`task-title ${task.isDone ? 'completed' : ''}`}>
+                {task.title}
+              </span>
+            </div>
 
-</div>
-
-
-            {(dueLabel || hasChecklist || allMembers.length > 0) && (
+            {(dueLabel || hasChecklist || task.description || allMembers.length > 0) && (
               <div className={`task-meta-below ${shouldWrap ? 'multi-line' : ''}`}>
                 <div className="meta-top-row">
                   <div className="meta-left">
@@ -229,6 +232,7 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
                         <span>{dueLabel}</span>
                       </div>
                     )}
+
                     {hasChecklist && (
                       <div
                         className={`task-checklist-inline ${
@@ -241,10 +245,19 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
                         <span>{`${checklistSummary.done}/${checklistSummary.total}`}</span>
                       </div>
                     )}
+
+                    {task.description && (
+                      <div className="task-desc-icon" title="Has description">
+                        {icons.cardDescriptions}
+                      </div>
+                    )}
                   </div>
 
                   {allMembers.length > 0 && (
-                    <div ref={membersRef} className={`task-members-inline ${shouldWrap ? 'multi-line' : ''}`}>
+                    <div
+                      ref={membersRef}
+                      className={`task-members-inline ${shouldWrap ? 'multi-line' : ''}`}
+                    >
                       {visibleMembers.map(member => (
                         <span
                           key={member.id}
@@ -255,15 +268,19 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
                           {member.initials}
                         </span>
                       ))}
-                      {hiddenCount > 0 && <span className="member-avatar more">{`+${hiddenCount}`}</span>}
+                      {hiddenCount > 0 && (
+                        <span className="member-avatar more">{`+${hiddenCount}`}</span>
+                      )}
                     </div>
                   )}
                 </div>
               </div>
             )}
           </>
-        )}
+        )} {/* ✅ זו השורה שהייתה חסרה — סוגרת את ה־ternary של isFullMode */}
       </div>
+
+
 
       {isMenuOpen && (
         <TaskActionsMenu

@@ -1,9 +1,14 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { appHeaderIcons } from './SvgIcons'
 
 export function AppHeader() {
+  const location = useLocation()
+
+  // קובע אם נמצאים בדף הבית או בלוחות
+  const isWhiteHeader = location.pathname === '/' || location.pathname.startsWith('/board')
+
   return (
-    <header className="app-header full">
+    <header className={`app-header full ${isWhiteHeader ? 'white-bg' : ''}`}>
       <div className='header-container'>
         <div className='icons'>
           <span className='logo'>
