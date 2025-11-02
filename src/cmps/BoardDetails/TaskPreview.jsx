@@ -163,11 +163,21 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
         className={`task-body ${hasImageCover || bgMode === 'cover' ? 'with-cover' : ''}`}
         style={isFullMode ? { backgroundColor: bgColor } : undefined}
       >
-        {isFullMode ? (
-          <div className="task-title-row full-mode">
-            <span className="task-title strong">{task.title}</span>
-          </div>
-        ) : (
+{isFullMode ? (
+  <div className="task-title-row full-mode">
+    <button
+      className="task-complete-btn"
+      onClick={(ev) => {
+        ev.stopPropagation()
+        console.log('Circle clicked (mark complete coming soon)')
+      }}
+      title="Mark complete"
+    >
+      <span className="circle-icon" />
+    </button>
+    <span className="task-title strong">{task.title}</span>
+  </div>
+) : (
           <>
             {task.labels?.length > 0 && (
               <div className="preview-labels-bar">
@@ -178,9 +188,20 @@ export function TaskPreview({ task, board, onTaskClick, onSave }) {
               </div>
             )}
 
-            <div className="task-title-row">
-              <span className="task-title">{task.title}</span>
-            </div>
+     <div className="task-title-row">
+  <button
+    className="task-complete-btn"
+    onClick={(ev) => {
+      ev.stopPropagation()
+      console.log('Circle clicked (mark complete coming soon)')
+    }}
+    title="Mark complete"
+  >
+    <span className="circle-icon" />
+  </button>
+  <span className="task-title">{task.title}</span>
+</div>
+
 
             {(dueLabel || hasChecklist || allMembers.length > 0) && (
               <div className={`task-meta-below ${shouldWrap ? 'multi-line' : ''}`}>
