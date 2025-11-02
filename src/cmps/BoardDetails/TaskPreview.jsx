@@ -1,32 +1,42 @@
+import { useState, useRef, useEffect } from 'react'
 import { icons } from "../SvgIcons.jsx"
+import { TaskActionsMenu } from "./TaskActionsMenu.jsx"
+import { TaskDynamicModal } from "../TaskDetails/TaskDynamicModal.jsx"
 import { boardMembers, labelPalette } from '../../services/data.js'
 
-export function TaskPreview({ task, board, onTaskClick }) {
-  const backgroundColor = task.style?.backgroundColor || "#fff"
+export function TaskPreview({ task, board, onTaskClick, onSave }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [menuAnchor, setMenuAnchor] = useState(null)
+  const [activeModal, setActiveModal] = useState(null)
+  const [shouldWrap, setShouldWrap] = useState(false)
+  const btnRef = useRef(null)
+  const membersRef = useRef(null)
 
+  const bgColor = task.style?.backgroundColor || null
+  const bgMode = task.style?.bgMode || (bgColor ? 'full' : 'default')
+
+  // ===== HELPERS =====
   function getMemberDetails(memberId) {
     return boardMembers.find(member => member.id === memberId)
   }
 
   function getLabelColor(labelId) {
-    // First check board labels
     const boardLabel = board?.labels?.find(l => l.id === labelId)
-    if (boardLabel) {
-      return boardLabel.color
-    }
-    
-    // Fallback to labelPalette
+    if (boardLabel) return boardLabel.color
     const labelData = labelPalette[labelId]
     return typeof labelData === 'string' ? labelData : labelData?.color || '#gray'
   }
 
-  // ======== COVER IMAGE ========
+  // ===== COVER =====
   const coverImage =
     task.attachments?.find(att => att.isCover)?.url ||
-    task.attachments?.[0]?.url ||
-    task.attachment?.url // fallback ישן
+    task.attachment?.url
 
-  // ======== DATE ========
+  const hasImageCover = Boolean(coverImage)
+  const hasColorCover = !hasImageCover && bgMode === 'cover' && !!task.style?.backgroundColor
+  const hasAnyCover = hasImageCover || hasColorCover
+
+  // ===== DATE HELPERS =====
   function parseDate(value) {
     if (!value && value !== 0) return null
     const dateObj = typeof value === "number" ? new Date(value) : new Date(String(value))
@@ -49,7 +59,7 @@ export function TaskPreview({ task, board, onTaskClick }) {
     return "upcoming"
   }
 
-  // ======== CHECKLIST ========
+  // ===== CHECKLIST =====
   function getChecklistSummary(task) {
     if (!task.checklists || !task.checklists.length) return null
     let done = 0
@@ -67,142 +77,213 @@ export function TaskPreview({ task, board, onTaskClick }) {
   const checklistSummary = getChecklistSummary(task)
   const hasChecklist = checklistSummary !== null
 
-  // ======== MEMBERS ========
+  // ===== MEMBERS =====
   const allMembers = task?.members?.map(getMemberDetails).filter(Boolean) || []
-  const isManyMembers = allMembers.length > 2
-  const visibleMembers = allMembers.slice(0, 3)
+  const visibleMembers = allMembers.slice(0, 5)
   const hiddenCount = allMembers.length - visibleMembers.length
 
-  // ======== DUE DATE ========
+  useEffect(() => {
+    if (!membersRef.current) return
+    const container = membersRef.current
+    const avatars = Array.from(container.children)
+    if (avatars.length <= 1) return setShouldWrap(false)
+
+    const firstTop = avatars[0].offsetTop
+    const wrapped = avatars.some(el => el.offsetTop > firstTop)
+    setShouldWrap(wrapped)
+  }, [task.members])
+
   const dueLabel = formatDueDate(task?.dueDate)
   const dueClass = getDueClass(task?.dueDate)
 
+  // ===== MENU =====
+  function openMenu(ev) {
+    ev.stopPropagation()
+    const rect = ev.currentTarget.getBoundingClientRect()
+    setMenuAnchor({
+      top: rect.top,
+      bottom: rect.bottom,
+      left: rect.left,
+      right: rect.right
+    })
+    setIsMenuOpen(true)
+  }
+
+  // ✅ מחיקת טסק אחת (Archive)
+  async function handleDeleteTask() {
+    if (!board) return
+    const updatedBoard = {
+      ...board,
+      lists: board.lists.map(list => ({
+        ...list,
+        tasks: list.tasks.filter(t => t.id !== task.id)
+      }))
+    }
+    await onSave(task, updatedBoard)
+  }
+
+  // ===== ACTION HANDLER =====
+  function handleAction(type, ev) {
+    ev.stopPropagation()
+    setIsMenuOpen(false)
+    const rect = ev.currentTarget.getBoundingClientRect()
+
+    if (type === 'open') {
+      onTaskClick(task)
+    } else if (['labels', 'members', 'dates', 'attachments', 'cover', 'checklist'].includes(type)) {
+      setActiveModal({
+        type,
+        anchor: { top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right }
+      })
+    } else if (type === 'archive') {
+      handleDeleteTask()
+    }
+  }
+
+  const isFullMode = bgMode === 'full' && !!bgColor
+
   return (
     <div
-      className="task-preview"
+      className={`task-preview ${hasAnyCover ? 'has-cover' : 'no-cover'} ${isFullMode ? 'full-bg-mode' : ''}`}
       onClick={() => onTaskClick(task)}
-      style={{ backgroundColor }}
     >
-      {/* ===== COVER IMAGE ===== */}
-      {coverImage && (
-        <div className="task-cover-preview">
-          <img
-            src={coverImage}
-            alt="Task cover"
-            className="task-cover-image"
-          />
+      <button ref={btnRef} className="edit-task-btn" onClick={openMenu} title="Task actions">
+        {icons.editCard}
+      </button>
+
+      {hasImageCover ? (
+        <div className="task-cover">
+          <img src={coverImage} alt="Task cover" className="task-cover-img" />
         </div>
-      )}
+      ) : bgMode === 'cover' ? (
+        <div className="task-cover task-cover-color" style={{ backgroundColor: bgColor }} />
+      ) : null}
 
-      {/* ===== LABELS BAR ===== */}
-      {task.labels?.length > 0 && (
-        <div className="preview-labels-bar">
-          {task.labels.map(labelId => {
-            const color = getLabelColor(labelId)
-            
-            return (
-              <span
-                key={labelId}
-                className="preview-label-bar"
-                style={{ backgroundColor: color }}
-              />
-            )
-          })}
-        </div>
-      )}
+      <div
+        className={`task-body ${hasImageCover || bgMode === 'cover' ? 'with-cover' : ''}`}
+        style={isFullMode ? { backgroundColor: bgColor } : undefined}
+      >
+{isFullMode ? (
+  <div className="task-title-row full-mode">
+    <label
+      className="task-checkbox slide-in"
+      onClick={(ev) => ev.stopPropagation()}
+    >
+      <input
+        type="checkbox"
+        checked={!!task.isDone}
+        onChange={(ev) => {
+          ev.stopPropagation()
+          const updatedTask = { ...task, isDone: !task.isDone }
+          onSave(updatedTask)
+        }}
+      />
+    </label>
 
-      {/* ===== CONTENT ===== */}
-      <div className="task-content">
-        <span className="task-title">{task.title}</span>
+    <span className={`task-title strong ${task.isDone ? 'completed' : ''}`}>
+      {task.title}
+    </span>
+  </div>
+) : (
 
-        <button
-          className="edit-task-btn"
-          onClick={(event) => {
-            event.stopPropagation()
-            onTaskClick(task)
-          }}
-          title="Open task"
-        >
-          {icons.editCard}
-        </button>
-
-        {(dueLabel || hasChecklist || task.description || allMembers.length > 0) && (
-          <div className={`task-meta-below ${isManyMembers ? "multi-line" : ""}`}>
-            <div className="meta-top-row">
-
-              {/* LEFT SIDE META GROUP */}
-              <div className="meta-left">
-                {/* DUE DATE */}
-                {dueLabel && (
-                  <div className={`task-due-container ${dueClass}`}>
-                    <span className="task-due-icon">{icons.clock}</span>
-                    <span>{dueLabel}</span>
-                  </div>
-                )}
-
-                {/* CHECKLIST */}
-                {hasChecklist && (
-                  <div
-                    className={`task-checklist-inline ${
-                      checklistSummary.done === checklistSummary.total
-                        ? "completed"
-                        : "in-progress"
-                    }`}
-                  >
-                    <span className="icon">{icons.checklistItem}</span>
-                    <span>{`${checklistSummary.done}/${checklistSummary.total}`}</span>
-                  </div>
-                )}
-
-                {/* DESCRIPTION ICON */}
-                {task.description && task.description.trim() && (
-                  <div className="task-desc-icon" title="Has description">
-                    {icons.cardDescriptions}
-                  </div>
-                )}
-              </div>
-
-              {/* RIGHT SIDE MEMBERS */}
-              {!isManyMembers && allMembers.length > 0 && (
-                <div className="task-members-inline">
-                  {visibleMembers.map(member => (
-                    <span
-                      key={member.id}
-                      className="member-avatar"
-                      style={{ backgroundColor: member.color }}
-                      title={member.name}
-                    >
-                      {member.initials}
-                    </span>
-                  ))}
-                  {hiddenCount > 0 && (
-                    <span className="member-avatar more">{`+${hiddenCount}`}</span>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* MEMBERS BELOW */}
-            {isManyMembers && (
-              <div className="task-members-below">
-                {visibleMembers.map(member => (
-                  <span
-                    key={member.id}
-                    className="member-avatar"
-                    style={{ backgroundColor: member.color }}
-                    title={member.name}
-                  >
-                    {member.initials}
-                  </span>
-                ))}
-                {hiddenCount > 0 && (
-                  <span className="member-avatar more">{`+${hiddenCount}`}</span>
-                )}
+          <>
+            {task.labels?.length > 0 && (
+              <div className="preview-labels-bar">
+                {task.labels.map(labelId => {
+                  const color = getLabelColor(labelId)
+                  return <span key={labelId} className="preview-label-bar" style={{ backgroundColor: color }} />
+                })}
               </div>
             )}
-          </div>
+
+     <div className="task-title-row">
+<label
+  className="task-checkbox slide-in"
+  onClick={(ev) => ev.stopPropagation()}
+>
+  <input
+    type="checkbox"
+    checked={!!task.isDone}
+    onChange={(ev) => {
+      ev.stopPropagation()
+      const updatedTask = { ...task, isDone: !task.isDone }
+      onSave(updatedTask)
+    }}
+  />
+</label>
+
+<span className={`task-title ${task.isDone ? 'completed' : ''}`}>
+  {task.title}
+</span>
+
+</div>
+
+
+            {(dueLabel || hasChecklist || allMembers.length > 0) && (
+              <div className={`task-meta-below ${shouldWrap ? 'multi-line' : ''}`}>
+                <div className="meta-top-row">
+                  <div className="meta-left">
+                    {dueLabel && (
+                      <div className={`task-due-container ${dueClass}`}>
+                        <span className="task-due-icon">{icons.clock}</span>
+                        <span>{dueLabel}</span>
+                      </div>
+                    )}
+                    {hasChecklist && (
+                      <div
+                        className={`task-checklist-inline ${
+                          checklistSummary.done === checklistSummary.total
+                            ? 'completed'
+                            : 'in-progress'
+                        }`}
+                      >
+                        <span className="icon">{icons.checklistItem}</span>
+                        <span>{`${checklistSummary.done}/${checklistSummary.total}`}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {allMembers.length > 0 && (
+                    <div ref={membersRef} className={`task-members-inline ${shouldWrap ? 'multi-line' : ''}`}>
+                      {visibleMembers.map(member => (
+                        <span
+                          key={member.id}
+                          className="member-avatar"
+                          style={{ backgroundColor: member.color }}
+                          title={member.name}
+                        >
+                          {member.initials}
+                        </span>
+                      ))}
+                      {hiddenCount > 0 && <span className="member-avatar more">{`+${hiddenCount}`}</span>}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
+
+      {isMenuOpen && (
+        <TaskActionsMenu
+          anchor={menuAnchor}
+          onClose={() => setIsMenuOpen(false)}
+          onAction={handleAction}
+          onDeleteTask={handleDeleteTask}
+        />
+      )}
+
+      {activeModal && (
+        <TaskDynamicModal
+          type={activeModal.type}
+          task={task}
+          board={board}
+          anchor={activeModal.anchor}
+          onClose={() => setActiveModal(null)}
+          onSave={onSave}
+        />
+      )}
     </div>
   )
 }

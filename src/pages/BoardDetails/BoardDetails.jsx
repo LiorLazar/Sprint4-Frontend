@@ -9,6 +9,8 @@ import { TaskDetails } from '../../cmps/TaskDetails/TaskDetails.jsx'
 import { utilService } from '../../services/util.service.js'
 import { icons } from '../../cmps/SvgIcons.jsx'
 import { loadBoard, updateBoard } from '../../store/actions/board.actions.js'
+const { adjustColorBrightness, getAverageColor } = utilService
+
 
 export function BoardDetails() {
   const { boardId, taskId } = useParams()
@@ -32,6 +34,56 @@ export function BoardDetails() {
     if (boardFromStore) setLocalBoard(boardFromStore)
   }, [boardFromStore])
 
+  // ===== SET BACKGROUND COLOR OR IMAGE =====
+  useEffect(() => {
+    const bgColor = localBoard?.style?.backgroundColor || '#838c91'
+    const bgImage = localBoard?.style?.backgroundImage || null
+
+    if (bgImage) {
+      document.body.style.backgroundImage = `url(${bgImage})`
+      document.body.style.backgroundSize = 'cover'
+      document.body.style.backgroundPosition = 'center center'
+      document.body.style.backgroundAttachment = 'fixed'
+      document.body.style.backgroundRepeat = 'no-repeat'
+      document.body.style.backgroundColor = 'transparent'
+
+      getAverageColor(bgImage).then(avgColor => {
+        const darker = adjustColorBrightness(avgColor, -15)
+        const textColor = adjustColorBrightness(avgColor, 100)
+
+        document.documentElement.style.setProperty('--app-header-backgrd-clr1', darker)
+        document.documentElement.style.setProperty('--app-header-text-clr1', textColor)
+        document.documentElement.style.setProperty('--header-bckgrd-clr1', 'transparent')
+        document.documentElement.style.setProperty('--header-text-clr1', '#fff')
+        document.documentElement.style.setProperty('--header-backdrop-blur', '18px')
+      })
+    } else {
+      document.body.style.backgroundImage = 'none'
+      document.body.style.backgroundColor = bgColor
+
+      const baseColor = bgColor || '#838c91'
+      const boardHeaderBg = adjustColorBrightness(baseColor, -12)
+      const appHeaderBg = adjustColorBrightness(baseColor, -25)
+      const headerText = adjustColorBrightness(baseColor, 60)
+
+      document.documentElement.style.setProperty('--app-header-backgrd-clr1', appHeaderBg)
+      document.documentElement.style.setProperty('--app-header-text-clr1', headerText)
+      document.documentElement.style.setProperty('--header-bckgrd-clr1', boardHeaderBg)
+      document.documentElement.style.setProperty('--header-text-clr1', headerText)
+      document.documentElement.style.removeProperty('--header-backdrop-blur')
+    }
+
+    return () => {
+      document.body.style.backgroundImage = 'none'
+      document.body.style.backgroundColor = '#838c91'
+      document.documentElement.style.removeProperty('--app-header-backgrd-clr1')
+      document.documentElement.style.removeProperty('--app-header-text-clr1')
+      document.documentElement.style.removeProperty('--header-bckgrd-clr1')
+      document.documentElement.style.removeProperty('--header-text-clr1')
+      document.documentElement.style.removeProperty('--header-backdrop-blur')
+    }
+  }, [localBoard?.style?.backgroundColor, localBoard?.style?.backgroundImage])
+
   // ===== HANDLE SELECTED TASK =====
   useEffect(() => {
     if (localBoard && taskId) {
@@ -51,7 +103,7 @@ export function BoardDetails() {
     }
   }, [localBoard, taskId, boardId, navigate])
 
-  // ===== HANDLE CLICK OUTSIDE ADD-LIST FORM =====
+  // ===== CLICK OUTSIDE ADD-LIST =====
   useEffect(() => {
     function handleClickOutside(event) {
       if (!isAddingList) return
@@ -77,29 +129,67 @@ export function BoardDetails() {
     navigate(`/board/${boardId}`)
   }
 
-  // ===== SAVE / DELETE TASK =====
-  async function handleSaveTask(updatedTask, updatedBoard = null) {
+  // ===== MOVE TASK (DnD Core) =====
+  async function handleMoveTask(taskId, fromListId, toListId, targetIndex) {
     if (!localBoard) return
 
-    if (updatedBoard) {
-      setLocalBoard(updatedBoard)
-      await updateBoard(updatedBoard)
-      return
+    const boardCopy = structuredClone(localBoard)
+
+    const fromList = boardCopy.lists.find(list => list.id === fromListId)
+    const toList = boardCopy.lists.find(list => list.id === toListId)
+    if (!fromList || !toList) return
+
+    const task = fromList.tasks.find(t => t.id === taskId)
+    if (!task) return
+
+    // Remove from source
+    fromList.tasks = fromList.tasks.filter(t => t.id !== taskId)
+
+    // Insert into target
+    if (targetIndex == null || targetIndex >= toList.tasks.length) {
+      toList.tasks.push(task)
+    } else {
+      toList.tasks.splice(targetIndex, 0, task)
     }
 
-    const updatedBoardWithTask = {
-      ...localBoard,
-      lists: localBoard.lists.map(list => ({
-        ...list,
-        tasks: list.tasks.map(task =>
-          task.id === updatedTask.id ? { ...task, ...updatedTask } : task
-        )
-      }))
-    }
-
-    setLocalBoard(updatedBoardWithTask)
-    await updateBoard(updatedBoardWithTask)
+    setLocalBoard(boardCopy)
+    await updateBoard(boardCopy)
   }
+
+  // ===== SAVE / DELETE TASK =====
+async function handleSaveTask(updatedTask, updatedBoard = null) {
+  if (!localBoard) return
+
+  if (updatedBoard) {
+    const mergedBoard = {
+      ...localBoard,
+      ...updatedBoard,
+      activityLog: [
+        ...(localBoard.activityLog || []),
+        ...((updatedBoard.activityLog || []).filter(
+          act => !(localBoard.activityLog || []).some(a => a.id === act.id)
+        ))
+      ]
+    }
+
+    setLocalBoard(mergedBoard)
+    await updateBoard(mergedBoard)
+    return
+  }
+
+  const updatedBoardWithTask = {
+    ...localBoard,
+    lists: localBoard.lists.map(list => ({
+      ...list,
+      tasks: list.tasks.map(task =>
+        task.id === updatedTask.id ? { ...task, ...updatedTask } : task
+      )
+    }))
+  }
+
+  setLocalBoard(updatedBoardWithTask)
+  await updateBoard(updatedBoardWithTask)
+}
 
   async function handleDeleteTask(taskIdToDelete) {
     const updatedBoard = {
@@ -114,7 +204,7 @@ export function BoardDetails() {
     handleCloseTaskDetails()
   }
 
-  // ===== ADD / RENAME LIST =====
+  // ===== ADD / RENAME / CANCEL LIST =====
   async function handleAddListConfirm() {
     const title = newListTitle.trim()
     if (!title) {
@@ -128,7 +218,6 @@ export function BoardDetails() {
 
     setLocalBoard(updatedBoard)
     await updateBoard(updatedBoard)
-
     setNewListTitle('')
     setIsAddingList(true)
     focusOnNewList()
@@ -214,9 +303,11 @@ export function BoardDetails() {
       list.tasks.some(t => t.id === selectedTask?.id)
     )?.title || ''
 
+  const hasImageBg = Boolean(localBoard?.style?.backgroundImage)
+
   return (
     <section className="board-details">
-      <BoardHeader />
+      <BoardHeader hasImageBg={hasImageBg} />
 
       <div className="lists-container" ref={listsContainerRef}>
         {localBoard.lists.map(list => (
@@ -228,6 +319,10 @@ export function BoardDetails() {
             onRenameList={handleRenameList}
             onAddCard={handleAddCard}
             onTaskClick={handleTaskClick}
+            onSaveTask={handleSaveTask}
+            onMoveTask={handleMoveTask}
+              onDeleteTask={handleDeleteTask}
+
           />
         ))}
 

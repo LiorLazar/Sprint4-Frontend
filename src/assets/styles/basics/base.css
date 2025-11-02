@@ -1,5 +1,5 @@
-html, body, #root { height: 100%; }
-body { margin: 0; background: #838c91; }
+html, body, #root 
+body { margin: 0; }
 
 * {
     box-sizing: border-box;

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { icons } from '../SvgIcons.jsx'
-import { TaskDynamicModal } from './TaskDynamicModal.jsx'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { TaskDynamicModal } from './TaskDynamicModal.jsx'
 import { boardMembers, labelPalette } from '../../services/data.js'
 import './TaskModals.css'
 
@@ -17,11 +17,13 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
   const [activeModal, setActiveModal] = useState(null)
   const [activeEditor, setActiveEditor] = useState(null)
   const [newItemText, setNewItemText] = useState({})
+  const [modalAnchor, setModalAnchor] = useState(null)
 
   useEffect(() => {
     if (isOpen && task) {
       setTitle(task.title || '')
       setDescription(task.description || '')
+      setEditedDescription(task.description || '')
       setDueDate(task.dueDate || null)
       setLabels(task.labels || [])
       setMembers(task.members || [])
@@ -45,6 +47,36 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
     return { color: labelData?.color || '#gray', name: labelData?.name || '' }
   }
 
+    function saveDescription() {
+    setDescription(editedDescription)
+    handleSave({ description: editedDescription })
+    setIsEditingDescription(false)
+  }
+
+  function cancelDescriptionEdit() {
+    setEditedDescription(description)
+    setIsEditingDescription(false)
+  }
+
+    function openModal(type, ev) {
+    ev.stopPropagation()
+    const rect = ev.currentTarget.getBoundingClientRect()
+    setModalAnchor({
+      top: rect.top,
+      bottom: rect.bottom,
+      left: rect.left,
+      right: rect.right,
+      width: rect.width,
+      height: rect.height
+    })
+    setActiveModal(type)
+  }
+
+  function closeModal() {
+    setActiveModal(null)
+    setModalAnchor(null)
+  }
+
   function handleSave(updated = {}) {
     if (updated.boardLabels) {
       const updatedBoard = { ...board, labels: updated.boardLabels }
@@ -64,17 +96,6 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
       ...updated,
     }
     onSave(updatedTask)
-  }
-
-    function saveDescription() {
-    setDescription(editedDescription)
-    handleSave({ description: editedDescription })
-    setIsEditingDescription(false)
-  }
-
-  function cancelDescriptionEdit() {
-    setEditedDescription(description)
-    setIsEditingDescription(false)
   }
 
   function getFormattedDate(dateValue) {
@@ -206,24 +227,43 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
           {icons.xButton}
         </button>
 
-        {/* COVER IMAGE */}
-        {attachments.some(a => a.isCover) && (
-          <div className="task-cover">
-            <img
-              src={attachments.find(a => a.isCover).url}
-              alt="Cover"
-              className="task-cover-image"
-            />
-          </div>
-        )}
+{(() => {
+  const coverAttachment = attachments.find(a => a.isCover)
+  const bgColor = task.style?.backgroundColor || '#f4f5f7'
+
+  return (
+    <div
+      className="task-cover-wrapper"
+      style={{
+        backgroundColor: coverAttachment ? 'transparent' : bgColor,
+      }}
+    >
+      {coverAttachment && (
+        <img
+          src={coverAttachment.url}
+          alt="Cover"
+          className="task-cover-image"
+        />
+      )}
+
+      {/* ===== CLOSE BUTTON ON COVER ===== */}
+      <button className="cover-close-btn" onClick={onClose} title="Close">
+        {icons.xButton}
+      </button>
+
+      {/* HEADER OVERLAY */}
+      <div className="grid-header">
+        <div className="task-location">
+          <span className="list-name">{listTitle}</span>
+        </div>
+      </div>
+    </div>
+  )
+})()}
+
+
 
         <div className="task-details-grid">
-          <div className="grid-header">
-            <div className="task-location">
-              in list <span className="list-name">{listTitle}</span>
-            </div>
-          </div>
-
           <div className="grid-main">
             {/* ===== TITLE ===== */}
             <div className="task-title-section">
@@ -238,48 +278,53 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
             </div>
 
             {/* ===== ACTION BUTTONS ===== */}
-            <div className="action-buttons-row">
-              {!task.checklists?.length && (
-                <button className="action-button" onClick={() => setActiveModal('checklist')}>
-                  <span className="action-button-icon">{icons.checklistItem}</span> Checklist
-                </button>
-              )}
-              <button className="action-button" onClick={() => setActiveModal('attachments')}>
-                <span className="action-button-icon">{icons.attachment}</span> Attachment
-              </button>
-              {!labels?.length && (
-                <button className="action-button" onClick={() => setActiveModal('labels')}>
-                  <span className="action-button-icon">{icons.labels}</span> Labels
-                </button>
-              )}
-              {!dueDate && (
-                <button className="action-button" onClick={() => setActiveModal('dates')}>
-                  <span className="action-button-icon">{icons.clock}</span> Dates
-                </button>
-              )}
-              {!members?.length && (
-                <button className="action-button" onClick={() => setActiveModal('members')}>
-                  <span className="action-button-icon">{icons.members}</span> Members
-                </button>
-              )}
-            </div>
+<div className="action-buttons-row">
+  {!task.checklists?.length && (
+    <button className="action-button" onClick={(ev) => openModal('checklist', ev)}>
+      <span className="action-button-icon">{icons.checklistItem}</span> Checklist
+    </button>
+  )}
+
+  <button className="action-button" onClick={(ev) => openModal('attachments', ev)}>
+    <span className="action-button-icon">{icons.attachment}</span> Attachment
+  </button>
+
+  {!labels?.length && (
+    <button className="action-button" onClick={(ev) => openModal('labels', ev)}>
+      <span className="action-button-icon">{icons.labels}</span> Labels
+    </button>
+  )}
+
+  {!dueDate && (
+    <button className="action-button" onClick={(ev) => openModal('dates', ev)}>
+      <span className="action-button-icon">{icons.clock}</span> Dates
+    </button>
+  )}
+
+  {!members?.length && (
+    <button className="action-button" onClick={(ev) => openModal('members', ev)}>
+      <span className="action-button-icon">{icons.members}</span> Members
+    </button>
+  )}
+</div>
+
 
             <div className="meta-row">
-               {/* MEMBERS */}
-                {members.length > 0 && 
-                ( <div className="members-inline">
-                   <div className="section-header tight"> 
+              {/* MEMBERS */}
+              {members.length > 0 &&
+                (<div className="members-inline">
+                  <div className="section-header tight">
                     <h3 className="section-title">Members</h3>
-                </div> 
-                     <div className="members-inline-list">
-                       {selectedMemberObjects.map(member => ( <span key={member.id}
-                        className="avatar sm" style={{ backgroundColor: member.color }}> 
-                        {member.initials} </span> ))} 
-                        <button className="add-member-inline" 
-                        onClick={() => setActiveModal('members')}> {icons.plus}
-                           </button> 
-                 </div> 
-               </div> )}
+                  </div>
+                  <div className="members-inline-list">
+                    {selectedMemberObjects.map(member => (<span key={member.id}
+                      className="avatar sm" style={{ backgroundColor: member.color }}>
+                      {member.initials} </span>))}
+                    <button className="add-member-inline"
+                      onClick={() => setActiveModal('members')}> {icons.plus}
+                    </button>
+                  </div>
+                </div>)}
 
               {/* ===== LABELS ===== */}
               {labels?.length > 0 && (
@@ -378,18 +423,18 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
               </div>
             )}
 
-           {/* ===== DESCRIPTION ===== */}
+{/* ===== DESCRIPTION ===== */}
 <div className="task-section description-section">
   <div className="details-title">
-    <div>{icons.cardDescriptions}</div>
-    <h3 className="details-title">Description</h3>
+    <div className="details-title-left">
+      {icons.cardDescriptions}
+      <h3 className="details-title">Description</h3>
+    </div>
+
     {!isEditingDescription && (
       <button
         className="delete-btn"
-        onClick={() => {
-          setEditedDescription(description)
-          setIsEditingDescription(true)
-        }}
+        onClick={() => setIsEditingDescription(true)}
       >
         Edit
       </button>
@@ -482,7 +527,7 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
                                   autoFocus
                                 />
                                 <button
-                                  className="x-btn in-edit"
+                                  className="remove-item-btn in-edit"
                                   onClick={() => removeChecklistItem(checklist.id, item.id)}
                                 >
                                   {icons.xButton}
@@ -595,6 +640,7 @@ export function TaskDetails({ task, board, isOpen, onClose, onSave, listTitle })
             type={activeModal}
             task={{ ...task, labels, members, dueDate }}
             board={board}
+            anchor={modalAnchor}
             onClose={() => setActiveModal(null)}
             onSave={fields => handleSave(fields)}
           />

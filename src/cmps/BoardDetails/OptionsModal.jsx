@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 import { icons } from '../SvgIcons'
 
-export function OptionsModal({ board, onClose, onToggleStar, onChangeColor }) {
+export function OptionsModal({ board, onClose, onToggleStar, onChangeColor, onChangeBackgroundImage }) {
     const modalRef = useRef(null)
 
     useEffect(() => {
@@ -26,15 +26,28 @@ export function OptionsModal({ board, onClose, onToggleStar, onChangeColor }) {
         { name: 'pink', class: 'color-pink', hex: '#cd5a91' },
         { name: 'lime', class: 'color-lime', hex: '#4bbf6b' },
         { name: 'sky', class: 'color-sky', hex: '#00aecc' }
-    ];
+    ]
 
     const handleColorChange = (colorHex) => {
-        onChangeColor(colorHex);
-    };
+        onChangeColor(colorHex)
+    }
 
     const handleStarToggle = () => {
-        onToggleStar();
-    };
+        onToggleStar()
+    }
+
+    // ====== IMAGE UPLOAD ======
+    const handleImageUpload = (ev) => {
+        const file = ev.target.files[0]
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onload = (event) => {
+            const imageUrl = event.target.result
+            onChangeBackgroundImage(imageUrl)
+        }
+        reader.readAsDataURL(file)
+    }
 
     return (
         <div ref={modalRef} className="options-modal">
@@ -44,6 +57,7 @@ export function OptionsModal({ board, onClose, onToggleStar, onChangeColor }) {
                     {icons.xButton}
                 </button>
             </div>
+
             <div className="options-modal-content">
                 <div className="option-item" onClick={handleStarToggle}>
                     <span>{board?.isStarred ? 'Unstar board' : 'Star board'}</span>
@@ -51,10 +65,14 @@ export function OptionsModal({ board, onClose, onToggleStar, onChangeColor }) {
                         {board?.isStarred ? icons.starFilled : icons.star}
                     </div>
                 </div>
+
                 <div className="option-item">
                     <span>Labels</span>
                 </div>
+
                 <hr className="divider" />
+
+                {/* ===== BACKGROUND COLORS ===== */}
                 <div className="color-section">
                     <h4 className="color-section-title">CHANGE BACKGROUND</h4>
                     <div className="color-grid">
@@ -71,7 +89,34 @@ export function OptionsModal({ board, onClose, onToggleStar, onChangeColor }) {
                         ))}
                     </div>
                 </div>
+
+                {/* ===== IMAGE UPLOAD ===== */}
+                <div className="image-upload-section">
+                    <h4 className="color-section-title">UPLOAD IMAGE</h4>
+                    <label className="upload-btn">
+                        {icons.image} Choose Image
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            style={{ display: 'none' }}
+                        />
+                    </label>
+                    {board?.style?.backgroundImage && (
+                        <div className="current-bg-preview">
+                            <img src={board.style.backgroundImage} alt="Background preview" />
+                            <button
+                                className="remove-btn"
+                                onClick={() => onChangeBackgroundImage(null)}
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    )}
+                </div>
+
                 <hr className="divider" />
+
                 <div className="option-item">
                     <span>Archive this board</span>
                 </div>
